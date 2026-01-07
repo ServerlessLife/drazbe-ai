@@ -185,6 +185,7 @@ async function extractLinks(
   sourceCode: string,
   linksSelector?: string
 ): Promise<Link[]> {
+  const activeOnly = true;
   console.log("Korak 1: Izvlečem vse povezave do objav...");
 
   // Extract content using selector if provided
@@ -215,7 +216,7 @@ async function extractLinks(
         ${contextNote}
 
         POMEMBNO:
-        - Izključi pretečene objave (kjer je rok veljavnosti že potekel - danes je ${new Date().toISOString().split("T")[0]})
+        ${activeOnly ? `- Izključi pretečene objave (kjer je rok veljavnosti že potekel - danes je ${new Date().toISOString().split("T")[0]})` : ""}
         - Izključi duplikate (če je ista objava navedena večkrat, vrni samo enkrat)
         - Navedi polni URL. Če je povezava relativna, jo pretvori v polno z uporabo izvornega URL-ja: ${sourceUrl}. Morda moraš vzeti samo domeno in osnovno pot iz izvornega URL-ja.
 
@@ -637,10 +638,6 @@ async function processSource(source: Source): Promise<{
   } else {
     await page.goto(source.url);
     await page.waitForLoadState("networkidle");
-
-    // click
-    // <a class="nav-link active" data-id="pretekli" data-bs-toggle="tab" href="#pretekli" aria-selected="true" role="tab">Pretekli</a>
-    // and wait for navigation if linksSelector is #pretekli
 
     // console.log("Klikam na zavihek 'Pretekli'...");
     // await page.click('a[data-id="pretekli"]');
