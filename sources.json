@@ -1,0 +1,1364 @@
+[
+  {
+    "name": "Gov.si javne objave",
+    "code": "gov-si",
+    "url": "https://www.gov.si/zbirke/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Sodne dražbe",
+    "code": "sodnedrazbe",
+    "url": "https://sodnedrazbe.si/?subjectType=7d70c0dc-71f7-4b64-9854-444e84219a37",
+    "enabled": false
+  },
+  {
+    "name": "eDražbe",
+    "code": "edrazbe",
+    "url": "https://edrazbe.si/list?saleSubject=2ee072ab-7833-48e6-9e83-d9cf8d7b92f0",
+    "enabled": false
+  },
+  {
+    "name": "Nepremičnine.net javne dražbe",
+    "code": "nepremicnine-net",
+    "url": "https://www.nepremicnine.net/javne-drazbe/oglasi-prodaja/?s=16",
+    "enabled": false
+  },
+  {
+    "name": "Stanovanjski sklad Republike Slovenije",
+    "code": "ssrs",
+    "url": "https://ssrs.si/javne-drazbe/seznam-nepremicnin/",
+    "enabled": false
+  },
+  {
+    "name": "Javni stanovanjski sklad Mestne občine Ljubljana",
+    "code": "jssmol",
+    "url": "https://www.jssmol.si/javne-objave/razpolaganje-s-premozenjem",
+    "enabled": false
+  },
+  {
+    "name": "Javni medobčinski stanovanjski sklad Maribor",
+    "code": "jmssmb",
+    "url": "https://www.jmss-mb.si/prodaja-nepremicnin/javna-drazba/",
+    "enabled": false
+  },
+  {
+    "name": "Javni stanovanjski sklad Mestne občine Koper",
+    "code": "jssmok",
+    "url": "https://www.jss-mok.si/",
+    "enabled": false
+  },
+  {
+    "name": "Javni stanovanjski sklad Mestne občine Murska Sobota",
+    "code": "jssmoms",
+    "url": "https://www.jss-moms.si/si/aktualno/novice",
+    "enabled": false
+  },
+  {
+    "name": "Nepremičninski sklad pokojninskega in invalidskega zavarovanja",
+    "code": "nspiz",
+    "url": "https://www.ns-piz.si/si/odprodaja-stanovanj/",
+    "skipSearchingForLinks": true,
+    "enabled": false
+  },
+  {
+    "name": "Spekter d.o.o.",
+    "code": "spekter",
+    "url": "https://www.spekter.info/",
+    "enabled": false
+  },
+  {
+    "name": "Stanovanjski sklad Mestne občine Nova Gorica",
+    "code": "ssmong",
+    "url": "https://ssmong.si/razpolaganje-s-premozenjem",
+    "enabled": false
+  },
+  {
+    "name": "Nepremičnine Celje d.o.o.",
+    "code": "nepremicnine-celje",
+    "url": "https://www.nepremicnine-celje.si/prodaja-oglasi/",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Celje",
+    "code": "celje",
+    "url": "https://moc.celje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Koper",
+    "code": "koper",
+    "url": "https://www.koper.si/public_tender/",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Kranj",
+    "code": "kranj",
+    "url": "https://www.kranj.si/mestna-obcina/javni-razpisi-narocila-razgrnitve",
+    "skipSearchingForLinks": true,
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Krško",
+    "code": "krsko",
+    "url": "https://www.krsko.si/objave/58",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Ljubljana",
+    "code": "ljubljana",
+    "url": "https://www.ljubljana.si/sl/mestni-servis/razpisi-razgrnitve-in-javne-objave?cat=2&status=all&year=&nrOfItems=20#filter",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Maribor",
+    "code": "maribor",
+    "url": "https://maribor.si/nepremicnine/prodaja-nepremicnin/",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Murska Sobota",
+    "code": "murska-sobota",
+    "url": "https://murska-sobota.si/javne-objave?search=",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Nova Gorica - Razpisi",
+    "code": "nova-gorica-razpisi",
+    "url": "https://www.nova-gorica.si/sl/javne-objave/?status=1&rubric=2025013008311235768",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Nova Gorica - Namere",
+    "code": "nova-gorica-namere",
+    "url": "https://www.nova-gorica.si/sl/javne-objave/?status=1&rubric=2025013010372254270",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Novo mesto",
+    "code": "novo-mesto",
+    "url": "https://www.novomesto.si/postopki/uradne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Ptuj",
+    "code": "ptuj",
+    "url": "https://www.ptuj.si/objave/58",
+    "linksSelector": ".tab-content",
+    "contentSelector": ".osrednji_vsebina",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Slovenj Gradec",
+    "code": "slovenj-gradec",
+    "url": "https://www.slovenjgradec.si/Naro%C4%8Dila-in-objave",
+    "linksSelector": ".main-content-area",
+    "contentSelector": ".main-content-area",
+    "enabled": false
+  },
+  {
+    "name": "Mestna občina Velenje",
+    "code": "velenje",
+    "url": "https://www.velenje.si/za-obcane/javne-objave-in-razpisi/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ajdovščina",
+    "code": "ajdovscina",
+    "url": "https://www.ajdovscina.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ankaran",
+    "code": "ankaran",
+    "url": "https://www.obcina-ankaran.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Apače",
+    "code": "apace",
+    "url": "https://www.obcina-apace.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Beltinci",
+    "code": "beltinci",
+    "url": "https://www.beltinci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Benedikt",
+    "code": "benedikt",
+    "url": "https://www.benedikt.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Bistrica ob Sotli",
+    "code": "bistrica-ob-sotli",
+    "url": "https://www.bistricaobsotli.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Bled",
+    "code": "bled",
+    "url": "https://www.e-bled.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Bloke",
+    "code": "bloke",
+    "url": "https://www.bloke.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Bohinj",
+    "code": "bohinj",
+    "url": "https://obcina.bohinj.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Borovnica",
+    "code": "borovnica",
+    "url": "https://www.borovnica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Bovec",
+    "code": "bovec",
+    "url": "https://obcina.bovec.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Braslovče",
+    "code": "braslovce",
+    "url": "https://www.braslovce.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Brda",
+    "code": "brda",
+    "url": "https://www.obcina-brda.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Brezovica",
+    "code": "brezovica",
+    "url": "https://www.brezovica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Brežice",
+    "code": "brezice",
+    "url": "https://www.brezice.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Cankova",
+    "code": "cankova",
+    "url": "https://www.cankova.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Cerklje na Gorenjskem",
+    "code": "cerklje-na-gorenjskem",
+    "url": "https://www.cerklje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Cerknica",
+    "code": "cerknica",
+    "url": "https://www.cerknica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Cerkno",
+    "code": "cerkno",
+    "url": "https://www.cerkno.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Cerkvenjak",
+    "code": "cerkvenjak",
+    "url": "https://www.cerkvenjak.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Cirkulane",
+    "code": "cirkulane",
+    "url": "https://www.cirkulane.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Črenšovci",
+    "code": "crensovci",
+    "url": "https://www.obcina-crensovci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Črna na Koroškem",
+    "code": "crna-na-koroskem",
+    "url": "https://www.crna.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Črnomelj",
+    "code": "crnomelj",
+    "url": "https://www.crnomelj.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Destrnik",
+    "code": "destrnik",
+    "url": "https://www.destrnik.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Divača",
+    "code": "divaca",
+    "url": "https://www.divaca.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Dobje",
+    "code": "dobje",
+    "url": "https://www.dobje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Dobrepolje",
+    "code": "dobrepolje",
+    "url": "https://www.dobrepolje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Dobrna",
+    "code": "dobrna",
+    "url": "https://www.dobrna.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Dobrova - Polhov Gradec",
+    "code": "dobrova-polhov-gradec",
+    "url": "https://www.dobrova-polhovgradec.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Dobrovnik",
+    "code": "dobrovnik",
+    "url": "https://www.dobrovnik.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Dol pri Ljubljani",
+    "code": "dol-pri-ljubljani",
+    "url": "https://www.dol.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Dolenjske Toplice",
+    "code": "dolenjske-toplice",
+    "url": "https://www.dolenjske-toplice.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Domžale",
+    "code": "domzale",
+    "url": "https://www.domzale.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Dornava",
+    "code": "dornava",
+    "url": "https://www.dornava.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Dravograd",
+    "code": "dravograd",
+    "url": "https://www.dravograd.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Duplek",
+    "code": "duplek",
+    "url": "https://www.duplek.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Gorenja Vas - Poljane",
+    "code": "gorenja-vas-poljane",
+    "url": "https://www.obcina-gvp.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Gorišnica",
+    "code": "gorisnica",
+    "url": "https://www.gorisnica.eu/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Gorje",
+    "code": "gorje",
+    "url": "https://www.gorje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Gornja Radgona",
+    "code": "gornja-radgona",
+    "url": "https://www.gor-radgona.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Gornji Grad",
+    "code": "gornji-grad",
+    "url": "https://www.gornji-grad.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Gornji Petrovci",
+    "code": "gornji-petrovci",
+    "url": "https://www.gornji-petrovci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Grad",
+    "code": "grad",
+    "url": "https://www.obcina-grad.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Grosuplje",
+    "code": "grosuplje",
+    "url": "https://www.grosuplje.si/objave/58",
+    "enabled": false
+  },
+  {
+    "name": "Občina Hajdina",
+    "code": "hajdina",
+    "url": "https://www.hajdina.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Hoče - Slivnica",
+    "code": "hoce-slivnica",
+    "url": "https://www.hoce-slivnica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Hodoš",
+    "code": "hodos",
+    "url": "https://www.hodos.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Horjul",
+    "code": "horjul",
+    "url": "https://www.horjul.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Hrastnik",
+    "code": "hrastnik",
+    "url": "https://www.hrastnik.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Hrpelje Kozina",
+    "code": "hrpelje-kozina",
+    "url": "https://www.hrpelje-kozina.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Idrija",
+    "code": "idrija",
+    "url": "https://www.idrija.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ig",
+    "code": "ig",
+    "url": "https://www.obcina-ig.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ilirska Bistrica",
+    "code": "ilirska-bistrica",
+    "url": "https://www.ilirska-bistrica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ivančna Gorica",
+    "code": "ivancna-gorica",
+    "url": "https://www.ivancna-gorica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Izola",
+    "code": "izola",
+    "url": "https://izola.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Jesenice",
+    "code": "jesenice",
+    "url": "https://www.jesenice.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Jezersko",
+    "code": "jezersko",
+    "url": "https://www.jezersko.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Juršinci",
+    "code": "jursinci",
+    "url": "https://www.jursinci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kamnik",
+    "code": "kamnik",
+    "url": "https://www.kamnik.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kanal",
+    "code": "kanal",
+    "url": "https://www.obcina-kanal.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kidričevo",
+    "code": "kidricevo",
+    "url": "https://www.kidricevo.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kobarid",
+    "code": "kobarid",
+    "url": "https://www.kobarid.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kobilje",
+    "code": "kobilje",
+    "url": "https://www.kobilje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kočevje",
+    "code": "kocevje",
+    "url": "https://www.kocevje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Komen",
+    "code": "komen",
+    "url": "https://www.komen.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Komenda",
+    "code": "komenda",
+    "url": "https://www.komenda.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kostanjevica na Krki",
+    "code": "kostanjevica-na-krki",
+    "url": "https://www.kostanjevica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kostel",
+    "code": "kostel",
+    "url": "https://www.kostel.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kozje",
+    "code": "kozje",
+    "url": "https://www.kozje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kranjska Gora",
+    "code": "kranjska-gora",
+    "url": "https://obcina.kranjska-gora.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Križevci",
+    "code": "krizevci",
+    "url": "https://obcina-krizevci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kungota",
+    "code": "kungota",
+    "url": "https://www.kungota.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Kuzma",
+    "code": "kuzma",
+    "url": "https://www.obcina-kuzma.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Laško",
+    "code": "lasko",
+    "url": "https://www.lasko.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Lenart",
+    "code": "lenart",
+    "url": "https://www.lenart.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Lendava",
+    "code": "lendava",
+    "url": "https://www.lendava.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Litija",
+    "code": "litija",
+    "url": "https://www.litija.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ljubno",
+    "code": "ljubno",
+    "url": "https://www.ljubno.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ljutomer",
+    "code": "ljutomer",
+    "url": "https://www.ljutomer.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Log - Dragomer",
+    "code": "log-dragomer",
+    "url": "https://www.log-dragomer.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Logatec",
+    "code": "logatec",
+    "url": "https://www.logatec.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Loška Dolina",
+    "code": "loska-dolina",
+    "url": "https://www.loska-dolina.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Loški Potok",
+    "code": "loski-potok",
+    "url": "https://www.loski-potok.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Lovrenc na Pohorju",
+    "code": "lovrenc-na-pohorju",
+    "url": "https://www.lovrenc.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Luče",
+    "code": "luce",
+    "url": "https://www.luce.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Lukovica",
+    "code": "lukovica",
+    "url": "https://www.lukovica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Majšperk",
+    "code": "majsperk",
+    "url": "https://www.majsperk.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Makole",
+    "code": "makole",
+    "url": "https://www.obcina-makole.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Markovci",
+    "code": "markovci",
+    "url": "https://www.markovci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Medvode",
+    "code": "medvode",
+    "url": "https://www.medvode.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Mengeš",
+    "code": "menges",
+    "url": "https://www.menges.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Metlika",
+    "code": "metlika",
+    "url": "https://www.metlika.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Mežica",
+    "code": "mezica",
+    "url": "https://www.mezica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Miklavž na Dravskem Polju",
+    "code": "miklavz-na-dravskem-polju",
+    "url": "https://www.miklavz.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Miren - Kostanjevica",
+    "code": "miren-kostanjevica",
+    "url": "https://www.miren-kostanjevica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Mirna",
+    "code": "mirna",
+    "url": "https://www.mirna.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Mirna Peč",
+    "code": "mirna-pec",
+    "url": "https://www.mirnapec.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Mislinja",
+    "code": "mislinja",
+    "url": "https://www.mislinja.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Mokronog - Trebelno",
+    "code": "mokronog-trebelno",
+    "url": "https://www.mokronog-trebelno.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Moravče",
+    "code": "moravce",
+    "url": "https://www.moravce.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Moravske Toplice",
+    "code": "moravske-toplice",
+    "url": "https://www.moravske-toplice.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Mozirje",
+    "code": "mozirje",
+    "url": "https://mozirje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Muta",
+    "code": "muta",
+    "url": "https://www.muta.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Naklo",
+    "code": "naklo",
+    "url": "https://www.naklo.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Nazarje",
+    "code": "nazarje",
+    "url": "https://www.nazarje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Odranci",
+    "code": "odranci",
+    "url": "https://www.odranci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Oplotnica",
+    "code": "oplotnica",
+    "url": "https://www.oplotnica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ormož",
+    "code": "ormoz",
+    "url": "https://www.ormoz.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Osilnica",
+    "code": "osilnica",
+    "url": "https://www.osilnica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Pesnica",
+    "code": "pesnica",
+    "url": "https://www.pesnica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Piran",
+    "code": "piran",
+    "url": "https://www.piran.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Pivka",
+    "code": "pivka",
+    "url": "https://www.pivka.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Podčetrtek",
+    "code": "podcetrtek",
+    "url": "https://www.podcetrtek.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Podlehnik",
+    "code": "podlehnik",
+    "url": "https://www.podlehnik.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Podvelka",
+    "code": "podvelka",
+    "url": "https://www.podvelka.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Poljčane",
+    "code": "poljcane",
+    "url": "https://www.poljcane.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Polzela",
+    "code": "polzela",
+    "url": "https://www.polzela.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Postojna",
+    "code": "postojna",
+    "url": "https://www.postojna.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Prebold",
+    "code": "prebold",
+    "url": "https://prebold.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Preddvor",
+    "code": "preddvor",
+    "url": "https://www.preddvor.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Prevalje",
+    "code": "prevalje",
+    "url": "https://www.prevalje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Puconci",
+    "code": "puconci",
+    "url": "https://www.puconci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Rače - Fram",
+    "code": "race-fram",
+    "url": "https://www.race-fram.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Radeče",
+    "code": "radece",
+    "url": "https://radece.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Radenci",
+    "code": "radenci",
+    "url": "https://www.radenci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Radlje ob Dravi",
+    "code": "radlje-ob-dravi",
+    "url": "https://www.obcina-radlje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Radovljica",
+    "code": "radovljica",
+    "url": "https://www.radovljica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ravne na Koroškem",
+    "code": "ravne-na-koroskem",
+    "url": "https://www.ravne.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Razkrižje",
+    "code": "razkrizje",
+    "url": "https://www.razkrizje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Rečica ob Savinji",
+    "code": "recica-ob-savinji",
+    "url": "https://www.obcina-recica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Renče - Vogrsko",
+    "code": "rence-vogrsko",
+    "url": "https://www.rence-vogrsko.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ribnica",
+    "code": "ribnica",
+    "url": "https://www.ribnica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ribnica na Pohorju",
+    "code": "ribnica-na-pohorju",
+    "url": "https://www.ribnicanapohorju.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Rogaška Slatina",
+    "code": "rogaska-slatina",
+    "url": "https://www.rogaska-slatina.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Rogašovci",
+    "code": "rogasovci",
+    "url": "https://www.obcina-rogasovci.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Rogatec",
+    "code": "rogatec",
+    "url": "https://obcina.rogatec.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Ruše",
+    "code": "ruse",
+    "url": "https://www.ruse.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Selnica ob Dravi",
+    "code": "selnica-ob-dravi",
+    "url": "https://www.selnica.si/obcina",
+    "enabled": false
+  },
+  {
+    "name": "Občina Semič",
+    "code": "semic",
+    "url": "https://www.semic.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Sevnica",
+    "code": "sevnica",
+    "url": "https://www.obcina-sevnica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Sežana",
+    "code": "sezana",
+    "url": "https://www.sezana.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Slovenska Bistrica",
+    "code": "slovenska-bistrica",
+    "url": "https://www.slovenska-bistrica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Slovenske Konjice",
+    "code": "slovenske-konjice",
+    "url": "https://www.slovenskekonjice.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Sodražica",
+    "code": "sodrazica",
+    "url": "https://www.sodrazica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Solčava",
+    "code": "solcava",
+    "url": "https://www.solcava.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Središče ob Dravi",
+    "code": "sredisce-ob-dravi",
+    "url": "https://www.sredisce-ob-dravi.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Starše",
+    "code": "starse",
+    "url": "https://www.starse.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Straža",
+    "code": "straza",
+    "url": "https://www.obcina-straza.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Sveta Ana",
+    "code": "sveta-ana",
+    "url": "https://www.sv-ana.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Sveta Trojica v Slovenskih Goricah",
+    "code": "sveta-trojica",
+    "url": "https://www.svetatrojica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Sveti Andraž v Slovenskih Goricah",
+    "code": "sveti-andraz",
+    "url": "https://www.sv-andraz.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Sveti Jurij ob Ščavnici",
+    "code": "sveti-jurij-ob-scavnici",
+    "url": "https://www.sveti-jurij.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Sveti Jurij v Slovenskih Goricah",
+    "code": "sveti-jurij-v-slov-goricah",
+    "url": "https://www.obcinajurij.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Sveti Tomaž",
+    "code": "sveti-tomaz",
+    "url": "https://sv-tomaz.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šalovci",
+    "code": "salovci",
+    "url": "https://www.salovci.si/obcina/index.php",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šempeter - Vrtojba",
+    "code": "sempeter-vrtojba",
+    "url": "https://www.sempeter-vrtojba.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šenčur",
+    "code": "sencur",
+    "url": "https://www.sencur.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šentilj",
+    "code": "sentilj",
+    "url": "https://www.sentilj.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šentjernej",
+    "code": "sentjernej",
+    "url": "https://www.sentjernej.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šentjur",
+    "code": "sentjur",
+    "url": "https://www.sentjur.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šentrupert",
+    "code": "sentrupert",
+    "url": "https://www.sentrupert.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Škocjan",
+    "code": "skocjan",
+    "url": "https://www.obcina-skocjan.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Škofja Loka",
+    "code": "skofja-loka",
+    "url": "https://www.skofjaloka.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Škofljica",
+    "code": "skofljica",
+    "url": "https://www.skofljica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šmarje pri Jelšah",
+    "code": "smarje-pri-jelsah",
+    "url": "https://www.smarje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šmarješke Toplice",
+    "code": "smarjeske-toplice",
+    "url": "https://www.smarjeske-toplice.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šmartno ob Paki",
+    "code": "smartno-ob-paki",
+    "url": "https://www.smartnoobpaki.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šmartno pri Litiji",
+    "code": "smartno-pri-litiji",
+    "url": "https://obcina.smartno.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Šoštanj",
+    "code": "sostanj",
+    "url": "https://www.sostanj.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Štore",
+    "code": "store",
+    "url": "https://www.store.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Tabor",
+    "code": "tabor",
+    "url": "https://www.obcina-tabor.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Tišina",
+    "code": "tisina",
+    "url": "https://www.tisina.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Tolmin",
+    "code": "tolmin",
+    "url": "https://www.tolmin.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Trbovlje",
+    "code": "trbovlje",
+    "url": "https://www.trbovlje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Trebnje",
+    "code": "trebnje",
+    "url": "https://www.trebnje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Trnovska vas",
+    "code": "trnovska-vas",
+    "url": "https://www.trnovska-vas.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Trzin",
+    "code": "trzin",
+    "url": "https://www.trzin.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Tržič",
+    "code": "trzic",
+    "url": "https://www.trzic.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Turnišče",
+    "code": "turnisce",
+    "url": "https://www.obcinaturnisce.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Velika Polana",
+    "code": "velika-polana",
+    "url": "https://www.velika-polana.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Velike Lašče",
+    "code": "velike-lasce",
+    "url": "https://www.velike-lasce.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Veržej",
+    "code": "verzej",
+    "url": "https://www.verzej.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Videm",
+    "code": "videm",
+    "url": "https://www.videm.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Vipava",
+    "code": "vipava",
+    "url": "https://obcina.vipava.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Vitanje",
+    "code": "vitanje",
+    "url": "https://www.vitanje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Vodice",
+    "code": "vodice",
+    "url": "https://www.vodice.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Vojnik",
+    "code": "vojnik",
+    "url": "https://www.vojnik.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Vransko",
+    "code": "vransko",
+    "url": "https://www.vransko.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Vrhnika",
+    "code": "vrhnika",
+    "url": "https://www.vrhnika.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Vuzenica",
+    "code": "vuzenica",
+    "url": "https://www.vuzenica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Zagorje ob Savi",
+    "code": "zagorje-ob-savi",
+    "url": "https://www.zagorje.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Zavrč",
+    "code": "zavrc",
+    "url": "https://www.zavrc.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Zreče",
+    "code": "zrece",
+    "url": "https://www.zrece.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Žalec",
+    "code": "zalec",
+    "url": "https://www.zalec.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Železniki",
+    "code": "zelezniki",
+    "url": "https://www.zelezniki.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Žetale",
+    "code": "zetale",
+    "url": "https://www.zetale.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Žiri",
+    "code": "ziri",
+    "url": "https://www.ziri.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Žirovnica",
+    "code": "zirovnica",
+    "url": "https://www.zirovnica.si/",
+    "enabled": false
+  },
+  {
+    "name": "Občina Žužemberk",
+    "code": "zuzemberk",
+    "url": "https://www.zuzemberk.si/",
+    "enabled": false
+  }
+]
