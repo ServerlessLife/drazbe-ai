@@ -379,10 +379,13 @@ async function fetchPageMarkdown(
   return convertHtmlToMarkdown(pageHtml, sourceUrl, contentSelector);
 }
 
-async function fetchAndAppendDocument(doc: {
-  description: string;
-  url: string;
-}): Promise<DocumentResult | null> {
+async function fetchAndAppendDocument(
+  doc: {
+    description: string;
+    url: string;
+  },
+  cookies?: string
+): Promise<DocumentResult | null> {
   try {
     if (doc.description.toLowerCase().includes("cenitveno poročilo")) {
       console.log(`Preskočim cenitveno poročilo: ${doc.url}`);
@@ -391,7 +394,12 @@ async function fetchAndAppendDocument(doc: {
 
     console.log(`Prenašam dokument: ${doc.description} - ${doc.url}`);
 
-    const docResponse = await fetch(doc.url);
+    const headers: HeadersInit = {};
+    if (cookies) {
+      headers["Cookie"] = cookies;
+    }
+
+    const docResponse = await fetch(doc.url, { headers });
 
     if (!docResponse.ok) {
       console.error(`Napaka pri prenosu: ${doc.url}, status: ${docResponse.status}`);
@@ -456,12 +464,13 @@ async function fetchAndAppendDocument(doc: {
 }
 
 async function fetchAndAppendDocuments(
-  linksToDocuments: Array<{ description: string; url: string }>
+  linksToDocuments: Array<{ description: string; url: string }>,
+  cookies?: string
 ): Promise<DocumentResult[]> {
   const results: DocumentResult[] = [];
 
   for (const doc of linksToDocuments) {
-    const result = await fetchAndAppendDocument(doc);
+    const result = await fetchAndAppendDocument(doc, cookies);
     if (result) {
       results.push(result);
     }
@@ -593,10 +602,15 @@ async function processAnnouncement(
 
   console.log("Podrobnosti:", markdown);
 
+  // Extract cookies from browser context
+  const cookies = await page.context().cookies();
+  const cookieHeader = cookies.map((c) => `${c.name}=${c.value}`).join("; ");
+  console.log(`Cookies: ${cookieHeader}`);
+
   // Extract and fetch document content
   const linksToDocuments = extractDocumentLinks(markdown);
   console.log("Najdene povezave do dokumentov:", linksToDocuments);
-  const documents = await fetchAndAppendDocuments(linksToDocuments);
+  const documents = await fetchAndAppendDocuments(linksToDocuments, cookieHeader);
 
   // Check if initial content is short
   const isShortContent = markdown.length < 3000;
