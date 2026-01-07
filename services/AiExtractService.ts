@@ -629,7 +629,6 @@ async function processSource(source: Source): Promise<{
       {
         title: source.name,
         link: source.url,
-        reason: null,
       },
     ];
   } else {
