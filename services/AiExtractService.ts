@@ -21,18 +21,22 @@ import { setTimeout } from "timers/promises";
 
 const pdf2md = pdf2mdModule.default || pdf2mdModule;
 
-// Custom fetch agent that ignores SSL certificate errors
-const insecureAgent = new https.Agent({ rejectUnauthorized: false });
-
 // Private state
 let browser: Browser | null = null;
 let context: BrowserContext | null = null;
 let page: Page | null = null;
-const openai = new OpenAI();
+let openai: OpenAI | undefined;
 
 // ============================================================================
 // Utility functions
 // ============================================================================
+
+function getOpenAI(): OpenAI {
+  if (!openai) {
+    openai = new OpenAI();
+  }
+  return openai;
+}
 
 function buildFullUrl(link: string, baseUrl: string): string {
   if (link.startsWith("http")) {
@@ -201,7 +205,7 @@ async function extractLinks(
     ? "Dobiš samo del HTML strani, ki vsebuje seznam povezav do objav. Vse povezave v tem delu so relevantne."
     : "Osredotočite se na glavno vsebino, ne na navigacijo, glave, noge in druge elemente, ki niso povezani z vsebino.";
 
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAI().chat.completions.create({
     //model: "gpt-5-mini",
     model: "gpt-5.2",
     messages: [
@@ -255,7 +259,7 @@ async function convertHtmlToMarkdown(
     ? "Dobiš samo del HTML strani, ki vsebuje glavno vsebino objave. Celotna vsebina je relevantna."
     : "Osredotoči se na glavno vsebino objave. Odstrani navigacijo, glave, noge in druge elemente, ki niso del vsebine.";
 
-  const markdownResponse = await openai.chat.completions.create({
+  const markdownResponse = await getOpenAI().chat.completions.create({
     model: "gpt-5-mini",
     messages: [
       {
@@ -301,7 +305,7 @@ async function convertHtmlToMarkdown(
 }
 
 async function extractAnnouncementDetails(markdown: string): Promise<Announcement[]> {
-  const detailResponse = await openai.chat.completions.parse({
+  const detailResponse = await getOpenAI().chat.completions.parse({
     model: "gpt-5.2",
     messages: [
       {
@@ -375,65 +379,91 @@ async function fetchPageMarkdown(
   return convertHtmlToMarkdown(pageHtml, sourceUrl, contentSelector);
 }
 
+async function fetchAndAppendDocument(doc: {
+  description: string;
+  url: string;
+}): Promise<DocumentResult | null> {
+  try {
+    if (doc.description.toLowerCase().includes("cenitveno poročilo")) {
+      console.log(`Preskočim cenitveno poročilo: ${doc.url}`);
+      return null;
+    }
+
+    console.log(`Prenašam dokument: ${doc.description} - ${doc.url}`);
+
+    const docResponse = await fetch(doc.url);
+
+    if (!docResponse.ok) {
+      console.error(`Napaka pri prenosu: ${doc.url}, status: ${docResponse.status}`);
+      return null;
+    }
+
+    const contentType = docResponse.headers.get("content-type") || "";
+    const urlLower = doc.url.toLowerCase();
+    const buffer = Buffer.from(await docResponse.arrayBuffer());
+
+    console.log(`Buffer size: ${buffer.length} bytes (${(buffer.length / 1024).toFixed(2)} KB)`);
+    console.log(`Content-Type: ${contentType}`);
+
+    // // Save buffer to file for diagnostics
+    // ensureExportFolder();
+    // const timestamp = new Date().toISOString().replace(/:/g, "-");
+    // const extension = contentType.includes("pdf")
+    //   ? "pdf"
+    //   : contentType.includes("word")
+    //     ? "docx"
+    //     : "bin";
+    // const diagnosticFileName = `export/diagnostic-${timestamp}.${extension}`;
+    // fs.writeFileSync(diagnosticFileName, buffer);
+    // console.log(`Diagnostic file saved: ${diagnosticFileName}`);
+
+    let docType: "pdf" | "docx" | "unknown" = "unknown";
+    let content: string | null = null;
+    let ocrUsed = false;
+
+    if (
+      contentType.includes("wordprocessingml") ||
+      contentType.includes("msword") ||
+      urlLower.endsWith(".docx") ||
+      urlLower.endsWith(".doc")
+    ) {
+      docType = "docx";
+      content = await docxToMarkdown(buffer);
+    } else {
+      docType = "pdf";
+      const pdfResult = await pdfToMarkdown(buffer);
+      content = pdfResult.content;
+      ocrUsed = pdfResult.ocrUsed;
+    }
+
+    if (content) {
+      console.log(`Dokument uspešno pretvorjen v markdown${ocrUsed ? " (OCR)" : ""}`);
+    } else {
+      console.log(`Ni bilo mogoče pretvoriti dokumenta v markdown: ${doc.url}`);
+    }
+
+    return {
+      description: doc.description,
+      url: doc.url,
+      type: docType,
+      ocrUsed,
+      content,
+    };
+  } catch (docErr: any) {
+    console.error(`Napaka pri obdelavi dokumenta ${doc.url}:`, docErr);
+    return null;
+  }
+}
+
 async function fetchAndAppendDocuments(
   linksToDocuments: Array<{ description: string; url: string }>
 ): Promise<DocumentResult[]> {
   const results: DocumentResult[] = [];
 
   for (const doc of linksToDocuments) {
-    try {
-      if (doc.description.toLowerCase().includes("cenitveno poročilo")) {
-        console.log(`Preskočim cenitveno poročilo: ${doc.url}`);
-        continue;
-      }
-
-      console.log(`Prenašam dokument: ${doc.description} - ${doc.url}`);
-      // @ts-ignore - Node.js fetch supports agent option
-      const docResponse = await fetch(doc.url, { agent: insecureAgent });
-
-      if (!docResponse.ok) {
-        console.error(`Napaka pri prenosu: ${doc.url}, status: ${docResponse.status}`);
-        continue;
-      }
-
-      const contentType = docResponse.headers.get("content-type") || "";
-      const urlLower = doc.url.toLowerCase();
-      const buffer = Buffer.from(await docResponse.arrayBuffer());
-
-      let docType: "pdf" | "docx" | "unknown" = "unknown";
-      let content: string | null = null;
-      let ocrUsed = false;
-
-      if (
-        contentType.includes("wordprocessingml") ||
-        contentType.includes("msword") ||
-        urlLower.endsWith(".docx") ||
-        urlLower.endsWith(".doc")
-      ) {
-        docType = "docx";
-        content = await docxToMarkdown(buffer);
-      } else {
-        docType = "pdf";
-        const pdfResult = await pdfToMarkdown(buffer);
-        content = pdfResult.content;
-        ocrUsed = pdfResult.ocrUsed;
-      }
-
-      if (content) {
-        console.log(`Dokument uspešno pretvorjen v markdown${ocrUsed ? " (OCR)" : ""}`);
-      } else {
-        console.log(`Ni bilo mogoče pretvoriti dokumenta v markdown: ${doc.url}`);
-      }
-
-      results.push({
-        description: doc.description,
-        url: doc.url,
-        type: docType,
-        ocrUsed,
-        content,
-      });
-    } catch (docErr: any) {
-      console.error(`Napaka pri obdelavi dokumenta ${doc.url}:`, docErr);
+    const result = await fetchAndAppendDocument(doc);
+    if (result) {
+      results.push(result);
     }
   }
 
@@ -701,4 +731,5 @@ async function processSource(source: Source): Promise<{
 export const AiExtractService = {
   processSource,
   close,
+  fetchAndAppendDocument,
 };

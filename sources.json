@@ -6,6 +6,108 @@
     "enabled": false
   },
   {
+    "name": "FURS",
+    "code": "furs",
+    "url": "https://furs.edrazbe.si/list",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za delo, družino, socialne zadeve in enake možnosti",
+    "code": "ministrstvo-za-delo-druzino-socialne-zadeve-in-enake-moznosti",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-delo-druzino-socialne-zadeve-in-enake-moznosti/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za finance",
+    "code": "ministrstvo-za-finance",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-finance/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za infrastrukturo",
+    "code": "ministrstvo-za-infrastrukturo",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-infrastrukturo/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za javno upravo",
+    "code": "ministrstvo-za-javno-upravo",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-javno-upravo/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za kmetijstvo, gozdarstvo in prehrano",
+    "code": "ministrstvo-za-kmetijstvo-gozdarstvo-in-prehrano",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-kmetijstvo-gozdarstvo-in-prehrano/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za kulturo",
+    "code": "ministrstvo-za-kulturo",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-kulturo/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za naravne vire in prostor",
+    "code": "ministrstvo-za-naravne-vire-in-prostor",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-naravne-vire-in-prostor/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za notranje zadeve",
+    "code": "ministrstvo-za-notranje-zadeve",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-notranje-zadeve/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za obrambo",
+    "code": "ministrstvo-za-obrambo",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-obrambo/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za pravosodje",
+    "code": "ministrstvo-za-pravosodje",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-pravosodje/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za solidarno prihodnost",
+    "code": "ministrstvo-za-solidarno-prihodnost",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-solidarno-prihodnost/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za visoko šolstvo, znanost in inovacije",
+    "code": "ministrstvo-za-visoko-solstvo-znanost-in-inovacije",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-visoko-solstvo-znanost-in-inovacije/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za vzgojo in izobraževanje",
+    "code": "ministrstvo-za-vzgojo-in-izobrazevanje",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-vzgojo-in-izobrazevanje/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Ministrstvo za zdravje",
+    "code": "ministrstvo-za-zdravje",
+    "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-zdravje/javne-objave/",
+    "enabled": false
+  },
+  {
+    "name": "Finance",
+    "code": "finance",
+    "url": "https://www.finance.si/drazbe/iskanje",
+    "enabled": false
+  },
+  {
+    "name": "AJPES",
+    "code": "ajpes",
+    "url": "https://www.ajpes.si/eObjave/rezultati.asp?podrobno=0&id_skupina=51&TipDolznika=-1&TipPostopka=-1&id_SkupinaVrsta=51&id_skupinaPodVrsta=86&Dolznik=&Oblika=&MS=&DS=&StStevilka=&Sodisce=-1&DatumDejanja_od=&DatumDejanja_do=&sys_ZacetekObjave_od=&sys_ZacetekObjave_do=&MAXREC=10",
+    "enabled": true
+  },
+  {
     "name": "Sodne dražbe",
     "code": "sodnedrazbe",
     "url": "https://sodnedrazbe.si/?subjectType=7d70c0dc-71f7-4b64-9854-444e84219a37",
@@ -190,67 +292,67 @@
   {
     "name": "Občina Benedikt",
     "code": "benedikt",
-    "url": "https://www.benedikt.si/",
+    "url": "https://www.benedikt.si/objave/58",
     "enabled": false
   },
   {
     "name": "Občina Bistrica ob Sotli",
     "code": "bistrica-ob-sotli",
-    "url": "https://www.bistricaobsotli.si/",
+    "url": "https://www.bistricaobsotli.si/objave/58",
     "enabled": false
   },
   {
     "name": "Občina Bled",
     "code": "bled",
-    "url": "https://www.e-bled.si/",
+    "url": "https://www.e-bled.si/za-obcane/javni-razpisi/",
     "enabled": false
   },
   {
     "name": "Občina Bloke",
     "code": "bloke",
-    "url": "https://www.bloke.si/",
+    "url": "https://www.bloke.si/javni-razpisi",
     "enabled": false
   },
   {
     "name": "Občina Bohinj",
     "code": "bohinj",
-    "url": "https://obcina.bohinj.si/",
+    "url": "https://obcina.bohinj.si/razpisi",
     "enabled": false
   },
   {
     "name": "Občina Borovnica",
     "code": "borovnica",
-    "url": "https://www.borovnica.si/",
+    "url": "https://www.borovnica.si/razpisi",
     "enabled": false
   },
   {
     "name": "Občina Bovec",
     "code": "bovec",
-    "url": "https://obcina.bovec.si/",
+    "url": "https://obcina.bovec.si/objave/58",
     "enabled": false
   },
   {
     "name": "Občina Braslovče",
     "code": "braslovce",
-    "url": "https://www.braslovce.si/",
+    "url": "https://www.braslovce.si/objave/58",
     "enabled": false
   },
   {
     "name": "Občina Brda",
     "code": "brda",
-    "url": "https://www.obcina-brda.si/",
+    "url": "https://www.obcina-brda.si/sl/objave-in-razpisi/nepremicnine-v-prodaji/",
     "enabled": false
   },
   {
     "name": "Občina Brezovica",
     "code": "brezovica",
-    "url": "https://www.brezovica.si/",
+    "url": "https://www.brezovica.si/za-obcane/razpisi/",
     "enabled": false
   },
   {
     "name": "Občina Brežice",
     "code": "brezice",
-    "url": "https://www.brezice.si/",
+    "url": "https://www.brezice.si/sl/novice/",
     "enabled": false
   },
   {
