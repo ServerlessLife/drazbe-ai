@@ -15,8 +15,9 @@ import * as pdfjsLib from "pdfjs-dist";
 import { sodneDrazbeToMarkdown } from "../sodneDrazbe.js";
 import { Source } from "./types/Source.js";
 import { Announcement, AnnouncementResult, detailSchema } from "./types/Announcement.js";
-import { suitableLinksSchema, SuitableLink } from "./types/SuitableLink.js";
+import { linksSchema, Link } from "./types/Link.js";
 import { DocumentResult } from "./types/DocumentResult.js";
+import { setTimeout } from "timers/promises";
 
 const pdf2md = pdf2mdModule.default || pdf2mdModule;
 
@@ -178,12 +179,12 @@ async function extractContent(html: string, selector?: string): Promise<string> 
   return await compactHtml(content);
 }
 
-async function extractSuitableLinks(
+async function extractLinks(
   pageHtml: string,
   sourceUrl: string,
   sourceCode: string,
   linksSelector?: string
-): Promise<SuitableLink[]> {
+): Promise<Link[]> {
   console.log("Korak 1: Izvlečem vse povezave do objav...");
 
   // Extract content using selector if provided
@@ -209,35 +210,35 @@ async function extractSuitableLinks(
         Ustrezne so objave tipa:
         - 'dražba' (javna dražba za prodajo)
         - 'namera za sklenitev neposredne pogodbe' za PRODAJO (ne za najem/oddajo/menjavo)
+        - 'javno zbiranje ponudb' za PRODAJO (ne za najem/oddajo/menjavo)
 
         ${contextNote}
 
         POMEMBNO:
         - Izključi pretečene objave (kjer je rok veljavnosti že potekel - danes je ${new Date().toISOString().split("T")[0]})
         - Izključi duplikate (če je ista objava navedena večkrat, vrni samo enkrat)
-        - Vrni polne URL-je.
-        -
+        - Navedi polni URL. Če je povezava relativna, jo pretvori v polno z uporabo izvornega URL-ja: ${sourceUrl}. Morda moraš vzeti samo domeno in osnovno pot iz izvornega URL-ja.
 
-        Vrni JSON objekt z poljem "suitableLinks", ki vsebuje samo ustrezne povezave.
-        Vsaka povezava naj ima polja: title, link (polni URL).
+        Vrni JSON objekt z poljem "links", ki vsebuje VSE najdene povezave.
+        Vsaka povezava naj ima polja: title, link (polni URL), suitable (boolean), reason (zakaj je ustrezna ali neustrezna).
 
-        Prepričaj se, da nisi spustil nobene ustrezne povezave!!!
+        Prepričaj se, da nisi spustil nobene povezave!!!
         `,
       },
       {
         role: "user",
-        content: `Analiziraj naslednji HTML in vrni ustrezne povezave do objav o prodaji nepremičnin:\n\n${contentHtml}`,
+        content: `Analiziraj naslednji HTML in vrni vse povezave do objav o prodaji nepremičnin:\n\n${contentHtml}`,
       },
     ],
-    response_format: zodResponseFormat(suitableLinksSchema, "links"),
+    response_format: zodResponseFormat(linksSchema, "links"),
   });
 
-  const filterResult = suitableLinksSchema.parse(
-    JSON.parse(response.choices[0].message.content || "{}")
-  );
+  const filterResult = linksSchema.parse(JSON.parse(response.choices[0].message.content || "{}"));
 
-  console.log(`Najdenih ${filterResult.suitableLinks.length} ustreznih povezav`);
-  return filterResult.suitableLinks;
+  console.log(
+    `Najdenih ${filterResult.links.length} povezav, ${filterResult.links.filter((l) => l.suitable).length} ustreznih`
+  );
+  return filterResult.links;
 }
 
 async function convertHtmlToMarkdown(
@@ -539,7 +540,7 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
 
 async function processAnnouncement(
   page: Page,
-  objava: SuitableLink,
+  objava: Link,
   source: Source,
   date: string
 ): Promise<AnnouncementResult[]> {
@@ -620,40 +621,50 @@ async function processSource(source: Source): Promise<{
   const date = new Date().toISOString().replace(/:/g, "-");
   ensureExportFolder();
 
-  let suitableLinks: SuitableLink[];
+  let allLinks: Link[];
 
   // Use url directly if skipSearchingForLinks is true, otherwise extract from page
   if (source.skipSearchingForLinks) {
     console.log(`Uporabljam neposredno podano povezavo: ${source.url}`);
-    suitableLinks = [
+    allLinks = [
       {
         title: source.name,
         link: source.url,
+        suitable: true,
+        reason: "Neposredno podana povezava",
       },
     ];
   } else {
     await page.goto(source.url);
     await page.waitForLoadState("networkidle");
 
-    // Step 1: Extract suitable links from the page
+    // click
+    // <a class="nav-link active" data-id="pretekli" data-bs-toggle="tab" href="#pretekli" aria-selected="true" role="tab">Pretekli</a>
+    // and wait for navigation if linksSelector is #pretekli
+
+    // console.log("Klikam na zavihek 'Pretekli'...");
+    // await page.click('a[data-id="pretekli"]');
+    // await page.waitForLoadState("networkidle");
+    // await setTimeout(2000);
+
+    // Step 1: Extract all links from the page
     const pageHtml = await page.evaluate(() => document.body.innerHTML);
-    suitableLinks = await extractSuitableLinks(
-      pageHtml,
-      source.url,
-      source.code,
-      source.linksSelector
-    );
+    allLinks = await extractLinks(pageHtml, source.url, source.code, source.linksSelector);
 
-    // Save links to file
+    // Save all links to file
     fs.writeFileSync(
-      `export/${source.code}-${date}-povezave.json`,
-      JSON.stringify(suitableLinks, null, 2)
+      `export/${source.code}-${date}-vse-povezave.json`,
+      JSON.stringify(allLinks, null, 2)
     );
+  }
 
-    // TEMP: Only process first link for testing
-    if (suitableLinks.length > 0) {
-      suitableLinks = [suitableLinks[0]];
-    }
+  // Filter to get only suitable links
+  let suitableLinks = allLinks.filter((l) => l.suitable);
+  console.log(`Filtrirano ${suitableLinks.length} ustreznih povezav od ${allLinks.length} vseh`);
+
+  // TEMP: Only process first link for testing
+  if (suitableLinks.length > 0) {
+    suitableLinks = [suitableLinks[0]];
   }
 
   // Step 2: Process each announcement
@@ -671,12 +682,15 @@ async function processSource(source: Source): Promise<{
   }
 
   // Step 3: Save results
-  fs.writeFileSync(`export/${source.code}-${date}-vse.json`, JSON.stringify(rezultati, null, 2));
+  fs.writeFileSync(
+    `export/${source.code}-${date}-vse-objave.json`,
+    JSON.stringify(rezultati, null, 2)
+  );
 
   const prodajneObjave = rezultati.filter((r) => r.isSale);
   console.log(`\nNajdenih ${prodajneObjave.length} prodajnih objav (dražbe in namere):`);
   fs.writeFileSync(
-    `export/${source.code}-${date}-prodaja.json`,
+    `export/${source.code}-${date}-objave-prodaja.json`,
     JSON.stringify(prodajneObjave, null, 2)
   );
 

@@ -176,7 +176,9 @@
   {
     "name": "Občina Apače",
     "code": "apace",
-    "url": "https://www.obcina-apace.si/",
+    "url": "https://www.obcina-apace.si/razpisi",
+    "linksSelector": "#aktualni",
+    "contentSelector": ".tab-content",
     "enabled": false
   },
   {
