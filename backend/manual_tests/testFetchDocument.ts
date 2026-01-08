@@ -1,4 +1,4 @@
-import { AiExtractService } from "./services/AiExtractService.js";
+import { AiExtractService } from "../services/AiExtractService.js";
 
 async function testFetchDocument() {
   const doc = {

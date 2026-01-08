@@ -1,4 +1,4 @@
-import { ValuationService } from "./services/ValuationService.js";
+import { ValuationService } from "../services/ValuationService.js";
 
 async function test() {
   const query = {

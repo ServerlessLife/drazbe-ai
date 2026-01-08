@@ -1,5 +1,5 @@
 node_modules
-export/
-slv.traineddata
+backend/export/
+backend/slv.traineddata
 .env
 parcel-screenshot.png

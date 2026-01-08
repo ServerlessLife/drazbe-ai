@@ -1,4 +1,4 @@
-import { ParcelScreenshotService } from "./services/ParcelScreenshotService.js";
+import { ParcelScreenshotService } from "../services/ParcelScreenshotService.js";
 
 async function test() {
   console.log("Capturing parcel screenshot...\n");

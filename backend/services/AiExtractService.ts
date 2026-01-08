@@ -13,11 +13,11 @@ import { createCanvas } from "canvas";
 // @ts-ignore
 import * as pdfjsLib from "pdfjs-dist";
 import { sodneDrazbeToMarkdown } from "../sodneDrazbe.js";
-import { Source } from "./types/Source.js";
-import { Announcement, AnnouncementResult } from "./types/AnnouncementResult.js";
-import { detailSchema } from "./types/Detail.js";
-import { linksSchema, Link } from "./types/Link.js";
-import { DocumentResult } from "./types/DocumentResult.js";
+import { Source } from "../types/Source.js";
+import { Announcement, AnnouncementResult } from "../types/AnnouncementResult.js";
+import { detailSchema } from "../types/Detail.js";
+import { linksSchema, Link } from "../types/Link.js";
+import { DocumentResult } from "../types/DocumentResult.js";
 import { setTimeout } from "timers/promises";
 
 const pdf2md = pdf2mdModule.default || pdf2mdModule;

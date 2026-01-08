@@ -1,5 +1,5 @@
 import { chromium, Browser, Page } from "playwright";
-import { PropertyKey } from "./types/PropertyIdentifier.js";
+import { PropertyKey } from "../types/PropertyIdentifier.js";
 
 async function captureParcelScreenshot(query: PropertyKey): Promise<string | null> {
   let browser: Browser | null = null;

@@ -1,8 +1,8 @@
 import "dotenv/config";
 import fs from "fs";
 import { AiExtractService } from "./services/AiExtractService.js";
-import { Source } from "./services/types/Source.js";
-import { AnnouncementResult } from "./services/types/Announcement.js";
+import { Source } from "./types/Source.js";
+import { AnnouncementResult } from "./types/AnnouncementResult.js";
 
 // Load sources from JSON
 const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));
