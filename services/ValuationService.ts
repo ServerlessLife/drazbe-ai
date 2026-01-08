@@ -1,5 +1,8 @@
 import { ParcelValuation, parcelValuationSchema } from "./types/ParcelValuation.js";
-import { BuildingPartValuation, buildingPartValuationSchema } from "./types/BuildingPartValuation.js";
+import {
+  BuildingPartValuation,
+  buildingPartValuationSchema,
+} from "./types/BuildingPartValuation.js";
 import { PropertyKey, propertyKeySchema } from "./types/PropertyIdentifier.js";
 
 const BASE_URL = "https://vrednotenje.gov.si/EV_Javni_Server/podatki";
@@ -30,9 +33,7 @@ async function getParcelValuation(query: PropertyKey): Promise<ParcelValuation |
   };
 }
 
-async function getBuildingPartValuation(
-  query: PropertyKey
-): Promise<BuildingPartValuation | null> {
+async function getBuildingPartValuation(query: PropertyKey): Promise<BuildingPartValuation | null> {
   const validated = propertyKeySchema.safeParse(query);
   if (!validated.success) return null;
 

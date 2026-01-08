@@ -6,7 +6,7 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
 
   try {
     // Launch browser
-    browser = await chromium.launch({ headless: false });
+    browser = await chromium.launch({ headless: true });
     const context = await browser.newContext();
     const page: Page = await context.newPage();
 
