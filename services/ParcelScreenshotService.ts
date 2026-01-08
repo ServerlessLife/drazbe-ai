@@ -29,7 +29,6 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
     await page.fill('input[type="text"]', parcelInput);
     await page.keyboard.press("Enter");
     await page.waitForTimeout(2000);
-    await page.waitForTimeout(5000);
 
     // 4. Click first .btn-link under the appropriate section (wait for search results)
     // For parcels: click under "Parcele" section
