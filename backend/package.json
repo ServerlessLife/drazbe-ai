@@ -9,7 +9,11 @@
     "test:fetch-document": "tsx manual_tests/testFetchDocument.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.709.0",
+    "@aws-sdk/client-sqs": "^3.709.0",
+    "@aws-sdk/lib-dynamodb": "^3.709.0",
     "@opendocsg/pdf2md": "^0.2.2",
+    "@types/aws-lambda": "^8.10.154",
     "@types/turndown": "^5.0.6",
     "canvas": "^3.2.0",
     "cheerio": "^1.1.2",

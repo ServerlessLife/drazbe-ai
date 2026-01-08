@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
+import { PropertyInjectors } from 'aws-cdk-lib';
 import { CdkStack } from '../lib/drazbeStack';
+import { LambdaNodeDefaults } from '../lib/lambdaNode22Defaults';
 
 const app = new cdk.App();
+
+// Register Lambda Node.js 22 default blueprint
+PropertyInjectors.of(app).add(new LambdaNodeDefaults());
+
 new CdkStack(app, 'CdkStack', {
   stackName: 'drazbe-ai',
 
