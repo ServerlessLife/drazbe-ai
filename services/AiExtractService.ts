@@ -79,8 +79,10 @@ function extractDocumentLinks(markdown: string): Array<{ description: string; ur
 
 async function ensureBrowser(): Promise<Page> {
   if (!browser) {
+    // Use headless mode from env (defaults to true)
+    const headless = process.env.PLAYWRIGHT_HEADLESS !== "false";
     browser = await chromium.launch({
-      headless: false,
+      headless,
       args: [
         "--disable-blink-features=AutomationControlled",
         // "--disable-features=IsolateOrigins,site-per-process",

@@ -5,8 +5,9 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
   let browser: Browser | null = null;
 
   try {
-    // Launch browser
-    browser = await chromium.launch({ headless: true });
+    // Launch browser with headless mode from env (defaults to true)
+    const headless = process.env.PLAYWRIGHT_HEADLESS !== "false";
+    browser = await chromium.launch({ headless });
     const context = await browser.newContext();
     const page: Page = await context.newPage();
 
