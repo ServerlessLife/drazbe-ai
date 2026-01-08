@@ -13,7 +13,7 @@ import { createCanvas } from "canvas";
 import * as pdfjsLib from "pdfjs-dist";
 import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { Source } from "../types/Source.js";
-import { Action, ActionResult, ActionDocument, actionsSchema } from "../types/Action.js";
+import { ActionBase, Action, ActionDocument, actionsSchema } from "../types/Action.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
 import { logger } from "../utils/logger.js";
@@ -384,7 +384,7 @@ async function convertHtmlToMarkdown(
  * Extract structured property details from markdown using AI (GPT-5.2)
  * Identifies parcels, buildings, prices, and other action details
  */
-async function extractActionDetails(markdown: string): Promise<Action[]> {
+async function extractActionDetails(markdown: string): Promise<ActionBase[]> {
   const detailResponse = await getOpenAI().chat.completions.parse({
     model: "gpt-5.2",
     messages: [
@@ -753,11 +753,7 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
  * Saves markdown to file and returns structured action data
  * Returns empty array if processing fails
  */
-async function processAction(
-  page: Page,
-  objava: Link,
-  dataSource: Source
-): Promise<ActionResult[]> {
+async function processAction(page: Page, objava: Link, dataSource: Source): Promise<Action[]> {
   try {
     logger.log(
       `Processing announcement for data source ${dataSource.code}, title "${objava.title}"`,
@@ -906,8 +902,8 @@ async function processAction(
  * Returns both all results and filtered sale-only results
  */
 async function processSource(dataSource: Source): Promise<{
-  rezultati: ActionResult[];
-  prodajneObjave: ActionResult[];
+  rezultati: Action[];
+  prodajneObjave: Action[];
 }> {
   logger.log(`Processing source: ${dataSource.name}`, {
     code: dataSource.code,
@@ -981,7 +977,7 @@ async function processSource(dataSource: Source): Promise<{
     dataSourceCode: dataSource.code,
     count: suitableLinks.length,
   });
-  const rezultati: ActionResult[] = [];
+  const rezultati: Action[] = [];
 
   for (const objava of suitableLinks) {
     const actionResults = await processAction(page, objava, dataSource);
