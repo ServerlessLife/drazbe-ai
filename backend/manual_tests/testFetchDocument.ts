@@ -22,9 +22,9 @@ async function testFetchDocument() {
     console.log(`URL: ${result.url}`);
     console.log(`Type: ${result.type}`);
     console.log(`OCR Used: ${result.ocrUsed}`);
-    console.log(`Content Length: ${result.content?.length || 0} characters`);
+    console.log(`Content Length: ${result.markdown?.length || 0} characters`);
     console.log("\n=== Content Preview (first 500 chars) ===");
-    console.log(result.content?.substring(0, 500) || "No content");
+    console.log(result.markdown?.substring(0, 500) || "No content");
   } else {
     console.log("Failed to fetch document");
   }

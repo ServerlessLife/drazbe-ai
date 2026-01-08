@@ -3,5 +3,5 @@ export type DocumentResult = {
   url: string;
   type: "pdf" | "docx" | "unknown";
   ocrUsed: boolean;
-  content: string | null;
+  markdown: string | null;
 };

@@ -454,7 +454,7 @@ async function fetchPageMarkdown(
  * Uses OCR for scanned PDFs if needed
  * Skips valuation reports (cenitveno poročilo)
  */
-async function fetchAndAppendDocument(
+async function fetchDocument(
   doc: {
     description: string;
     url: string;
@@ -563,7 +563,7 @@ async function fetchAndAppendDocument(
       url: doc.url,
       type: docType,
       ocrUsed,
-      content,
+      markdown: content,
     };
   } catch (docErr: any) {
     logger.error("Document processing error", docErr, {
@@ -595,11 +595,11 @@ async function fetchDocuments(
 
   const promises = linksToDocuments.map(async (doc) => {
     try {
-      const result = await fetchAndAppendDocument(doc, announcementUrl, dataSourceCode, cookies);
+      const result = await fetchDocument(doc, announcementUrl, dataSourceCode, cookies);
       if (result) {
         logger.log("Document processed", {
           document: doc.description,
-          contentLength: result.content?.length || 0,
+          contentLength: result.markdown?.length || 0,
           ocrUsed: result.ocrUsed,
           announcementUrl,
           dataSourceCode,
@@ -820,12 +820,12 @@ async function processAnnouncement(
 
     // Check if there are non-OCR documents with sufficient content
     const hasOtherDocumentsWithContent = documents.some(
-      (doc) => !doc.ocrUsed && doc.content && doc.content.replace(/\s+/g, "").length > 100
+      (doc) => !doc.ocrUsed && doc.markdown && doc.markdown.replace(/\s+/g, "").length > 100
     );
 
     // Append documents to markdown
     for (const doc of documents) {
-      if (!doc.content) continue;
+      if (!doc.markdown) continue;
 
       // Skip OCR documents unless content is short AND there are no other documents with content
       if (doc.ocrUsed && (!isShortContent || hasOtherDocumentsWithContent)) {
@@ -835,7 +835,7 @@ async function processAnnouncement(
         continue;
       }
 
-      markdown += `\n\n---\n\n## Dokument: ${doc.description}\n\n${doc.content}`;
+      markdown += `\n\n---\n\n## Dokument: ${doc.description}\n\n${doc.markdown}`;
     }
 
     // Save markdown to file
@@ -1004,5 +1004,5 @@ async function processSource(dataSource: Source): Promise<{
 export const AiExtractService = {
   processSource,
   close,
-  fetchAndAppendDocument,
+  fetchAndAppendDocument: fetchDocument,
 };
