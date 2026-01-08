@@ -1,14 +1,11 @@
-import {
-  ParcelValuation,
-  BuildingPartValuation,
-  ValuationQuery,
-  valuationQuerySchema,
-} from "./types/ValuationData.js";
+import { ParcelValuation, parcelValuationSchema } from "./types/ParcelValuation.js";
+import { BuildingPartValuation, buildingPartValuationSchema } from "./types/BuildingPartValuation.js";
+import { PropertyKey, propertyKeySchema } from "./types/PropertyIdentifier.js";
 
 const BASE_URL = "https://vrednotenje.gov.si/EV_Javni_Server/podatki";
 
-async function getParcelValuation(query: ValuationQuery): Promise<ParcelValuation | null> {
-  const validated = valuationQuerySchema.safeParse(query);
+async function getParcelValuation(query: PropertyKey): Promise<ParcelValuation | null> {
+  const validated = propertyKeySchema.safeParse(query);
   if (!validated.success) return null;
 
   const searchRes = await fetch(
@@ -34,9 +31,9 @@ async function getParcelValuation(query: ValuationQuery): Promise<ParcelValuatio
 }
 
 async function getBuildingPartValuation(
-  query: ValuationQuery
+  query: PropertyKey
 ): Promise<BuildingPartValuation | null> {
-  const validated = valuationQuerySchema.safeParse(query);
+  const validated = propertyKeySchema.safeParse(query);
   if (!validated.success) return null;
 
   const [buildingNum, partNum] = validated.data.number.split("/");
@@ -86,9 +83,9 @@ async function getBuildingPartValuation(
 }
 
 async function getValuation(
-  query: ValuationQuery
+  query: PropertyKey
 ): Promise<ParcelValuation | BuildingPartValuation | null> {
-  const validated = valuationQuerySchema.safeParse(query);
+  const validated = propertyKeySchema.safeParse(query);
   if (!validated.success) return null;
 
   // Use the provided type as a hint for which API to try first

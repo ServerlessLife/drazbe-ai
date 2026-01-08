@@ -1,0 +1,25 @@
+import { ParcelScreenshotService } from "./services/ParcelScreenshotService.js";
+
+async function test() {
+  console.log("Capturing parcel screenshot...\n");
+
+  // const result = await ParcelScreenshotService.captureParcelScreenshot({
+  //   type: "parcel",
+  //   cadastralMunicipality: "1672",
+  //   number: "90/6",
+  // });
+
+  const result = await ParcelScreenshotService.captureParcelScreenshot({
+    type: "building_part",
+    cadastralMunicipality: "2680",
+    number: "22/8",
+  });
+
+  if (result) {
+    console.log(`Screenshot saved to: ${result}`);
+  } else {
+    console.error("Failed to capture screenshot");
+  }
+}
+
+test().catch(console.error);

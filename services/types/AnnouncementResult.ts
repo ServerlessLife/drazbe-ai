@@ -1,25 +1,5 @@
 import { z } from "zod";
-import { propertyKeySchema } from "./PropertyIdentifier.js";
-
-export const propertySchema = propertyKeySchema.extend({
-  parcelType: z
-    .enum(["agricultural", "building", "forest", "other"])
-    .describe(
-      "Vrsta parcele: 'agricultural' = kmetijska, 'building' = stavbna, 'forest' = gozdna, 'other' = drugo"
-    )
-    .nullable(),
-  buildingType: z
-    .enum(["residential", "commercial", "industrial", "other"])
-    .describe(
-      "Vrsta stavbe: 'residential' = stanovanjska, 'commercial' = poslovna, 'industrial' = industrijska, 'other' = drugo"
-    )
-    .nullable(),
-  area: z.number().describe("Površina v m² če je navedena").nullable(),
-  ownershipShare: z
-    .number()
-    .describe("Delež lastništva v %, če je naveden (npr. 1/2 = 50, 1/4 = 25)")
-    .nullable(),
-});
+import { propertySchema } from "./Property.js";
 
 export const announcementSchema = z.object({
   id: z
@@ -68,13 +48,6 @@ export const announcementSchema = z.object({
     .nullable(),
 });
 
-export const detailSchema = z.object({
-  announcements: z
-    .array(announcementSchema)
-    .describe("Seznam vseh objav/nepremičnin navedenih v dokumentu"),
-});
-
-export type Property = z.infer<typeof propertySchema>;
 export type Announcement = z.infer<typeof announcementSchema>;
 
 export interface AnnouncementResult extends Announcement {
