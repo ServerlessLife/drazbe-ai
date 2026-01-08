@@ -18,19 +18,13 @@ import { Announcement, AnnouncementResult } from "../types/AnnouncementResult.js
 import { detailSchema } from "../types/Detail.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
-import { setTimeout } from "timers/promises";
 
 const pdf2md = pdf2mdModule.default || pdf2mdModule;
 
-// Private state
 let browser: Browser | null = null;
 let context: BrowserContext | null = null;
 let page: Page | null = null;
 let openai: OpenAI | undefined;
-
-// ============================================================================
-// Utility functions
-// ============================================================================
 
 function getOpenAI(): OpenAI {
   if (!openai) {
@@ -72,10 +66,6 @@ function extractDocumentLinks(markdown: string): Array<{ description: string; ur
 
   return linksToDocuments;
 }
-
-// ============================================================================
-// Browser management
-// ============================================================================
 
 async function ensureBrowser(): Promise<Page> {
   if (!browser) {
@@ -139,10 +129,6 @@ async function close(): Promise<void> {
     page = null;
   }
 }
-
-// ============================================================================
-// AI extraction functions
-// ============================================================================
 
 async function compactHtml(html: string): Promise<string> {
   try {
@@ -340,10 +326,6 @@ async function extractAnnouncementDetails(markdown: string): Promise<Announcemen
 
   return detailResponse.choices[0].message.parsed!.announcements;
 }
-
-// ============================================================================
-// Content fetching functions
-// ============================================================================
 
 async function fetchSodneDrazbeMarkdown(fullUrl: string): Promise<string> {
   const urlMatch = fullUrl.match(/sodnedrazbe\.si\/single\/([a-f0-9-]+)/i);
@@ -577,10 +559,6 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
   return turndownService.turndown(result.value);
 }
 
-// ============================================================================
-// Single announcement processing
-// ============================================================================
-
 async function processAnnouncement(
   page: Page,
   objava: Link,
@@ -650,10 +628,6 @@ async function processAnnouncement(
     urlSources: [fullUrl],
   }));
 }
-
-// ============================================================================
-// Main processing function
-// ============================================================================
 
 async function processSource(source: Source): Promise<{
   rezultati: AnnouncementResult[];
@@ -740,10 +714,6 @@ async function processSource(source: Source): Promise<{
 
   return { rezultati, prodajneObjave };
 }
-
-// ============================================================================
-// Public API - Revealing module pattern
-// ============================================================================
 
 export const AiExtractService = {
   processSource,
