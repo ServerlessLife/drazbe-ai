@@ -13,9 +13,7 @@ async function test() {
 
   if (result) {
     console.log("\n=== PARCEL VALUATION DATA ===\n");
-    console.log(`Cadastral Municipality: ${result.cadastralMunicipality}`);
-    console.log(`Parcel Number: ${result.parcelNumber}`);
-    console.log(`\nSurface Area: ${result.surfaceArea} m²`);
+    console.log(`Surface Area: ${result.surfaceArea} m²`);
     console.log(`Value: ${result.value} €`);
 
     if (result.centroid) {
