@@ -12,8 +12,10 @@ import { createCanvas } from "canvas";
 // @ts-ignore
 import * as pdfjsLib from "pdfjs-dist";
 import { SodneDrazbeService } from "./SodneDrazbeService.js";
+import { AuctionRepository } from "./AuctionRepository.js";
 import { Source } from "../types/Source.js";
-import { ActionBase, Action, ActionDocument, actionsSchema } from "../types/Action.js";
+import { AuctionBase, AuctionInternal, auctionsSchema } from "../types/AuctionInternal.js";
+import { AuctionDocument } from "../types/AuctionDocument.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
 import { logger } from "../utils/logger.js";
@@ -382,9 +384,9 @@ async function convertHtmlToMarkdown(
 
 /**
  * Extract structured property details from markdown using AI (GPT-5.2)
- * Identifies parcels, buildings, prices, and other action details
+ * Identifies parcels, buildings, prices, and other auction details
  */
-async function extractActionDetails(markdown: string): Promise<ActionBase[]> {
+async function extractAuctionDetails(markdown: string): Promise<AuctionBase[]> {
   const detailResponse = await getOpenAI().chat.completions.parse({
     model: "gpt-5.2",
     messages: [
@@ -412,10 +414,10 @@ async function extractActionDetails(markdown: string): Promise<ActionBase[]> {
         content: markdown,
       },
     ],
-    response_format: zodResponseFormat(actionsSchema, "action_details"),
+    response_format: zodResponseFormat(auctionsSchema, "auction_details"),
   });
 
-  return detailResponse.choices[0].message.parsed!.actions;
+  return detailResponse.choices[0].message.parsed!.auctions;
 }
 
 /**
@@ -749,11 +751,15 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
 }
 
 /**
- * Process a single action: fetch content, extract documents, and parse details
- * Saves markdown to file and returns structured action data
+ * Process a single auction: fetch content, extract documents, and parse details
+ * Saves markdown to file and returns structured auction data
  * Returns empty array if processing fails
  */
-async function processAction(page: Page, objava: Link, dataSource: Source): Promise<Action[]> {
+async function processAuction(
+  page: Page,
+  objava: Link,
+  dataSource: Source
+): Promise<AuctionInternal[]> {
   try {
     logger.log(
       `Processing announcement for data source ${dataSource.code}, title "${objava.title}"`,
@@ -850,15 +856,15 @@ async function processAction(page: Page, objava: Link, dataSource: Source): Prom
     );
 
     // Extract structured details
-    const actions = await extractActionDetails(markdown);
+    const auctions = await extractAuctionDetails(markdown);
 
     // Map to results
-    const results = actions.map((action) => ({
-      ...action,
+    const results = auctions.map((auction) => ({
+      ...auction,
       dataSourceCode: dataSource.code,
       urlSources: [announcementUrl],
 
-      documents: action.documents?.map((doc) => {
+      documents: auction.documents?.map((doc) => {
         const foundDoc = documents.find((d) => d.url === doc.sourceUrl);
 
         return {
@@ -897,13 +903,13 @@ async function processAction(page: Page, objava: Link, dataSource: Source): Prom
 }
 
 /**
- * Main entry point: process a source to extract property sale actions
- * Steps: navigate to source → extract links → process each action → save results
+ * Main entry point: process a source to extract property sale auctions
+ * Steps: navigate to source → extract links → process each auction → save results
  * Returns both all results and filtered sale-only results
  */
 async function processSource(dataSource: Source): Promise<{
-  rezultati: Action[];
-  prodajneObjave: Action[];
+  rezultati: AuctionInternal[];
+  prodajneObjave: AuctionInternal[];
 }> {
   logger.log(`Processing source: ${dataSource.name}`, {
     code: dataSource.code,
@@ -977,11 +983,17 @@ async function processSource(dataSource: Source): Promise<{
     dataSourceCode: dataSource.code,
     count: suitableLinks.length,
   });
-  const rezultati: Action[] = [];
+  const rezultati: AuctionInternal[] = [];
 
   for (const objava of suitableLinks) {
-    const actionResults = await processAction(page, objava, dataSource);
-    rezultati.push(...actionResults);
+    const auctionResults = await processAuction(page, objava, dataSource);
+
+    // Save each auction to DynamoDB
+    for (const auction of auctionResults) {
+      await AuctionRepository.save(auction);
+    }
+
+    rezultati.push(...auctionResults);
   }
 
   // Step 3: Save results

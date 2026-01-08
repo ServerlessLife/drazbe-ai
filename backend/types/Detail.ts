@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { actionBaseSchema } from "./Action.js";
+import { auctionBaseSchema } from "./AuctionInternal.js";
 
-export const actionsSchema = z.object({
-  actions: z.array(actionBaseSchema).describe("Seznam vseh dražb navedenih v dokumentu"),
+export const auctionsSchema = z.object({
+  auctions: z.array(auctionBaseSchema).describe("Seznam vseh dražb navedenih v dokumentu"),
 });
 
-export type Actions = z.infer<typeof actionsSchema>;
+export type Auctions = z.infer<typeof auctionsSchema>;

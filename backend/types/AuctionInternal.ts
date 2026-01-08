@@ -1,15 +1,10 @@
 import { z } from "zod";
 import { propertySchema } from "./Property.js";
+import { AuctionDocument } from "./AuctionDocument.js";
+import { auctionLinkSchema } from "./AuctionLink.js";
 
-export const actionLinkSchema = z.object({
-  sourceUrl: z.string().describe("Povezava do dokumenta (npr. PDF)"),
-  description: z.string().describe("Opis dokumenta").nullable(),
-});
-
-export type ActionLink = z.infer<typeof actionLinkSchema>;
-
-export const actionBaseSchema = z.object({
-  id: z
+export const auctionBaseSchema = z.object({
+  accouncementId: z
     .string()
     .describe(
       "Enolični ID objave. Če ni na voljo združi oznake vseh parcel in stavb z '+' (npr. '2242-536/6+2242-*123+2242-123/1')."
@@ -46,32 +41,25 @@ export const actionBaseSchema = z.object({
     )
     .nullable(),
   documents: z
-    .array(actionLinkSchema)
+    .array(auctionLinkSchema)
     .describe("Seznam povezav do dokumentov, če so na voljo")
     .nullable(),
   images: z
-    .array(actionLinkSchema)
+    .array(auctionLinkSchema)
     .describe("Seznam povezav do slik nepremičnine, če so na voljo")
     .nullable(),
 });
 
-export type ActionBase = z.infer<typeof actionBaseSchema>;
+export type AuctionBase = z.infer<typeof auctionBaseSchema>;
 
-export const actionsSchema = z.object({
-  actions: z.array(actionBaseSchema).describe("Seznam vseh dražb navedenih v dokumentu"),
+export const auctionsSchema = z.object({
+  auctions: z.array(auctionBaseSchema).describe("Seznam vseh dražb navedenih v dokumentu"),
 });
 
-export type Actions = z.infer<typeof actionsSchema>;
+export type Auctions = z.infer<typeof auctionsSchema>;
 
-export interface ActionDocument extends ActionLink {
-  localUrl: string;
-  type: "pdf" | "docx" | "unknown";
-  ocrUsed: boolean;
-  usedForExtraction: boolean;
-}
-
-export type Action = ActionBase & {
+export type AuctionInternal = AuctionBase & {
   dataSourceCode: string;
   urlSources: string[];
-  documents: ActionDocument[];
+  documents: AuctionDocument[];
 };

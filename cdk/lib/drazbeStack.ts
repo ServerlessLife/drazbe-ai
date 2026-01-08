@@ -35,6 +35,15 @@ export class CdkStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
+    // DynamoDB table for auction data
+    const auctionTable = new dynamodb.TableV2(this, "AuctionTable", {
+      partitionKey: { name: "auctionId", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "recordKey", type: dynamodb.AttributeType.STRING },
+      billing: dynamodb.Billing.onDemand(),
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      timeToLiveAttribute: "ttl",
+    });
+
     // SQS queue for source processing
     const sourceQueueWithDlq = new QueueWithDlq(this, "SourceQueue", {
       visibilityTimeoutSeconds: 15 * 60, // 15 minutes
@@ -79,7 +88,13 @@ export class CdkStack extends cdk.Stack {
       entry: "backend/events/processSource.ts",
       timeout: cdk.Duration.minutes(15),
       memorySize: 2048,
+      environment: {
+        AUCTION_TABLE_NAME: auctionTable.tableName,
+      },
     });
+
+    // Grant processor Lambda access to auction table
+    auctionTable.grantReadWriteData(processorLambda);
 
     // Lambda alarms for processor
     new LambdaAlarms(this, "ProcessorAlarms", {
@@ -103,6 +118,11 @@ export class CdkStack extends cdk.Stack {
     new cdk.CfnOutput(this, "SourceTriggerTableName", {
       value: sourceTriggerTable.tableName,
       description: "Source Trigger Table Name",
+    });
+
+    new cdk.CfnOutput(this, "AuctionTableName", {
+      value: auctionTable.tableName,
+      description: "Auction Table Name",
     });
   }
 }
