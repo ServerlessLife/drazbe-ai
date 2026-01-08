@@ -12,20 +12,22 @@ import { createWorker } from "tesseract.js";
 import { createCanvas } from "canvas";
 // @ts-ignore
 import * as pdfjsLib from "pdfjs-dist";
-import { sodneDrazbeToMarkdown } from "../sodneDrazbe.js";
+import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { Source } from "../types/Source.js";
 import { Announcement, AnnouncementResult } from "../types/AnnouncementResult.js";
 import { detailSchema } from "../types/Detail.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
-
-const pdf2md = pdf2mdModule.default || pdf2mdModule;
+import { logger } from "../utils/logger.js";
 
 let browser: Browser | null = null;
 let context: BrowserContext | null = null;
 let page: Page | null = null;
 let openai: OpenAI | undefined;
 
+/**
+ * Get or create the OpenAI client instance (singleton pattern)
+ */
 function getOpenAI(): OpenAI {
   if (!openai) {
     openai = new OpenAI();
@@ -33,6 +35,9 @@ function getOpenAI(): OpenAI {
   return openai;
 }
 
+/**
+ * Convert a relative URL to an absolute URL using the base URL
+ */
 function buildFullUrl(link: string, baseUrl: string): string {
   if (link.startsWith("http")) {
     return link;
@@ -41,12 +46,10 @@ function buildFullUrl(link: string, baseUrl: string): string {
   return `${origin}${link.startsWith("/") ? "" : "/"}${link}`;
 }
 
-function ensureExportFolder(): void {
-  if (!fs.existsSync("export")) {
-    fs.mkdirSync("export");
-  }
-}
-
+/**
+ * Extract document links from markdown content
+ * Looks for links in the "Priloge" (Attachments) section
+ */
 function extractDocumentLinks(markdown: string): Array<{ description: string; url: string }> {
   const prilogeSection = markdown.includes("## Priloge:")
     ? markdown.split("## Priloge:")[1]
@@ -67,6 +70,10 @@ function extractDocumentLinks(markdown: string): Array<{ description: string; ur
   return linksToDocuments;
 }
 
+/**
+ * Get or create a browser instance with a page (singleton pattern)
+ * Uses Playwright with Chrome user agent to avoid bot detection
+ */
 async function ensureBrowser(): Promise<Page> {
   if (!browser) {
     // Use headless mode from env (defaults to true)
@@ -121,6 +128,9 @@ async function ensureBrowser(): Promise<Page> {
   return page!;
 }
 
+/**
+ * Close the browser instance and clean up resources
+ */
 async function close(): Promise<void> {
   if (browser) {
     await browser.close();
@@ -130,7 +140,15 @@ async function close(): Promise<void> {
   }
 }
 
-async function compactHtml(html: string): Promise<string> {
+/**
+ * Minify HTML to reduce token usage when sending to AI models
+ * Falls back to original HTML if minification fails
+ */
+async function compactHtml(
+  html: string,
+  dataSourceCode: string,
+  sourceUrl: string
+): Promise<string> {
   try {
     return await minify(html, {
       collapseWhitespace: true,
@@ -143,64 +161,100 @@ async function compactHtml(html: string): Promise<string> {
       removeTagWhitespace: true,
     });
   } catch (error) {
-    console.log("HTML minification failed, using original HTML");
+    logger.warn("HTML minification failed, using original HTML", {
+      dataSourceCode,
+      sourceUrl,
+    });
     return html;
   }
 }
 
-async function extractContent(html: string, selector?: string): Promise<string> {
-  // Remove script and style tags first
-  const $ = cheerio.load(html);
-  $("script").remove();
-  $("style").remove();
-  $("noscript").remove();
+/**
+ * Extract and clean HTML content using a CSS selector
+ * Removes script/style tags and minifies the result
+ * Falls back to full HTML if selector is not found or processing fails
+ */
+async function extractContent(
+  html: string,
+  selector?: string,
+  dataSourceCode?: string,
+  sourceUrl?: string
+): Promise<string> {
+  try {
+    // Remove script and style tags first
+    const $ = cheerio.load(html);
+    $("script").remove();
+    $("style").remove();
+    $("noscript").remove();
 
-  let content: string;
-  if (selector) {
-    const selectedContent = $(selector).html();
-    if (!selectedContent) {
-      console.log(`Selector "${selector}" not found, using full HTML`);
-      content = $.html();
+    let content: string;
+    if (selector) {
+      const selectedContent = $(selector).html();
+      if (!selectedContent) {
+        logger.warn(`Selector "${selector}" not found, using full HTML`, {
+          selector,
+          htmlLength: html.length,
+          dataSourceCode,
+          sourceUrl,
+        });
+        content = $.html();
+      } else {
+        content = selectedContent;
+      }
     } else {
-      content = selectedContent;
+      content = $.html();
     }
-  } else {
-    content = $.html();
-  }
 
-  // Compact HTML to reduce token usage
-  return await compactHtml(content);
+    return await compactHtml(content, dataSourceCode, sourceUrl);
+  } catch (error) {
+    logger.error("Failed to extract content, using original HTML", error, {
+      htmlLength: html.length,
+      dataSourceCode,
+      sourceUrl,
+    });
+    return html;
+  }
 }
 
+/**
+ * Extract announcement links from HTML using AI
+ * Filters for suitable property sale announcements and excludes expired listings
+ */
 async function extractLinks(
   pageHtml: string,
   sourceUrl: string,
-  sourceCode: string,
+  dataSourceCode: string,
   linksSelector?: string
 ): Promise<Link[]> {
   const activeOnly = true;
-  console.log("Korak 1: Izvlečem vse povezave do objav...");
+  logger.log("Extracting links from page", {
+    dataSourceCode,
+    sourceUrl,
+    hasSelector: !!linksSelector,
+  });
 
-  // Extract content using selector if provided
-  const contentHtml = await extractContent(pageHtml, linksSelector);
+  const contentHtml = await extractContent(pageHtml, linksSelector, dataSourceCode, sourceUrl);
 
   // Log extracted HTML to export folder for debugging
-  ensureExportFolder();
-  const date = new Date().toISOString().replace(/:/g, "-");
-  fs.writeFileSync(`export/${sourceCode}-${date}-links-source.html`, contentHtml);
+  logger.logContent(
+    "HTML content extracted",
+    { dataSourceCode, sourceUrl, selector: linksSelector },
+    { content: contentHtml, prefix: dataSourceCode, suffix: "links-source", extension: "html" }
+  );
 
   // Adjust system prompt based on whether content was filtered
   const contextNote = linksSelector
     ? "Dobiš samo del HTML strani, ki vsebuje seznam povezav do objav. Vse povezave v tem delu so relevantne."
     : "Osredotočite se na glavno vsebino, ne na navigacijo, glave, noge in druge elemente, ki niso povezani z vsebino.";
 
-  const response = await getOpenAI().chat.completions.create({
-    //model: "gpt-5-mini",
-    model: "gpt-5.2",
-    messages: [
-      {
-        role: "system",
-        content: `Si pomočnik, ki analizira HTML in izvleče ustrezne povezave do objav.
+  try {
+    const response = await getOpenAI().chat.completions.create({
+      //model: "gpt-5-mini",
+      model: "gpt-5.2",
+      messages: [
+        {
+          role: "system",
+          content: `Si pomočnik, ki analizira HTML in izvleče ustrezne povezave do objav.
         Ustrezne so objave tipa:
         - 'dražba' (javna dražba za prodajo)
         - 'namera za sklenitev neposredne pogodbe' za PRODAJO (ne za najem/oddajo/menjavo)
@@ -218,42 +272,68 @@ async function extractLinks(
 
         Prepričaj se, da nisi spustil nobene povezave!!!
         `,
-      },
-      {
-        role: "user",
-        content: `Analiziraj naslednji HTML in vrni vse povezave do objav o prodaji nepremičnin:\n\n${contentHtml}`,
-      },
-    ],
-    response_format: zodResponseFormat(linksSchema, "links"),
-  });
+        },
+        {
+          role: "user",
+          content: `Analiziraj naslednji HTML in vrni vse povezave do objav o prodaji nepremičnin:\n\n${contentHtml}`,
+        },
+      ],
+      response_format: zodResponseFormat(linksSchema, "links"),
+    });
 
-  const filterResult = linksSchema.parse(JSON.parse(response.choices[0].message.content || "{}"));
+    const filterResult = linksSchema.parse(JSON.parse(response.choices[0].message.content || "{}"));
 
-  console.log(
-    `Najdenih ${filterResult.links.length} povezav, ${filterResult.links.filter((l) => l.suitable).length} ustreznih`
-  );
-  return filterResult.links;
+    logger.log("Links extracted", {
+      total: filterResult.links.length,
+      suitable: filterResult.links.filter((l) => l.suitable).length,
+      unsuitable: filterResult.links.filter((l) => !l.suitable).length,
+    });
+
+    return filterResult.links;
+  } catch (error) {
+    logger.error("Failed to extract links", error, {
+      dataSourceCode,
+      sourceUrl,
+    });
+    throw error;
+  }
 }
 
+/**
+ * Convert HTML to clean markdown format using AI (GPT-5-mini)
+ * Extracts main content, images, and document attachments
+ */
 async function convertHtmlToMarkdown(
   pageHtml: string,
   sourceUrl: string,
-  contentSelector?: string
+  contentSelector?: string,
+  dataSourceCode?: string
 ): Promise<string> {
+  logger.log("Converting HTML to markdown", {
+    hasSelector: !!contentSelector,
+    htmlLength: pageHtml.length,
+    dataSourceCode,
+    sourceUrl,
+  });
+
   // Extract content using selector if provided
-  const contentHtml = await extractContent(pageHtml, contentSelector);
+  const contentHtml = await extractContent(pageHtml, contentSelector, dataSourceCode, sourceUrl);
+  logger.log("Content extracted for conversion", {
+    contentLength: contentHtml.length,
+  });
 
   // Adjust system prompt based on whether content was filtered
   const contextNote = contentSelector
     ? "Dobiš samo del HTML strani, ki vsebuje glavno vsebino objave. Celotna vsebina je relevantna."
     : "Osredotoči se na glavno vsebino objave. Odstrani navigacijo, glave, noge in druge elemente, ki niso del vsebine.";
 
-  const markdownResponse = await getOpenAI().chat.completions.create({
-    model: "gpt-5-mini",
-    messages: [
-      {
-        role: "system",
-        content: `Pretvori naslednji HTML v čist markdown format.
+  try {
+    const markdownResponse = await getOpenAI().chat.completions.create({
+      model: "gpt-5-mini",
+      messages: [
+        {
+          role: "system",
+          content: `Pretvori naslednji HTML v čist markdown format.
             ${contextNote}
 
             SLIKE:
@@ -282,17 +362,30 @@ async function convertHtmlToMarkdown(
             Dokumente navedi v formatu [opis](url_dokumenta).
             Pazi, da za cenitveno poročilo vedno uporabiš besedilo "Cenitveno poročilo", tudi če je v izvoru drugače.
             `,
-      },
-      {
-        role: "user",
-        content: contentHtml,
-      },
-    ],
-  });
+        },
+        {
+          role: "user",
+          content: contentHtml,
+        },
+      ],
+    });
 
-  return markdownResponse.choices[0].message.content || "";
+    const markdown = markdownResponse.choices[0].message.content || "";
+    logger.log("Converted to markdown", {
+      markdownLength: markdown.length,
+    });
+
+    return markdown;
+  } catch (error) {
+    logger.error("Failed to convert HTML to markdown", error);
+    throw error;
+  }
 }
 
+/**
+ * Extract structured property details from markdown using AI (GPT-5.2)
+ * Identifies parcels, buildings, prices, and other announcement details
+ */
 async function extractAnnouncementDetails(markdown: string): Promise<Announcement[]> {
   const detailResponse = await getOpenAI().chat.completions.parse({
     model: "gpt-5.2",
@@ -327,57 +420,65 @@ async function extractAnnouncementDetails(markdown: string): Promise<Announcemen
   return detailResponse.choices[0].message.parsed!.announcements;
 }
 
-async function fetchSodneDrazbeMarkdown(fullUrl: string): Promise<string> {
-  const urlMatch = fullUrl.match(/sodnedrazbe\.si\/single\/([a-f0-9-]+)/i);
-  if (!urlMatch) return "";
-
-  const publicationId = urlMatch[1];
-  const jsonResponse = await fetch("https://api.sodnedrazbe.si/public/publication/single", {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-      "accept-language": "sl-SI",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({ id: publicationId }),
-  });
-
-  if (jsonResponse.ok) {
-    return sodneDrazbeToMarkdown(await jsonResponse.json());
-  }
-  return "";
-}
-
+/**
+ * Navigate to a page with Playwright and convert its content to markdown
+ * Waits for network idle before extracting HTML
+ */
 async function fetchPageMarkdown(
   page: Page,
-  fullUrl: string,
+  announcementUrl: string,
   sourceUrl: string,
-  contentSelector?: string
+  contentSelector?: string,
+  dataSourceCode?: string
 ): Promise<string> {
-  await page.goto(fullUrl);
+  logger.log("Fetching page", {
+    pageUrl: announcementUrl,
+    dataSourceCode,
+  });
+
+  await page.goto(announcementUrl);
   try {
     await page.waitForLoadState("networkidle", { timeout: 4000 });
   } catch (err) {
-    console.log("Network idle timeout, nadaljujem...");
+    logger.warn("Network idle timeout, continuing anyway", {
+      pageUrl: announcementUrl,
+      dataSourceCode,
+    });
   }
   const pageHtml = await page.evaluate(() => document.body.innerHTML);
-  return convertHtmlToMarkdown(pageHtml, sourceUrl, contentSelector);
+  return convertHtmlToMarkdown(pageHtml, sourceUrl, contentSelector, dataSourceCode);
 }
 
+/**
+ * Download a document (PDF/DOCX) and convert to markdown
+ * Uses OCR for scanned PDFs if needed
+ * Skips valuation reports (cenitveno poročilo)
+ */
 async function fetchAndAppendDocument(
   doc: {
     description: string;
     url: string;
   },
+  announcementUrl: string,
+  dataSourceCode: string,
   cookies?: string
 ): Promise<DocumentResult | null> {
   try {
     if (doc.description.toLowerCase().includes("cenitveno poročilo")) {
-      console.log(`Preskočim cenitveno poročilo: ${doc.url}`);
+      logger.log("Skipping valuation report", {
+        document: doc.description,
+        announcementUrl,
+        dataSourceCode,
+      });
       return null;
     }
 
-    console.log(`Prenašam dokument: ${doc.description} - ${doc.url}`);
+    logger.log("Downloading document", {
+      document: doc.description,
+      documentUrl: doc.url,
+      announcementUrl,
+      dataSourceCode,
+    });
 
     const headers: HeadersInit = {};
     if (cookies) {
@@ -387,7 +488,13 @@ async function fetchAndAppendDocument(
     const docResponse = await fetch(doc.url, { headers });
 
     if (!docResponse.ok) {
-      console.error(`Napaka pri prenosu: ${doc.url}, status: ${docResponse.status}`);
+      logger.error("Failed to download document", new Error(`HTTP ${docResponse.status}`), {
+        document: doc.description,
+        documentUrl: doc.url,
+        httpStatus: docResponse.status,
+        announcementUrl,
+        dataSourceCode,
+      });
       return null;
     }
 
@@ -395,8 +502,13 @@ async function fetchAndAppendDocument(
     const urlLower = doc.url.toLowerCase();
     const buffer = Buffer.from(await docResponse.arrayBuffer());
 
-    console.log(`Buffer size: ${buffer.length} bytes (${(buffer.length / 1024).toFixed(2)} KB)`);
-    console.log(`Content-Type: ${contentType}`);
+    logger.log("Document downloaded", {
+      document: doc.description,
+      sizeKB: (buffer.length / 1024).toFixed(2),
+      contentType,
+      announcementUrl,
+      dataSourceCode,
+    });
 
     // // Save buffer to file for diagnostics
     // ensureExportFolder();
@@ -408,7 +520,7 @@ async function fetchAndAppendDocument(
     //     : "bin";
     // const diagnosticFileName = `export/diagnostic-${timestamp}.${extension}`;
     // fs.writeFileSync(diagnosticFileName, buffer);
-    // console.log(`Diagnostic file saved: ${diagnosticFileName}`);
+    // logger.log(`Diagnostic file saved: ${diagnosticFileName}`);
 
     let docType: "pdf" | "docx" | "unknown" = "unknown";
     let content: string | null = null;
@@ -430,9 +542,20 @@ async function fetchAndAppendDocument(
     }
 
     if (content) {
-      console.log(`Dokument uspešno pretvorjen v markdown${ocrUsed ? " (OCR)" : ""}`);
+      logger.log(`Document converted to markdown${ocrUsed ? " (OCR)" : ""}`, {
+        document: doc.description,
+        announcementUrl,
+        dataSourceCode,
+      });
     } else {
-      console.log(`Ni bilo mogoče pretvoriti dokumenta v markdown: ${doc.url}`);
+      logger.warn(`Failed to convert document to markdown`, {
+        document: doc.description,
+        documentUrl: doc.url,
+        docType,
+        bufferSize: buffer.length,
+        announcementUrl,
+        dataSourceCode,
+      });
     }
 
     return {
@@ -443,30 +566,77 @@ async function fetchAndAppendDocument(
       content,
     };
   } catch (docErr: any) {
-    console.error(`Napaka pri obdelavi dokumenta ${doc.url}:`, docErr);
+    logger.error("Document processing error", docErr, {
+      document: doc.description,
+      documentUrl: doc.url,
+      announcementUrl,
+      dataSourceCode,
+    });
     return null;
   }
 }
 
-async function fetchAndAppendDocuments(
+/**
+ * Process multiple documents in parallel
+ * Continues processing even if individual documents fail
+ */
+async function fetchDocuments(
   linksToDocuments: Array<{ description: string; url: string }>,
+  announcementUrl: string,
+  dataSourceCode: string,
   cookies?: string
 ): Promise<DocumentResult[]> {
-  const results: DocumentResult[] = [];
+  logger.log(`Processing ${linksToDocuments.length} documents in parallel`, {
+    count: linksToDocuments.length,
+    documents: linksToDocuments.map((d) => d.description),
+    announcementUrl,
+    dataSourceCode,
+  });
 
-  for (const doc of linksToDocuments) {
-    const result = await fetchAndAppendDocument(doc, cookies);
-    if (result) {
-      results.push(result);
+  const promises = linksToDocuments.map(async (doc) => {
+    try {
+      const result = await fetchAndAppendDocument(doc, announcementUrl, dataSourceCode, cookies);
+      if (result) {
+        logger.log("Document processed", {
+          document: doc.description,
+          contentLength: result.content?.length || 0,
+          ocrUsed: result.ocrUsed,
+          announcementUrl,
+          dataSourceCode,
+        });
+      }
+      return result;
+    } catch (error) {
+      logger.error("Failed to process document", error, {
+        document: doc.description,
+        announcementUrl,
+        dataSourceCode,
+      });
+      return null;
     }
-  }
+  });
+
+  const settledResults = await Promise.all(promises);
+  const results = settledResults.filter((r): r is DocumentResult => r !== null);
+
+  logger.log("All documents processed", {
+    total: linksToDocuments.length,
+    successful: results.length,
+    failed: linksToDocuments.length - results.length,
+    announcementUrl,
+    dataSourceCode,
+  });
 
   return results;
 }
 
+/**
+ * Convert PDF to markdown
+ * First attempts text extraction, falls back to OCR (Tesseract) if PDF is scanned
+ */
 async function pdfToMarkdown(buffer: Buffer): Promise<{ content: string; ocrUsed: boolean }> {
   // First try normal text extraction
-  const pdfMarkdown = await pdf2md(buffer);
+  const pdfMarkdown = await pdf2mdModule(buffer);
 
   // Check if text was extracted (more than just whitespace)
   const textContent = pdfMarkdown.replace(/\s+/g, "").trim();
@@ -475,7 +645,7 @@ async function pdfToMarkdown(buffer: Buffer): Promise<{ content: string; ocrUsed
   }
 
   // No text found, perform OCR
-  console.log("PDF brez besedila, izvajam OCR...");
+  logger.log("PDF without text, performing OCR...");
 
   try {
     const ocrResults: string[] = [];
@@ -504,7 +674,10 @@ async function pdfToMarkdown(buffer: Buffer): Promise<{ content: string; ocrUsed
     const worker = await createWorker("slv");
 
     for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-      console.log(`OCR stran ${pageNum}/${pdfDoc.numPages}...`);
+      logger.log(`OCR processing page ${pageNum}/${pdfDoc.numPages}`, {
+        pageNum,
+        totalPages: pdfDoc.numPages,
+      });
 
       const page = await pdfDoc.getPage(pageNum);
       const scale = 2;
@@ -533,18 +706,22 @@ async function pdfToMarkdown(buffer: Buffer): Promise<{ content: string; ocrUsed
     await worker.terminate();
 
     if (ocrResults.length > 0) {
-      console.log(`OCR uspešen, prepoznanih ${ocrResults.length} strani`);
+      logger.log("OCR successful", { pagesRecognized: ocrResults.length });
       return { content: ocrResults.join("\n\n"), ocrUsed: true };
     }
 
-    console.log("OCR ni našel besedila");
+    logger.warn("OCR found no text", { totalPages: pdfDoc.numPages });
     return { content: pdfMarkdown, ocrUsed: false };
   } catch (ocrErr) {
-    console.error("Napaka pri OCR:", ocrErr);
+    logger.error("OCR error", ocrErr);
     return { content: pdfMarkdown, ocrUsed: false };
   }
 }
 
+/**
+ * Convert DOCX document to markdown
+ * First converts to HTML using mammoth, then to markdown with Turndown
+ */
 async function docxToMarkdown(buffer: Buffer): Promise<string> {
   const result = await mammoth.convertToHtml(
     { buffer },
@@ -559,157 +736,266 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
   return turndownService.turndown(result.value);
 }
 
+/**
+ * Process a single announcement: fetch content, extract documents, and parse details
+ * Saves markdown to file and returns structured announcement data
+ * Returns empty array if processing fails
+ */
 async function processAnnouncement(
   page: Page,
   objava: Link,
-  source: Source,
-  date: string
+  dataSource: Source
 ): Promise<AnnouncementResult[]> {
-  console.log(`Obiskujem: ${objava.title}, ${objava.link}`);
+  try {
+    logger.log(
+      `Processing announcement for data source ${dataSource.code}, title "${objava.title}"`,
+      {
+        title: objava.title,
+        url: objava.link,
+        dataSourceCode: dataSource.code,
+      }
+    );
 
-  const fullUrl = buildFullUrl(objava.link, source.url);
-  let markdown: string = "";
+    const safeTitle = objava.title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 50);
 
-  // Fetch content based on source type
-  if (fullUrl.includes("sodnedrazbe.si/single/")) {
-    try {
-      markdown = await fetchSodneDrazbeMarkdown(fullUrl);
-    } catch (jsonErr) {
-      console.error("Napaka pri pridobivanju JSON podatkov:", jsonErr);
+    const announcementUrl = buildFullUrl(objava.link, dataSource.url);
+    let markdown: string = "";
+
+    // Fetch content based on source type
+    if (SodneDrazbeService.isSodneDrazbeUrl(announcementUrl)) {
+      try {
+        markdown = await SodneDrazbeService.fetchMarkdown(announcementUrl);
+      } catch (err) {
+        logger.error(
+          `Failed to fetch auction data from sodnedrazbe.si for "${objava.title}"`,
+          err,
+          {
+            url: announcementUrl,
+            dataSourceCode: dataSource.code,
+          }
+        );
+      }
+    } else {
+      markdown = await fetchPageMarkdown(
+        page,
+        announcementUrl,
+        dataSource.url,
+        dataSource.contentSelector,
+        dataSource.code
+      );
+
+      // log the fetched markdown
+      logger.logContent(
+        `Fetched announcement markdown for data source ${dataSource.code}, title "${objava.title}"`,
+        { dataSourceCode: dataSource.code, title: objava.title },
+        { content: markdown, prefix: dataSource.code, suffix: safeTitle, extension: "md" }
+      );
     }
-  } else {
-    markdown = await fetchPageMarkdown(page, fullUrl, source.url, source.contentSelector);
-  }
 
-  console.log("Podrobnosti:", markdown);
+    // Extract cookies from browser context. Needed for authenticated document access.
+    const cookies = await page.context().cookies();
+    const cookieHeader = cookies.map((c) => `${c.name}=${c.value}`).join("; ");
 
-  // Extract cookies from browser context
-  const cookies = await page.context().cookies();
-  const cookieHeader = cookies.map((c) => `${c.name}=${c.value}`).join("; ");
-  console.log(`Cookies: ${cookieHeader}`);
+    // Extract and fetch document content
+    const linksToDocuments = extractDocumentLinks(markdown);
+    logger.log(
+      `Found ${linksToDocuments.length} document links for data source ${dataSource.code}, title "${objava.title}"`,
+      {
+        url: announcementUrl,
+        dataSourceCode: dataSource.code,
+        count: linksToDocuments.length,
+        documents: linksToDocuments.map((d) => d.description),
+      }
+    );
 
-  // Extract and fetch document content
-  const linksToDocuments = extractDocumentLinks(markdown);
-  console.log("Najdene povezave do dokumentov:", linksToDocuments);
-  const documents = await fetchAndAppendDocuments(linksToDocuments, cookieHeader);
+    const documents = await fetchDocuments(
+      linksToDocuments,
+      announcementUrl,
+      dataSource.code,
+      cookieHeader
+    );
 
-  // Check if initial content is short
-  const isShortContent = markdown.length < 3000;
+    // Check if initial content is short
+    const isShortContent = markdown.length < 3000;
 
-  // Check if there are non-OCR documents with sufficient content
-  const hasOtherDocumentsWithContent = documents.some(
-    (doc) => !doc.ocrUsed && doc.content && doc.content.replace(/\s+/g, "").length > 100
-  );
+    // Check if there are non-OCR documents with sufficient content
+    const hasOtherDocumentsWithContent = documents.some(
+      (doc) => !doc.ocrUsed && doc.content && doc.content.replace(/\s+/g, "").length > 100
+    );
 
-  // Append documents to markdown
-  for (const doc of documents) {
-    if (!doc.content) continue;
+    // Append documents to markdown
+    for (const doc of documents) {
+      if (!doc.content) continue;
 
-    // Skip OCR documents unless content is short AND there are no other documents with content
-    if (doc.ocrUsed && (!isShortContent || hasOtherDocumentsWithContent)) {
-      console.log(`Preskočim OCR dokument (dovolj vsebine iz drugih virov): ${doc.description}`);
-      continue;
+      // Skip OCR documents unless content is short AND there are no other documents with content
+      if (doc.ocrUsed && (!isShortContent || hasOtherDocumentsWithContent)) {
+        logger.log("Skipping OCR document (sufficient content from other sources)", {
+          document: doc.description,
+        });
+        continue;
+      }
+
+      markdown += `\n\n---\n\n## Dokument: ${doc.description}\n\n${doc.content}`;
     }
 
-    markdown += `\n\n---\n\n## Dokument: ${doc.description}\n\n${doc.content}`;
+    // Save markdown to file
+
+    logger.logContent(
+      `Announcement markdown ready for data source ${dataSource.code}, title "${objava.title}"`,
+      { dataSourceCode: dataSource.code, title: objava.title },
+      { content: markdown, prefix: dataSource.code, suffix: safeTitle, extension: "md" }
+    );
+
+    // Extract structured details
+    const announcements = await extractAnnouncementDetails(markdown);
+
+    // Map to results
+    const results = announcements.map((announcement) => ({
+      ...announcement,
+      dataSourceCode: dataSource.code,
+      urlSources: [announcementUrl],
+    }));
+
+    logger.log(
+      `Announcement processed for data source ${dataSource.code}, title "${objava.title}"`,
+      {
+        dataSourceCode: dataSource.code,
+        title: objava.title,
+        resultsExtracted: results.length,
+      }
+    );
+
+    return results;
+  } catch (err: any) {
+    logger.error(
+      `Failed to process announcement for data source ${dataSource.code}, title "${objava.title}"`,
+      err,
+      {
+        dataSourceCode: dataSource.code,
+        title: objava.title,
+        url: objava.link,
+      }
+    );
+    return [];
   }
-
-  // Save markdown to file
-  const safeTitle = objava.title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 50);
-  fs.writeFileSync(`export/${source.code}-${date}-${safeTitle}.md`, markdown);
-
-  // Extract structured details
-  const announcements = await extractAnnouncementDetails(markdown);
-
-  // Map to results
-  return announcements.map((announcement) => ({
-    ...announcement,
-    sourceCode: source.code,
-    urlSources: [fullUrl],
-  }));
 }
 
-async function processSource(source: Source): Promise<{
+/**
+ * Main entry point: process a source to extract property sale announcements
+ * Steps: navigate to source → extract links → process each announcement → save results
+ * Returns both all results and filtered sale-only results
+ */
+async function processSource(dataSource: Source): Promise<{
   rezultati: AnnouncementResult[];
   prodajneObjave: AnnouncementResult[];
 }> {
+  logger.log(`Processing source: ${dataSource.name}`, {
+    code: dataSource.code,
+    url: dataSource.url,
+    skipSearching: dataSource.skipSearchingForLinks,
+  });
+
   const page = await ensureBrowser();
-
-  console.log(`\n========================================`);
-  console.log(`Obdelujem vir: ${source.name} (${source.code})`);
-  console.log(`URL: ${source.url}`);
-  console.log(`========================================\n`);
-
-  const date = new Date().toISOString().replace(/:/g, "-");
-  ensureExportFolder();
-
   let allLinks: Link[];
 
   // Use url directly if skipSearchingForLinks is true, otherwise extract from page
-  if (source.skipSearchingForLinks) {
-    console.log(`Uporabljam neposredno podano povezavo: ${source.url}`);
+  if (dataSource.skipSearchingForLinks) {
+    logger.log(`Using direct link for ${dataSource.name} (skipping link search)`, {
+      dataSourceCode: dataSource.code,
+      url: dataSource.url,
+    });
     allLinks = [
       {
-        title: source.name,
-        link: source.url,
+        title: dataSource.name,
+        link: dataSource.url,
         suitable: true,
         reason: "Neposredno podana povezava",
       },
     ];
   } else {
-    await page.goto(source.url);
+    logger.log(`Navigating to source page: ${dataSource.name}`, {
+      dataSourceCode: dataSource.code,
+      url: dataSource.url,
+      linksSelector: dataSource.linksSelector || "(none)",
+    });
+    await page.goto(dataSource.url);
     await page.waitForLoadState("networkidle");
 
-    // console.log("Klikam na zavihek 'Pretekli'...");
-    // await page.click('a[data-id="pretekli"]');
-    // await page.waitForLoadState("networkidle");
-    // await setTimeout(2000);
-
-    // Step 1: Extract all links from the page
     const pageHtml = await page.evaluate(() => document.body.innerHTML);
-    allLinks = await extractLinks(pageHtml, source.url, source.code, source.linksSelector);
+    allLinks = await extractLinks(
+      pageHtml,
+      dataSource.url,
+      dataSource.code,
+      dataSource.linksSelector
+    );
 
-    // Save all links to file
-    fs.writeFileSync(
-      `export/${source.code}-${date}-vse-povezave.json`,
-      JSON.stringify(allLinks, null, 2)
+    logger.logContent(
+      `Extracted ${allLinks.length} links from ${dataSource.name}`,
+      { dataSourceCode: dataSource.code, total: allLinks.length },
+      {
+        content: JSON.stringify(allLinks, null, 2),
+        prefix: dataSource.code,
+        suffix: "vse-povezave",
+        extension: "json",
+      }
     );
   }
 
   // Filter to get only suitable links
   let suitableLinks = allLinks.filter((l) => l.suitable);
-  console.log(`Filtrirano ${suitableLinks.length} ustreznih povezav od ${allLinks.length} vseh`);
+  logger.log(`Filtered ${suitableLinks.length} suitable links from ${allLinks.length} total`, {
+    dataSourceCode: dataSource.code,
+    total: allLinks.length,
+    suitable: suitableLinks.length,
+    unsuitable: allLinks.length - suitableLinks.length,
+  });
 
   // TEMP: Only process first link for testing
   if (suitableLinks.length > 0) {
+    logger.warn("Processing only first link (TEMP limitation)");
     suitableLinks = [suitableLinks[0]];
   }
 
   // Step 2: Process each announcement
-  console.log("Korak 3: Obiskujem posamezne objave...");
+  logger.log(`Processing ${suitableLinks.length} announcements from ${dataSource.name}`, {
+    dataSourceCode: dataSource.code,
+    count: suitableLinks.length,
+  });
   const rezultati: AnnouncementResult[] = [];
 
   for (const objava of suitableLinks) {
-    try {
-      const announcementResults = await processAnnouncement(page, objava, source, date);
-      rezultati.push(...announcementResults);
-    } catch (err: any) {
-      //console.error(`Napaka pri obdelavi ${objava.link}:`, err);
-      throw new Error(`Napaka pri obdelavi ${objava.link}: ${err.message}`, { cause: err });
-    }
+    const announcementResults = await processAnnouncement(page, objava, dataSource);
+    rezultati.push(...announcementResults);
   }
 
   // Step 3: Save results
-  fs.writeFileSync(
-    `export/${source.code}-${date}-vse-objave.json`,
-    JSON.stringify(rezultati, null, 2)
+  logger.logContent(
+    `Saved ${rezultati.length} announcement results for ${dataSource.name}`,
+    { dataSourceCode: dataSource.code, totalResults: rezultati.length },
+    {
+      content: JSON.stringify(rezultati, null, 2),
+      prefix: dataSource.code,
+      suffix: "vse-objave",
+      extension: "json",
+    }
   );
 
   const prodajneObjave = rezultati.filter((r) => r.isSale);
-  console.log(`\nNajdenih ${prodajneObjave.length} prodajnih objav (dražbe in namere):`);
-  fs.writeFileSync(
-    `export/${source.code}-${date}-objave-prodaja.json`,
-    JSON.stringify(prodajneObjave, null, 2)
+  logger.log(`Processing complete for ${dataSource.name}`, {
+    dataSourceCode: dataSource.code,
+    totalResults: rezultati.length,
+    saleResults: prodajneObjave.length,
+  });
+
+  logger.logContent(
+    `Saved ${prodajneObjave.length} sale announcements for ${dataSource.name}`,
+    { dataSourceCode: dataSource.code, saleResults: prodajneObjave.length },
+    {
+      content: JSON.stringify(prodajneObjave, null, 2),
+      prefix: dataSource.code,
+      suffix: "objave-prodaja",
+      extension: "json",
+    }
   );
 
   return { rezultati, prodajneObjave };

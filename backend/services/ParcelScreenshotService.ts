@@ -1,7 +1,14 @@
 import { chromium, Browser, Page } from "playwright";
 import { PropertyKey } from "../types/PropertyIdentifier.js";
+import { logger } from "../utils/logger.js";
 
 async function captureParcelScreenshot(query: PropertyKey): Promise<string | null> {
+  logger.log("Capturing parcel screenshot", {
+    type: query.type,
+    municipality: query.cadastralMunicipality,
+    number: query.number,
+  });
+
   let browser: Browser | null = null;
 
   try {
@@ -12,9 +19,11 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
     const page: Page = await context.newPage();
 
     // 1. Open the page
+    logger.log("Opening eProstor page");
     await page.goto("https://ipi.eprostor.gov.si/jv/", { waitUntil: "networkidle" });
 
     // 2. Click the welcome dialog enter button
+    logger.log("Clicking welcome dialog");
     await page.waitForSelector(".welcome-dialog__enter-button", { timeout: 10000 });
     await page.click(".welcome-dialog__enter-button");
     await page.waitForTimeout(1000);
@@ -26,6 +35,7 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
       searchNumber = query.number.split("/")[0];
     }
     const parcelInput = `${query.cadastralMunicipality}-${searchNumber}`;
+    logger.log("Searching for property", { input: parcelInput });
     await page.waitForSelector('input[type="text"]', { timeout: 5000 });
     await page.fill('input[type="text"]', parcelInput);
     await page.keyboard.press("Enter");
@@ -38,6 +48,7 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
 
     if (query.type === "parcel") {
       // Find the "Parcele" section and click first button within it
+      logger.log("Selecting from Parcele section");
       const parcelSection = page
         .locator('.search-list-title:has-text("Parcele")')
         .locator("..")
@@ -47,6 +58,7 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
       await parcelSection.click();
     } else {
       // Find the "Stavbe" section and click first button within it
+      logger.log("Selecting from Stavbe section");
       const buildingSection = page
         .locator('.search-list-title:has-text("Stavbe")')
         .locator("..")
@@ -66,6 +78,7 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
     await page.waitForTimeout(1000);
 
     // 6. Take screenshot and crop to map area
+    logger.log("Capturing screenshot");
     const outputPath = "parcel-screenshot.png";
     await page.screenshot({
       path: outputPath,
@@ -73,13 +86,19 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
     });
 
     await browser.close();
+    logger.log("Screenshot captured successfully", { path: outputPath });
 
     return outputPath;
   } catch (error) {
     if (browser) {
       await browser.close();
     }
-    console.error("Error capturing parcel screenshot:", error);
+    logger.error("Failed to capture screenshot", error, {
+      propertyType: query.type,
+      cadastralMunicipality: query.cadastralMunicipality,
+      propertyNumber: query.number,
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
     return null;
   }
 }

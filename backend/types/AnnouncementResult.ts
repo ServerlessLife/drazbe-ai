@@ -51,6 +51,6 @@ export const announcementSchema = z.object({
 export type Announcement = z.infer<typeof announcementSchema>;
 
 export interface AnnouncementResult extends Announcement {
-  sourceCode: string;
+  dataSourceCode: string;
   urlSources: string[];
 }

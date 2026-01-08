@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs";
+import { logger } from "../utils/logger.js";
 
 interface SodneDrazbeData {
   values: {
@@ -9,6 +9,9 @@ interface SodneDrazbeData {
   };
 }
 
+/**
+ * Format ISO date string to Slovenian locale format
+ */
 function formatDate(isoDate: string | null): string {
   if (!isoDate) return "";
   const date = new Date(isoDate);
@@ -21,12 +24,18 @@ function formatDate(isoDate: string | null): string {
   });
 }
 
+/**
+ * Format number to Slovenian locale with 2 decimal places
+ */
 function formatNumber(value: string | number | null): string {
   if (value === null || value === undefined) return "";
   const num = typeof value === "string" ? parseFloat(value) : value;
   return num.toLocaleString("sl-SI", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+/**
+ * Format address object to a single string
+ */
 function formatAddress(addressRelation: Record<string, unknown> | null): string {
   if (!addressRelation) return "";
   const { street, houseNumber, zip, city, country } = addressRelation as {
@@ -39,7 +48,11 @@ function formatAddress(addressRelation: Record<string, unknown> | null): string 
   return `${street || ""} ${houseNumber || ""}, ${zip || ""} ${city || ""}, ${country || ""}`.trim();
 }
 
-export function sodneDrazbeToMarkdown(data: SodneDrazbeData): string {
+/**
+ * Convert sodnedrazbe.si API response data to markdown format
+ * Extracts property details, prices, subjects, images, and attachments
+ */
+function convertToMarkdown(data: SodneDrazbeData): string {
   const root = data.values.root;
   const subjects = data.values.subjects || [];
   const subjectFiles = data.values.subjectFiles || [];
@@ -195,7 +208,104 @@ export function sodneDrazbeToMarkdown(data: SodneDrazbeData): string {
   return lines.join("\n");
 }
 
-// Read data from JSON file and test the function
-// const data = JSON.parse(readFileSync("sodneDrazbeData.json", "utf-8")) as SodneDrazbeData;
-// const md = sodneDrazbeToMarkdown(data);
-// writeFileSync("sodneDrazbe.md", md);
+/**
+ * Extract publication ID from sodnedrazbe.si URL
+ * Expected format: sodnedrazbe.si/single/[UUID]
+ */
+function extractPublicationId(url: string): string | null {
+  const urlMatch = url.match(/sodnedrazbe\.si\/single\/([a-f0-9-]+)/i);
+  return urlMatch ? urlMatch[1] : null;
+}
+
+/**
+ * Fetch auction data from sodnedrazbe.si API and convert to markdown
+ * Uses direct API call instead of scraping HTML
+ */
+async function fetchMarkdown(fullUrl: string): Promise<string> {
+  const publicationId = extractPublicationId(fullUrl);
+
+  if (!publicationId) {
+    logger.warn("Invalid sodnedrazbe URL format", {
+      url: fullUrl,
+      expectedPattern: "sodnedrazbe.si/single/[UUID]",
+    });
+    return "";
+  }
+
+  logger.log(`Fetching auction data from sodnedrazbe.si API`, {
+    publicationId,
+    url: fullUrl,
+  });
+
+  try {
+    const jsonResponse = await fetch("https://api.sodnedrazbe.si/public/publication/single", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "accept-language": "sl-SI",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ id: publicationId }),
+    });
+
+    if (!jsonResponse.ok) {
+      logger.error("Failed to fetch sodnedrazbe data", new Error(`HTTP ${jsonResponse.status}`), {
+        httpStatus: jsonResponse.status,
+        publicationId,
+        url: fullUrl,
+      });
+      return "";
+    }
+
+    const jsonData = await jsonResponse.json();
+    const dataSize = JSON.stringify(jsonData).length;
+
+    logger.log(`Successfully fetched sodnedrazbe auction data`, {
+      publicationId,
+      dataSizeBytes: dataSize,
+      subjectsCount: jsonData.values?.subjects?.length || 0,
+      filesCount: jsonData.values?.files?.length || 0,
+    });
+
+    // Log the raw JSON data for debugging
+    logger.logContent(
+      `Sodnedrazbe API response for ${publicationId}`,
+      { publicationId, dataSizeBytes: dataSize },
+      {
+        content: JSON.stringify(jsonData, null, 2),
+        prefix: "sodnedrazbe",
+        suffix: `api-response-${publicationId}`,
+        extension: "json",
+      }
+    );
+
+    const markdown = convertToMarkdown(jsonData);
+
+    logger.log(`Converted sodnedrazbe data to markdown`, {
+      publicationId,
+      markdownLength: markdown.length,
+    });
+
+    return markdown;
+  } catch (error) {
+    logger.error("Error fetching sodnedrazbe data", error, {
+      publicationId,
+      url: fullUrl,
+    });
+    return "";
+  }
+}
+
+/**
+ * Check if a URL is a sodnedrazbe.si auction URL
+ */
+function isSodneDrazbeUrl(url: string): boolean {
+  return url.includes("sodnedrazbe.si/single/");
+}
+
+export const SodneDrazbeService = {
+  fetchMarkdown,
+  convertToMarkdown,
+  isSodneDrazbeUrl,
+  extractPublicationId,
+};

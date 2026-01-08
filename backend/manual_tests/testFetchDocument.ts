@@ -10,7 +10,11 @@ async function testFetchDocument() {
   console.log(`Document URL: ${doc.url}`);
   console.log("");
 
-  const result = await AiExtractService.fetchAndAppendDocument(doc);
+  const result = await AiExtractService.fetchAndAppendDocument(
+    doc,
+    "https://www.ajpes.si/test-announcement",
+    "test"
+  );
 
   if (result) {
     console.log("\n=== Result ===");

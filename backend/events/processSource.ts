@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { SQSEvent } from "aws-lambda";
 import { AiExtractService } from "../services/AiExtractService.js";
+import { logger } from "../utils/logger.js";
 import { Source } from "../types/Source.js";
 
 /**
@@ -8,12 +9,12 @@ import { Source } from "../types/Source.js";
  * Calls AiExtractService.processSource for each source
  */
 export async function handler(event: SQSEvent) {
-  console.log(`Processing ${event.Records.length} source(s) from queue`);
+  logger.log("Processing sources from queue", { count: event.Records.length });
 
   for (const record of event.Records) {
     try {
       const source: Partial<Source> = JSON.parse(record.body);
-      console.log(`Processing source: ${source.code}`);
+      logger.log(`Processing source from queue`, { source: source.code });
 
       // Convert partial source to full Source object
       const fullSource: Source = {
@@ -29,9 +30,11 @@ export async function handler(event: SQSEvent) {
 
       await AiExtractService.processSource(fullSource);
 
-      console.log(`Successfully processed source: ${source.code}`);
+      logger.log("Successfully processed source", { source: source.code });
     } catch (error) {
-      console.error("Error processing source:", error);
+      logger.error("Error processing source from queue", error, {
+        source: (JSON.parse(record.body) as Partial<Source>).code,
+      });
       // Re-throw to allow SQS to retry if needed
       throw error;
     }

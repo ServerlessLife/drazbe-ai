@@ -7,9 +7,9 @@
     "cdk"
   ],
   "scripts": {
-    "typecheck": "npm run typecheck --workspaces",
-    "format": "npm run format --workspaces",
-    "format:check": "npm run format:check --workspaces"
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "tsx": "^4.21.0",

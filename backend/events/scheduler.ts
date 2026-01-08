@@ -5,6 +5,7 @@ import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import fs from "fs";
 import path from "path";
 import { Source } from "../types/Source.js";
+import { logger } from "../utils/logger.js";
 
 const dynamoClient = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(dynamoClient);
@@ -22,14 +23,14 @@ interface SchedulerEvent {
  * Checks which sources need to be triggered based on their schedule
  */
 export async function handler(event: SchedulerEvent) {
-  console.log("Starting source scheduler at:", event.time);
+  logger.log("Starting source scheduler", { time: event.time });
 
   // Load sources
   const sourcesPath = path.join(process.cwd(), "sources.json");
   const sources: Source[] = JSON.parse(fs.readFileSync(sourcesPath, "utf-8"));
 
   const enabledSources = sources.filter((s) => s.enabled);
-  console.log(`Found ${enabledSources.length} enabled sources`);
+  logger.log(`Found enabled sources`, { count: enabledSources.length });
 
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
@@ -54,7 +55,11 @@ export async function handler(event: SchedulerEvent) {
     }
 
     if (!shouldTrigger) {
-      console.log(`Skipping ${source.code} - schedule: ${schedule}, day: ${dayOfWeek}`);
+      logger.log(`Skipping source - schedule not met`, {
+        source: source.code,
+        schedule,
+        dayOfWeek,
+      });
       continue;
     }
 
@@ -65,9 +70,10 @@ export async function handler(event: SchedulerEvent) {
 
     // Only trigger if more than 23 hours have passed since last trigger
     if (lastTrigger && now - lastTrigger < 23 * 60 * 60 * 1000) {
-      console.log(
-        `Skipping ${source.code} - triggered recently at ${new Date(lastTrigger).toISOString()}`
-      );
+      logger.log(`Skipping source - triggered recently`, {
+        source: source.code,
+        lastTrigger: new Date(lastTrigger).toISOString(),
+      });
       continue;
     }
 
@@ -91,10 +97,10 @@ export async function handler(event: SchedulerEvent) {
     // Update last trigger time
     await updateLastTrigger(source.code, now);
 
-    console.log(`Queued ${source.code} for processing`);
+    logger.log("Queued source for processing", { source: source.code });
   }
 
-  console.log("Scheduler completed");
+  logger.log("Scheduler completed");
   return { statusCode: 200, body: "Scheduler completed" };
 }
 
