@@ -1,6 +1,5 @@
 import { chromium, Page, Browser, BrowserContext } from "playwright";
-import fs from "fs";
-import https from "https";
+import crypto from "crypto";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import pdf2mdModule from "@opendocsg/pdf2md";
@@ -14,7 +13,11 @@ import { createCanvas } from "canvas";
 import * as pdfjsLib from "pdfjs-dist";
 import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { Source } from "../types/Source.js";
-import { Announcement, AnnouncementResult } from "../types/AnnouncementResult.js";
+import {
+  Announcement,
+  AnnouncementResult,
+  AnnouncementDocument,
+} from "../types/AnnouncementResult.js";
 import { detailSchema } from "../types/Detail.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
@@ -558,9 +561,23 @@ async function fetchDocument(
       });
     }
 
+    // Generate local URL using UUID
+    const uuid = crypto.randomUUID();
+    const extension = docType === "docx" ? "docx" : "pdf";
+    const localUrl = `documents/${uuid}.${extension}`;
+
+    // // TODO: Upload buffer to S3 using localUrl
+    // logger.log("Document ready for S3 upload", {
+    //   document: doc.description,
+    //   localUrl,
+    //   announcementUrl,
+    //   dataSourceCode,
+    // });
+
     return {
       description: doc.description,
       url: doc.url,
+      localUrl,
       type: docType,
       ocrUsed,
       markdown: content,
@@ -783,13 +800,6 @@ async function processAnnouncement(
         dataSource.contentSelector,
         dataSource.code
       );
-
-      // log the fetched markdown
-      logger.logContent(
-        `Fetched announcement markdown for data source ${dataSource.code}, title "${objava.title}"`,
-        { dataSourceCode: dataSource.code, title: objava.title },
-        { content: markdown, prefix: dataSource.code, suffix: safeTitle, extension: "md" }
-      );
     }
 
     // Extract cookies from browser context. Needed for authenticated document access.
@@ -823,6 +833,9 @@ async function processAnnouncement(
       (doc) => !doc.ocrUsed && doc.markdown && doc.markdown.replace(/\s+/g, "").length > 100
     );
 
+    // Track which documents were used for extraction
+    const usedDocumentUrls = new Set<string>();
+
     // Append documents to markdown
     for (const doc of documents) {
       if (!doc.markdown) continue;
@@ -836,6 +849,7 @@ async function processAnnouncement(
       }
 
       markdown += `\n\n---\n\n## Dokument: ${doc.description}\n\n${doc.markdown}`;
+      usedDocumentUrls.add(doc.url);
     }
 
     // Save markdown to file
@@ -854,6 +868,19 @@ async function processAnnouncement(
       ...announcement,
       dataSourceCode: dataSource.code,
       urlSources: [announcementUrl],
+
+      documents: announcement.documents?.map((doc) => {
+        const foundDoc = documents.find((d) => d.url === doc.sourceUrl);
+
+        return {
+          description: doc.description,
+          sourceUrl: doc.sourceUrl,
+          localUrl: foundDoc?.localUrl,
+          type: foundDoc?.type,
+          ocrUsed: foundDoc?.ocrUsed,
+          usedForExtraction: usedDocumentUrls.has(doc.sourceUrl),
+        };
+      }),
     }));
 
     logger.log(

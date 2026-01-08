@@ -1,7 +1,9 @@
+import "dotenv/config";
 import fs from "fs";
 import path from "path";
 
 const USE_LOCAL_LOGS = process.env.LOCAL_LOGS === "true";
+
 const EXPORT_FOLDER = "export";
 
 function ensureExportFolder(): void {

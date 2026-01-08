@@ -1,6 +1,13 @@
 import { z } from "zod";
 import { propertySchema } from "./Property.js";
 
+export const announcementLinkSchema = z.object({
+  sourceUrl: z.string().describe("Povezava do dokumenta (npr. PDF)"),
+  description: z.string().describe("Opis dokumenta").nullable(),
+});
+
+export type AnnouncementLink = z.infer<typeof announcementLinkSchema>;
+
 export const announcementSchema = z.object({
   id: z
     .string()
@@ -38,19 +45,27 @@ export const announcementSchema = z.object({
       "Seznam parcel, stavb ali del stavb navedenih v objavi. Formati v besedilu: '2242/9', '2242 9', '2242 536/6', '2242 536-6', '2242-536-6', 'k.o. 2242 parc. 9'. Ne vključi črk. Zamenjaj '-' in ' ' z '/'. Pazi, da ne podvojiš in vključiš celotno šifro."
     )
     .nullable(),
-  linksToDocuments: z
-    .array(z.string().describe("Povezava do dokumenta (npr. PDF)"))
+  documents: z
+    .array(announcementLinkSchema)
     .describe("Seznam povezav do dokumentov, če so na voljo")
     .nullable(),
-  linksToImages: z
-    .array(z.string().describe("Povezava do slike (npr. JPG, PNG)"))
+  images: z
+    .array(announcementLinkSchema)
     .describe("Seznam povezav do slik nepremičnine, če so na voljo")
     .nullable(),
 });
 
 export type Announcement = z.infer<typeof announcementSchema>;
 
+export interface AnnouncementDocument extends AnnouncementLink {
+  localUrl: string;
+  type: "pdf" | "docx" | "unknown";
+  ocrUsed: boolean;
+  usedForExtraction: boolean;
+}
+
 export interface AnnouncementResult extends Announcement {
   dataSourceCode: string;
   urlSources: string[];
+  documents: AnnouncementDocument[];
 }

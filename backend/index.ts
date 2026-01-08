@@ -1,4 +1,3 @@
-import "dotenv/config";
 import fs from "fs";
 import { AiExtractService } from "./services/AiExtractService.js";
 import { Source } from "./types/Source.js";
