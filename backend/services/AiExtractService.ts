@@ -13,12 +13,7 @@ import { createCanvas } from "canvas";
 import * as pdfjsLib from "pdfjs-dist";
 import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { Source } from "../types/Source.js";
-import {
-  Announcement,
-  AnnouncementResult,
-  AnnouncementDocument,
-} from "../types/AnnouncementResult.js";
-import { detailSchema } from "../types/Detail.js";
+import { Action, ActionResult, ActionDocument, actionsSchema } from "../types/Action.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
 import { logger } from "../utils/logger.js";
@@ -387,9 +382,9 @@ async function convertHtmlToMarkdown(
 
 /**
  * Extract structured property details from markdown using AI (GPT-5.2)
- * Identifies parcels, buildings, prices, and other announcement details
+ * Identifies parcels, buildings, prices, and other action details
  */
-async function extractAnnouncementDetails(markdown: string): Promise<Announcement[]> {
+async function extractActionDetails(markdown: string): Promise<Action[]> {
   const detailResponse = await getOpenAI().chat.completions.parse({
     model: "gpt-5.2",
     messages: [
@@ -417,10 +412,10 @@ async function extractAnnouncementDetails(markdown: string): Promise<Announcemen
         content: markdown,
       },
     ],
-    response_format: zodResponseFormat(detailSchema, "announcement_details"),
+    response_format: zodResponseFormat(actionsSchema, "action_details"),
   });
 
-  return detailResponse.choices[0].message.parsed!.announcements;
+  return detailResponse.choices[0].message.parsed!.actions;
 }
 
 /**
@@ -754,15 +749,15 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
 }
 
 /**
- * Process a single announcement: fetch content, extract documents, and parse details
- * Saves markdown to file and returns structured announcement data
+ * Process a single action: fetch content, extract documents, and parse details
+ * Saves markdown to file and returns structured action data
  * Returns empty array if processing fails
  */
-async function processAnnouncement(
+async function processAction(
   page: Page,
   objava: Link,
   dataSource: Source
-): Promise<AnnouncementResult[]> {
+): Promise<ActionResult[]> {
   try {
     logger.log(
       `Processing announcement for data source ${dataSource.code}, title "${objava.title}"`,
@@ -852,8 +847,6 @@ async function processAnnouncement(
       usedDocumentUrls.add(doc.url);
     }
 
-    // Save markdown to file
-
     logger.logContent(
       `Announcement markdown ready for data source ${dataSource.code}, title "${objava.title}"`,
       { dataSourceCode: dataSource.code, title: objava.title },
@@ -861,15 +854,15 @@ async function processAnnouncement(
     );
 
     // Extract structured details
-    const announcements = await extractAnnouncementDetails(markdown);
+    const actions = await extractActionDetails(markdown);
 
     // Map to results
-    const results = announcements.map((announcement) => ({
-      ...announcement,
+    const results = actions.map((action) => ({
+      ...action,
       dataSourceCode: dataSource.code,
       urlSources: [announcementUrl],
 
-      documents: announcement.documents?.map((doc) => {
+      documents: action.documents?.map((doc) => {
         const foundDoc = documents.find((d) => d.url === doc.sourceUrl);
 
         return {
@@ -908,13 +901,13 @@ async function processAnnouncement(
 }
 
 /**
- * Main entry point: process a source to extract property sale announcements
- * Steps: navigate to source → extract links → process each announcement → save results
+ * Main entry point: process a source to extract property sale actions
+ * Steps: navigate to source → extract links → process each action → save results
  * Returns both all results and filtered sale-only results
  */
 async function processSource(dataSource: Source): Promise<{
-  rezultati: AnnouncementResult[];
-  prodajneObjave: AnnouncementResult[];
+  rezultati: ActionResult[];
+  prodajneObjave: ActionResult[];
 }> {
   logger.log(`Processing source: ${dataSource.name}`, {
     code: dataSource.code,
@@ -984,15 +977,15 @@ async function processSource(dataSource: Source): Promise<{
   }
 
   // Step 2: Process each announcement
-  logger.log(`Processing ${suitableLinks.length} announcements from ${dataSource.name}`, {
+  logger.log(`Processing ${suitableLinks.length} actions from ${dataSource.name}`, {
     dataSourceCode: dataSource.code,
     count: suitableLinks.length,
   });
-  const rezultati: AnnouncementResult[] = [];
+  const rezultati: ActionResult[] = [];
 
   for (const objava of suitableLinks) {
-    const announcementResults = await processAnnouncement(page, objava, dataSource);
-    rezultati.push(...announcementResults);
+    const actionResults = await processAction(page, objava, dataSource);
+    rezultati.push(...actionResults);
   }
 
   // Step 3: Save results

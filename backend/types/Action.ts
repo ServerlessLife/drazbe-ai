@@ -8,7 +8,7 @@ export const actionLinkSchema = z.object({
 
 export type ActionLink = z.infer<typeof actionLinkSchema>;
 
-export const actionBaseSchema = z.object({
+export const actionSchema = z.object({
   id: z
     .string()
     .describe(
@@ -55,7 +55,7 @@ export const actionBaseSchema = z.object({
     .nullable(),
 });
 
-export type ActionBase = z.infer<typeof actionBaseSchema>;
+export type Action = z.infer<typeof actionSchema>;
 
 export interface ActionDocument extends ActionLink {
   localUrl: string;
@@ -64,8 +64,14 @@ export interface ActionDocument extends ActionLink {
   usedForExtraction: boolean;
 }
 
-export interface Action extends ActionBase {
+export interface ActionResult extends Action {
   dataSourceCode: string;
   urlSources: string[];
   documents: ActionDocument[];
 }
+
+export const actionsSchema = z.object({
+  actions: z.array(actionSchema).describe("Seznam vseh dražb navedenih v dokumentu"),
+});
+
+export type Actions = z.infer<typeof actionsSchema>;

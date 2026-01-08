@@ -1,7 +1,7 @@
 import fs from "fs";
 import { AiExtractService } from "./services/AiExtractService.js";
 import { Source } from "./types/Source.js";
-import { AnnouncementResult } from "./types/AnnouncementResult.js";
+import { ActionResult } from "./types/Action.js";
 
 // Load sources from JSON
 const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));
@@ -12,8 +12,8 @@ async function main() {
 
   const allResults: Array<{
     source: string;
-    rezultati: AnnouncementResult[];
-    prodajneObjave: AnnouncementResult[];
+    rezultati: ActionResult[];
+    prodajneObjave: ActionResult[];
   }> = [];
 
   for (const source of enabledSources) {
