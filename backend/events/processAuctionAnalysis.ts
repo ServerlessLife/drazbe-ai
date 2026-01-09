@@ -78,14 +78,14 @@ export async function handler(event: SQSEvent) {
 
     logger.log("AI analysis completed", { auctionId, analysis });
 
+    // Save the suitability to UserSuitabilityTable
+    await UserSuitabilityRepository.save(auctionId, analysis.aiSuitability);
+
     // Save the analysis to AuctionTable (aiTitle, aiWarning)
     await AuctionRepository.updateAuctionAnalysis(auctionId, {
       aiTitle: analysis.aiTitle,
       aiWarning: analysis.aiWarning,
     });
-
-    // Save the suitability to UserSuitabilityTable
-    await UserSuitabilityRepository.save(auctionId, analysis.aiSuitability);
 
     logger.log("Auction analysis completed and saved", {
       auctionId,

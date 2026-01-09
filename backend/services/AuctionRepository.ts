@@ -25,6 +25,7 @@ import { logger } from "../utils/logger.js";
 import { AuctionDocument } from "../types/AuctionDocument.js";
 import { AuctionImage } from "../types/AuctionImage.js";
 import { PropertyKey } from "../types/PropertyIdentifier.js";
+import { UserSuitabilityRepository } from "./UserSuitabilityRepository.js";
 
 const TABLE_NAME = process.env.AUCTION_TABLE_NAME || "AuctionTable";
 const LOCAL_STORAGE = process.env.LOCAL_STORAGE === "true";
@@ -346,11 +347,15 @@ async function getById(auctionId: string): Promise<Auction | undefined> {
     })
   );
 
+  // Fetch user suitability data
+  const suitabilityRecord = await UserSuitabilityRepository.getByAuctionId(auctionId);
+
   const auction: Auction = {
     ...main,
     properties,
     documents,
     images,
+    aiSuitability: suitabilityRecord?.aiSuitability ?? null,
   };
 
   return auction;
