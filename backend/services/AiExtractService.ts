@@ -775,7 +775,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
     const announcementUrl = buildFullUrl(objava.url, dataSource.url);
 
     // Check if this URL was already visited
-    if (await VisitedUrlRepository.isVisited(announcementUrl)) {
+    if (await VisitedUrlRepository.isVisited(dataSource.code, announcementUrl)) {
       logger.log(
         `Skipping already visited URL for data source ${dataSource.code}, title "${objava.title}"`,
         {
@@ -1010,7 +1010,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
     );
 
     // Mark URL as visited after successful processing
-    await VisitedUrlRepository.markVisited(announcementUrl, dataSource.code);
+    await VisitedUrlRepository.markVisited(dataSource.code, announcementUrl);
 
     return results;
   } catch (err: any) {

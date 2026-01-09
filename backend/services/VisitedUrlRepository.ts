@@ -12,20 +12,21 @@ const docClient = DynamoDBDocumentClient.from(client);
  * Record structure for visited URLs in DynamoDB
  */
 type VisitedUrlRecord = {
-  /** Partition key: the URL */
-  url: string;
-  /** Data source code */
+  /** Partition key: data source code */
   dataSourceCode: string;
+  /** Sort key: the URL */
+  url: string;
   /** Timestamp when the URL was visited */
   visitedAt: string;
 };
 
 /**
- * Check if a URL has been visited before
+ * Check if a URL has been visited before for a specific data source
+ * @param dataSourceCode - The data source code
  * @param url - The URL to check
  * @returns true if the URL was visited, false otherwise
  */
-async function isVisited(url: string): Promise<boolean> {
+async function isVisited(dataSourceCode: string, url: string): Promise<boolean> {
   if (LOCAL_STORAGE) {
     // In local mode, never skip - always process
     return false;
@@ -35,26 +36,26 @@ async function isVisited(url: string): Promise<boolean> {
     const result = await docClient.send(
       new GetCommand({
         TableName: TABLE_NAME,
-        Key: { url },
+        Key: { dataSourceCode, url },
       })
     );
 
     const visited = !!result.Item;
-    logger.log("Checked URL visit status", { url, visited });
+    logger.log("Checked URL visit status", { dataSourceCode, url, visited });
     return visited;
   } catch (error) {
-    logger.error("Failed to check visited URL", error, { url });
+    logger.error("Failed to check visited URL", error, { dataSourceCode, url });
     // On error, return false to allow processing
     return false;
   }
 }
 
 /**
- * Mark a URL as visited
- * @param url - The URL to mark as visited
+ * Mark a URL as visited for a specific data source
  * @param dataSourceCode - The data source code
+ * @param url - The URL to mark as visited
  */
-async function markVisited(url: string, dataSourceCode: string): Promise<void> {
+async function markVisited(dataSourceCode: string, url: string): Promise<void> {
   if (LOCAL_STORAGE) {
     return;
   }
@@ -62,8 +63,8 @@ async function markVisited(url: string, dataSourceCode: string): Promise<void> {
   const now = new Date().toISOString();
 
   const record: VisitedUrlRecord = {
-    url,
     dataSourceCode,
+    url,
     visitedAt: now,
   };
 
@@ -74,9 +75,9 @@ async function markVisited(url: string, dataSourceCode: string): Promise<void> {
         Item: record,
       })
     );
-    logger.log("Marked URL as visited", { url, dataSourceCode });
+    logger.log("Marked URL as visited", { dataSourceCode, url });
   } catch (error) {
-    logger.error("Failed to mark URL as visited", error, { url, dataSourceCode });
+    logger.error("Failed to mark URL as visited", error, { dataSourceCode, url });
     // Don't throw - failing to mark shouldn't break processing
   }
 }

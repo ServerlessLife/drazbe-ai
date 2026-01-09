@@ -79,7 +79,8 @@ export class CdkStack extends cdk.Stack {
 
     // DynamoDB table for tracking visited URLs
     const visitedUrlTable = new dynamodb.TableV2(this, "VisitedUrlTable", {
-      partitionKey: { name: "url", type: dynamodb.AttributeType.STRING },
+      partitionKey: { name: "dataSourceCode", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "url", type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
