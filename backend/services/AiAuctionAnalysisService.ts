@@ -1,7 +1,9 @@
 import OpenAI from "openai";
-import { z } from "zod";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { logger } from "../utils/logger.js";
+import { auctionAnalysisSchema, AuctionAnalysis } from "../types/AuctionAnalysis.js";
+
+export type { AuctionAnalysis };
 
 let openai: OpenAI | undefined;
 
@@ -14,24 +16,6 @@ function getOpenAI(): OpenAI {
   }
   return openai;
 }
-
-/**
- * Analysis result schema
- */
-const auctionAnalysisSchema = z.object({
-  aiTitle: z.string().describe("Kratek opis dražbe. Do 150 znakov."),
-  aiWarning: z
-    .string()
-    .nullable()
-    .describe("Karkoli je nenavadnega ali opozorilo. Null če ni ničesar nenavadnega."),
-  aiSuitability: z
-    .string()
-    .describe(
-      "Ocena kako dobro ustreza zahtevam. Začne se s številčno oceno 0 - 10, nato kratek opis."
-    ),
-});
-
-export type AuctionAnalysis = z.infer<typeof auctionAnalysisSchema>;
 
 const SYSTEM_PROMPT = `Si pomočnik za analizo nepremičninskih dražb v Sloveniji.
 
