@@ -1,7 +1,9 @@
 import fs from "fs";
 import { AiExtractService } from "./services/AiExtractService.js";
+import { AuctionRepository } from "./services/AuctionRepository.js";
 import { Source } from "./types/Source.js";
 import { Auction } from "./types/Auction.js";
+import { logger } from "./utils/logger.js";
 
 // Load sources from JSON
 const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));
@@ -18,6 +20,23 @@ async function main() {
   for (const source of enabledSources) {
     try {
       const auctions = await AiExtractService.processSource(source);
+
+      // Save each auction as nicely formatted markdown
+      for (const auction of auctions) {
+        const announcementId = auction.announcementId || "unknown";
+        const markdown = AuctionRepository.formatAuctionMarkdown(auction);
+        logger.logContent(
+          "Auction markdown saved",
+          { dataSourceCode: auction.dataSourceCode, announcementId },
+          {
+            content: markdown,
+            prefix: auction.dataSourceCode,
+            suffix: `${announcementId}-auction`,
+            extension: "md",
+          }
+        );
+      }
+
       allResults.push({ source: source.code, auctions });
     } catch (err) {
       console.error(`Napaka pri obdelavi vira ${source.name}:`, err);

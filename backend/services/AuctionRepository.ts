@@ -225,19 +225,6 @@ async function save(auction: Auction): Promise<void> {
         extension: "json",
       }
     );
-
-    // Also save as nicely formatted markdown
-    const markdown = formatAuctionMarkdown(auction);
-    logger.logContent(
-      "Auction markdown saved",
-      { auctionId },
-      {
-        content: markdown,
-        prefix: auction.dataSourceCode,
-        suffix: `${announcementId}-auction`,
-        extension: "md",
-      }
-    );
     return;
   }
 
@@ -550,4 +537,5 @@ export const AuctionRepository = {
   savePropertyMap,
   getById,
   getMainById,
+  formatAuctionMarkdown,
 };
