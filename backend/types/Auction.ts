@@ -3,6 +3,7 @@ import { Property } from "./Property.js";
 import { GursParcelValuation } from "./GursParcelValuation.js";
 import { GursBuildingPartValuation } from "./GursBuildingPartValuation.js";
 import { AuctionImage } from "./AuctionImage.js";
+import { AuctionBase } from "./AuctionBase.js";
 
 /**
  * Property valuation data
@@ -30,30 +31,17 @@ export type PriceToValueRatio = {
 };
 
 /**
- * Complete auction data
+ * Complete auction data - extends AuctionBase with additional processed fields
  */
-export type Auction = {
+export type Auction = Omit<AuctionBase, "property" | "documents" | "images" | "isSale"> & {
   dataSourceCode: string;
-  announcementId: string | null;
   urlSources: string[];
-  title: string;
   /** AI-generated title for the auction */
   aiTitle: string | null;
   /** AI-generated warning about unusual aspects */
   aiWarning: string | null;
   /** AI-generated suitability assessment */
   aiSuitability: string | null;
-  type: "auction" | "contract" | "other";
-  /** Ali je nepremičnina prazna */
-  isVacant: "YES" | "NO" | "UNKNOWN" | null;
-  publicationDate: string | null;
-  dueDate: string | null;
-  description: string | null;
-  location: string | null;
-  price: number | null;
-  estimatedValue: number | null;
-  ownershipShare: number | null;
-  yearBuilt: number | null;
   properties: AuctionProperty[] | null;
   documents: AuctionDocument[];
   images: AuctionImage[] | null;
