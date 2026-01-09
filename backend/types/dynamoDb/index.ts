@@ -4,7 +4,9 @@ export type { AuctionMainRecord } from "./AuctionMainRecord.js";
 export type { AuctionPropertyRecord } from "./AuctionPropertyRecord.js";
 export type { AuctionDocumentRecord } from "./AuctionDocumentRecord.js";
 export type { AuctionImageRecord } from "./AuctionImageRecord.js";
-export { generateAuctionId, hashUrl as hash, generatePropertyId } from "./helpers.js";
+export { generateAuctionId } from "../../utils/generateAuctionId.js";
+export { generatePropertyId } from "../../utils/generatePropertyId.js";
+export { hash } from "../../utils/hash.js";
 export type {
   Auction,
   AuctionProperty,

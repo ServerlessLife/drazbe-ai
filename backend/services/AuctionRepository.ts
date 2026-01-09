@@ -54,7 +54,8 @@ function calculateTtl(dueDate: string | null): number {
  */
 async function save(auction: Auction): Promise<void> {
   const announcementId = auction.announcementId || "unknown";
-  const auctionId = generateAuctionId(auction.dataSourceCode, announcementId);
+  const sourceUrl = auction.urlSources[0] || "";
+  const auctionId = generateAuctionId(auction.dataSourceCode, sourceUrl, announcementId);
   const now = new Date().toISOString();
   const ttl = calculateTtl(auction.dueDate);
 
@@ -195,12 +196,13 @@ async function save(auction: Auction): Promise<void> {
  */
 async function savePropertyMap(
   dataSourceCode: string,
-  id: string,
+  sourceUrl: string,
+  announcementId: string,
   property: Property,
   mapImageUrl: string,
   dueDate: string | null
 ): Promise<void> {
-  const auctionId = generateAuctionId(dataSourceCode, id);
+  const auctionId = generateAuctionId(dataSourceCode, sourceUrl, announcementId);
   const propertyId = generatePropertyId(property);
   const now = new Date().toISOString();
 
@@ -219,7 +221,7 @@ async function savePropertyMap(
       {
         content: JSON.stringify({ mapImageUrl }, null, 2),
         prefix: dataSourceCode,
-        suffix: `${id}-property-map-${propertyId}`,
+        suffix: `${announcementId}-property-map-${propertyId}`,
         extension: "json",
       }
     );
@@ -262,12 +264,16 @@ function stripDynamoDbFields<T extends AuctionRecord>(
  * Get all records for an auction by ID
  * Returns a clean Auction object without DynamoDB-specific fields
  */
-async function getById(dataSourceCode: string, id: string): Promise<Auction> {
-  const auctionId = generateAuctionId(dataSourceCode, id);
+async function getById(
+  dataSourceCode: string,
+  sourceUrl: string,
+  announcementId: string
+): Promise<Auction> {
+  const auctionId = generateAuctionId(dataSourceCode, sourceUrl, announcementId);
 
   logger.log("Fetching auction from DynamoDB", {
     dataSourceCode,
-    id,
+    announcementId,
     auctionId,
   });
 
@@ -347,13 +353,14 @@ async function getById(dataSourceCode: string, id: string): Promise<Auction> {
  */
 async function getMainById(
   dataSourceCode: string,
-  id: string
+  sourceUrl: string,
+  announcementId: string
 ): Promise<Omit<Auction, "properties" | "documents" | "images"> | null> {
-  const auctionId = generateAuctionId(dataSourceCode, id);
+  const auctionId = generateAuctionId(dataSourceCode, sourceUrl, announcementId);
 
   logger.log("Fetching auction main record from DynamoDB", {
     dataSourceCode,
-    id,
+    announcementId,
     auctionId,
   });
 
@@ -382,11 +389,17 @@ async function getMainById(
 /**
  * Update the aiTitle field for an auction
  * @param dataSourceCode - The data source code
- * @param id - The announcement ID
+ * @param sourceUrl - The source URL
+ * @param announcementId - The announcement ID
  * @param aiTitle - The AI-generated title
  */
-async function setAiTitle(dataSourceCode: string, id: string, aiTitle: string): Promise<void> {
-  const auctionId = generateAuctionId(dataSourceCode, id);
+async function setAiTitle(
+  dataSourceCode: string,
+  sourceUrl: string,
+  announcementId: string,
+  aiTitle: string
+): Promise<void> {
+  const auctionId = generateAuctionId(dataSourceCode, sourceUrl, announcementId);
   const now = new Date().toISOString();
 
   logger.log("Setting aiTitle", {
@@ -402,7 +415,7 @@ async function setAiTitle(dataSourceCode: string, id: string, aiTitle: string): 
       {
         content: JSON.stringify({ aiTitle }, null, 2),
         prefix: dataSourceCode,
-        suffix: `${id}-aiTitle`,
+        suffix: `${announcementId}-aiTitle`,
         extension: "json",
       }
     );
