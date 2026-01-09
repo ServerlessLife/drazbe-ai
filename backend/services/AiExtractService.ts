@@ -932,6 +932,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
         aiTitle: null,
         aiSuitability: null,
         type: auction.type,
+        isVacant: auction.isVacant ?? null,
         publicationDate: auction.publicationDate ?? null,
         dueDate: auction.dueDate ?? null,
         description: auction.description ?? null,

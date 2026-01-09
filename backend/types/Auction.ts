@@ -42,6 +42,8 @@ export type Auction = {
   /** AI-generated suitability assessment */
   aiSuitability: string | null;
   type: "auction" | "contract" | "other";
+  /** Ali je nepremičnina prazna */
+  isVacant: "yes" | "no" | "unknown" | null;
   publicationDate: string | null;
   dueDate: string | null;
   description: string | null;

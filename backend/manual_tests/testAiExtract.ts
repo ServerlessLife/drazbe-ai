@@ -52,7 +52,7 @@ async function main() {
       // Save each auction as nicely formatted markdown
       for (const auction of auctions) {
         const announcementId = auction.announcementId || "unknown";
-        
+
         // Calculate driving time from home
         let drivingTimeMinutes: number | null = null;
         try {
