@@ -14,7 +14,7 @@ import {
   AuctionImageRecord,
   AuctionRecord,
   generateAuctionId,
-  hashUrl,
+  hash,
   generatePropertyId,
   Auction,
   AuctionProperty,
@@ -132,7 +132,7 @@ async function save(auction: Auction): Promise<void> {
   // Create DOCUMENT records
   if (auction.documents) {
     for (const document of auction.documents) {
-      const documentId = hashUrl(document.sourceUrl);
+      const documentId = hash(document.sourceUrl);
       const documentRecord: AuctionDocumentRecord = {
         auctionId,
         recordKey: `DOCUMENT#${documentId}`,
@@ -149,7 +149,7 @@ async function save(auction: Auction): Promise<void> {
   // Create IMAGE records
   if (auction.images) {
     for (const image of auction.images) {
-      const imageId = hashUrl(image.sourceUrl);
+      const imageId = hash(image.sourceUrl);
       const imageRecord: AuctionImageRecord = {
         auctionId,
         recordKey: `IMAGE#${imageId}`,
