@@ -492,16 +492,88 @@ async function updateAuctionAnalysis(
         auctionId,
         recordKey: "MAIN",
       },
-      UpdateExpression: "SET aiTitle = :aiTitle, aiWarning = :aiWarning, updatedAt = :updatedAt",
+      UpdateExpression:
+        "SET aiTitle = :aiTitle, aiWarning = :aiWarning, gsiPk = :gsiPk, #date = :date, publishedAt = :publishedAt, updatedAt = :updatedAt",
+      ExpressionAttributeNames: { "#date": "date" },
       ExpressionAttributeValues: {
         ":aiTitle": analysis.aiTitle,
         ":aiWarning": analysis.aiWarning,
+        ":gsiPk": "PUBLISHED",
+        ":date": now,
+        ":publishedAt": now,
         ":updatedAt": now,
       },
     })
   );
 
   logger.log("Auction analysis saved to DynamoDB", { auctionId });
+}
+
+const GSI_NAME = "public";
+const GSI_LIMIT = 100;
+
+/**
+ * Get published auction IDs from GSI (most recent first)
+ * @returns Array of auction IDs (up to 50)
+ */
+async function getPublishedAuctionIds(): Promise<string[]> {
+  logger.log("Fetching published auction IDs");
+
+  if (LOCAL_STORAGE) {
+    logger.log("Local storage mode - cannot fetch auction IDs");
+    return [];
+  }
+
+  const auctionIds: string[] = [];
+  const paginator = paginateQuery(
+    { client: docClient },
+    {
+      TableName: TABLE_NAME,
+      IndexName: GSI_NAME,
+      KeyConditionExpression: "gsiPk = :gsiPk",
+      ExpressionAttributeValues: {
+        ":gsiPk": "PUBLISHED",
+      },
+      ProjectionExpression: "auctionId",
+      ScanIndexForward: false, // Most recent first
+      Limit: GSI_LIMIT,
+    }
+  );
+
+  for await (const page of paginator) {
+    if (page.Items) {
+      for (const item of page.Items) {
+        auctionIds.push(item.auctionId as string);
+        if (auctionIds.length >= GSI_LIMIT) {
+          break;
+        }
+      }
+    }
+    if (auctionIds.length >= GSI_LIMIT) {
+      break;
+    }
+  }
+
+  logger.log("Published auction IDs fetched", { count: auctionIds.length });
+
+  return auctionIds;
+}
+
+/**
+ * Get published auctions with full data (most recent first)
+ * @returns Array of auctions (up to 50)
+ */
+async function getPublishedAuctions(): Promise<Auction[]> {
+  const auctionIds = await getPublishedAuctionIds();
+
+  const auctionPromises = auctionIds.map((auctionId) => getById(auctionId));
+  const auctionResults = await Promise.all(auctionPromises);
+
+  const auctions = auctionResults.filter((auction): auction is Auction => auction !== undefined);
+
+  logger.log("Published auctions fetched", { count: auctions.length });
+
+  return auctions;
 }
 
 export const AuctionRepository = {
@@ -511,4 +583,5 @@ export const AuctionRepository = {
   getProperty,
   updatePropertyMap,
   updateAuctionAnalysis,
+  getPublishedAuctions,
 };

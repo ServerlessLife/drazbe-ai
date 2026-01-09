@@ -41,6 +41,13 @@ export class CdkStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       timeToLiveAttribute: "ttl",
       dynamoStream: dynamodb.StreamViewType.NEW_IMAGE,
+      globalSecondaryIndexes: [
+        {
+          indexName: "public",
+          partitionKey: { name: "gsiPk", type: dynamodb.AttributeType.STRING },
+          sortKey: { name: "date", type: dynamodb.AttributeType.STRING },
+        },
+      ],
     });
 
     // DynamoDB table for tracking visited URLs

@@ -47,4 +47,6 @@ export type Auction = Omit<AuctionBase, "property" | "documents" | "images" | "i
   images: AuctionImage[] | null;
   /** Price to value ratio (Relativna cena) */
   priceToValueRatio: PriceToValueRatio;
+  /** Timestamp when the auction was published (AI analysis completed) */
+  publishedAt: string | null;
 };

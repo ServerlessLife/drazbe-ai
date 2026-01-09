@@ -19,6 +19,8 @@ export type AuctionRecordBase = {
   recordKey: string;
   /** Record type for filtering */
   recordType: AuctionRecordType;
+  /** GSI partition key - set to "PUBLISHED" when auction is ready for public viewing */
+  gsiPk?: string;
   /** Timestamp when the record was created */
   createdAt: string;
   /** Timestamp when the record was last updated */
