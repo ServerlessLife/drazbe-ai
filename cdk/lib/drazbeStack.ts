@@ -101,13 +101,14 @@ export class CdkStack extends cdk.Stack {
       snsTopicAlarm: alarmTopic,
     });
 
-    // EventBridge Scheduler to trigger at 18:00 Slovenia time
+    // EventBridge Scheduler to trigger processing
     new scheduler.Schedule(this, "SchedulerSchedule", {
-      schedule: scheduler.ScheduleExpression.cron({
-        minute: "0",
-        hour: "18",
-        timeZone: cdk.TimeZone.of("Europe/Ljubljana"),
-      }),
+      //  schedule: scheduler.ScheduleExpression.cron({
+      //   minute: "0",
+      //   hour: "18",
+      //   timeZone: cdk.TimeZone.of("Europe/Ljubljana"),
+      // }),
+      schedule: scheduler.ScheduleExpression.rate(cdk.Duration.minutes(30)),
       target: new targets.LambdaInvoke(schedulerLambda, {}),
     });
 
