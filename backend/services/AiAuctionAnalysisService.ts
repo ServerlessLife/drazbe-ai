@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { logger } from "../utils/logger.js";
+import { config } from "../utils/config.js";
 import { auctionAnalysisSchema, AuctionAnalysis } from "../types/AuctionAnalysis.js";
 
 export type { AuctionAnalysis };
@@ -9,10 +10,12 @@ let openai: OpenAI | undefined;
 
 /**
  * Get or create the OpenAI client instance (singleton pattern)
+ * Uses API key from config (SSM in Lambda, .env locally)
  */
-function getOpenAI(): OpenAI {
+async function getOpenAI(): Promise<OpenAI> {
   if (!openai) {
-    openai = new OpenAI();
+    const apiKey = await config.get("OPENAI_API_KEY");
+    openai = new OpenAI({ apiKey });
   }
   return openai;
 }
@@ -56,7 +59,7 @@ async function analyzeAuction(auctionMarkdown: string): Promise<AuctionAnalysis>
     markdownLength: auctionMarkdown.length,
   });
 
-  const client = getOpenAI();
+  const client = await getOpenAI();
 
   const completion = await client.chat.completions.create({
     model: "gpt-5.2",

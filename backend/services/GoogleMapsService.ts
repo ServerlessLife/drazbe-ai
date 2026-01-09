@@ -1,11 +1,10 @@
 import { logger } from "../utils/logger.js";
+import { config } from "../utils/config.js";
 import { Centroid } from "../types/GursValuationBase.js";
 import { DrivingResult } from "../types/DrivingResult.js";
 import proj4 from "proj4";
 
 export type { DrivingResult };
-
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 /**
  * Location can be specified as coordinates or an address string
@@ -49,9 +48,10 @@ async function getDrivingInfo(
   origin: Location,
   destination: Location
 ): Promise<DrivingResult | null> {
-  if (!GOOGLE_MAPS_API_KEY) {
+  const apiKey = await config.get("GOOGLE_MAPS_API_KEY");
+  if (!apiKey) {
     throw new Error(
-      "Google Maps API key not configured. Set GOOGLE_MAPS_API_KEY environment variable."
+      "Google Maps API key not configured. Set GOOGLE_MAPS_API_KEY in .env or SSM Parameter Store."
     );
   }
 
@@ -65,7 +65,7 @@ async function getDrivingInfo(
   });
 
   try {
-    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originStr}&destinations=${destinationStr}&mode=driving&key=${GOOGLE_MAPS_API_KEY}`;
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originStr}&destinations=${destinationStr}&mode=driving&key=${apiKey}`;
 
     const response = await fetch(url);
     const data = await response.json();

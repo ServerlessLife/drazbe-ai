@@ -13,6 +13,7 @@
     "@aws-sdk/client-dynamodb": "^3.709.0",
     "@aws-sdk/client-s3": "^3.965.0",
     "@aws-sdk/client-sqs": "^3.709.0",
+    "@aws-sdk/client-ssm": "^3.965.0",
     "@aws-sdk/lib-dynamodb": "^3.709.0",
     "@opendocsg/pdf2md": "^0.2.2",
     "@types/aws-lambda": "^8.10.154",

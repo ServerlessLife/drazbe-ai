@@ -12,6 +12,7 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
+import * as ssm from "aws-cdk-lib/aws-ssm";
 import { Construct } from "constructs";
 import { QueueWithDlq } from "./queueWithDlq";
 import { LambdaAlarms } from "./lambdaAlarms";
@@ -29,6 +30,29 @@ export class CdkStack extends cdk.Stack {
     alarmTopic.addSubscription(
       new snsSubscriptions.EmailSubscription("marko@strukelj.net"),
     );
+
+    // SSM Parameters for sensitive configuration
+    // These are created with placeholder values - update them in AWS Console or via CLI
+    const openaiApiKeyParam = new ssm.StringParameter(this, "OpenAIApiKey", {
+      parameterName: "/drazbe-ai/openai-api-key",
+      stringValue: "PLACEHOLDER_UPDATE_IN_CONSOLE",
+      description: "OpenAI API Key for AI services",
+      tier: ssm.ParameterTier.STANDARD,
+    });
+
+    const googleMapsApiKeyParam = new ssm.StringParameter(this, "GoogleMapsApiKey", {
+      parameterName: "/drazbe-ai/google-maps-api-key",
+      stringValue: "PLACEHOLDER_UPDATE_IN_CONSOLE",
+      description: "Google Maps API Key for distance calculations",
+      tier: ssm.ParameterTier.STANDARD,
+    });
+
+    const homeAddressParam = new ssm.StringParameter(this, "HomeAddress", {
+      parameterName: "/drazbe-ai/home-address",
+      stringValue: "PLACEHOLDER_UPDATE_IN_CONSOLE",
+      description: "Home address for driving distance calculations",
+      tier: ssm.ParameterTier.STANDARD,
+    });
 
     // DynamoDB table to track last trigger times
     const sourceTriggerTable = new dynamodb.TableV2(this, "SourceTriggerTable", {
@@ -132,6 +156,9 @@ export class CdkStack extends cdk.Stack {
 
     // Grant processor Lambda access to S3 bucket for documents
     contentBucket.grantReadWrite(processorLambda);
+
+    // Grant processor Lambda access to SSM parameters
+    openaiApiKeyParam.grantRead(processorLambda);
 
     // Lambda alarms for processor
     new LambdaAlarms(this, "ProcessorAlarms", {
@@ -257,9 +284,6 @@ export class CdkStack extends cdk.Stack {
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
         USER_SUITABILITY_TABLE_NAME: userSuitabilityTable.tableName,
-        HOME_ADDRESS: "Beblerjev trg 3, 1000 Ljubljana, Slovenia",
-        // TODO: Store GOOGLE_MAPS_API_KEY in SSM Parameter Store or Secrets Manager
-        GOOGLE_MAPS_API_KEY: "",
       },
     });
 
@@ -268,6 +292,11 @@ export class CdkStack extends cdk.Stack {
 
     // Grant auction analysis processor Lambda access to user suitability table
     userSuitabilityTable.grantReadWriteData(auctionAnalysisProcessorLambda);
+
+    // Grant auction analysis processor Lambda access to SSM parameters
+    openaiApiKeyParam.grantRead(auctionAnalysisProcessorLambda);
+    googleMapsApiKeyParam.grantRead(auctionAnalysisProcessorLambda);
+    homeAddressParam.grantRead(auctionAnalysisProcessorLambda);
 
     // Add SQS trigger to auction analysis processor Lambda
     auctionAnalysisProcessorLambda.addEventSource(

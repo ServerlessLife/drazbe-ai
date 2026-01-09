@@ -23,6 +23,7 @@ import { AuctionDocument } from "../types/AuctionDocument.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
 import { logger } from "../utils/logger.js";
+import { config } from "../utils/config.js";
 
 let browser: Browser | null = null;
 let context: BrowserContext | null = null;
@@ -31,10 +32,12 @@ let openai: OpenAI | undefined;
 
 /**
  * Get or create the OpenAI client instance (singleton pattern)
+ * Uses API key from config (SSM in Lambda, .env locally)
  */
-function getOpenAI(): OpenAI {
+async function getOpenAI(): Promise<OpenAI> {
   if (!openai) {
-    openai = new OpenAI();
+    const apiKey = await config.get("OPENAI_API_KEY");
+    openai = new OpenAI({ apiKey });
   }
   return openai;
 }
@@ -252,7 +255,8 @@ async function extractLinks(
     : "Osredotočite se na glavno vsebino, ne na navigacijo, glave, noge in druge elemente, ki niso povezani z vsebino.";
 
   try {
-    const response = await getOpenAI().chat.completions.create({
+    const openaiClient = await getOpenAI();
+    const response = await openaiClient.chat.completions.create({
       //model: "gpt-5-mini",
       model: "gpt-5.2",
       messages: [
@@ -332,7 +336,8 @@ async function convertHtmlToMarkdown(
     : "Osredotoči se na glavno vsebino objave. Odstrani navigacijo, glave, noge in druge elemente, ki niso del vsebine.";
 
   try {
-    const markdownResponse = await getOpenAI().chat.completions.create({
+    const openaiClient = await getOpenAI();
+    const markdownResponse = await openaiClient.chat.completions.create({
       model: "gpt-5-mini",
       messages: [
         {
@@ -391,7 +396,8 @@ async function convertHtmlToMarkdown(
  * Identifies parcels, buildings, prices, and other auction details
  */
 async function extractAuctionDetails(markdown: string): Promise<AuctionBase[]> {
-  const detailResponse = await getOpenAI().chat.completions.parse({
+  const openaiClient = await getOpenAI();
+  const detailResponse = await openaiClient.chat.completions.parse({
     model: "gpt-5.2",
     messages: [
       {

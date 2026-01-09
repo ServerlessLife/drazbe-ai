@@ -9,15 +9,15 @@ import { Auction } from "../types/Auction.js";
 import { DrivingResult } from "../types/DrivingResult.js";
 import { AuctionAnalysisQueueMessage } from "../types/QueueMessages.js";
 import { logger } from "../utils/logger.js";
-
-const HOME_ADDRESS = process.env.HOME_ADDRESS;
+import { config } from "../utils/config.js";
 
 /**
  * Get driving info from home to the auction property
  * Uses first property's centroid that has one, or falls back to auction location
  */
 async function getDrivingInfoFromHome(auction: Auction): Promise<DrivingResult | null> {
-  if (!HOME_ADDRESS) {
+  const homeAddress = await config.get("HOME_ADDRESS");
+  if (!homeAddress) {
     logger.warn("HOME_ADDRESS not configured, skipping driving info calculation");
     return null;
   }
@@ -26,12 +26,12 @@ async function getDrivingInfoFromHome(auction: Auction): Promise<DrivingResult |
   const centroid = auction.properties?.find((p) => p.valuation?.centroid)?.valuation?.centroid;
 
   if (centroid) {
-    return GoogleMapsService.getDrivingInfo(HOME_ADDRESS, centroid);
+    return GoogleMapsService.getDrivingInfo(homeAddress, centroid);
   }
 
   // Fallback to location address if available
   if (auction.location) {
-    return GoogleMapsService.getDrivingInfo(HOME_ADDRESS, auction.location);
+    return GoogleMapsService.getDrivingInfo(homeAddress, auction.location);
   }
 
   return null;
