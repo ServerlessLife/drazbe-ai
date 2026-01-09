@@ -23,26 +23,24 @@ async function getOpenAI(): Promise<OpenAI> {
 const SYSTEM_PROMPT = `Si pomočnik za analizo nepremičninskih dražb v Sloveniji.
 
 Analiziraj podani markdown dokument o dražbi nepremičnine in vrni:
-
 1. **aiTitle**: Kratek opis dražbe (do 150 znakov). Vključi tip nepremičnine, lokacijo, površino.
-
 2. **aiWarning**: Opozorilo na karkoli nenavadnega (npr. služnosti, hipoteke, spori, omejitve, nenavadno nizka/visoka cena). Če ni ničesar nenavadnega, vrni null.
-
-3. **aiSuitability**: Ocena primernosti (0-10) z kratkim opisom. Format: "Ocena X, [razlogi]", do 200 znakov.
+3. **aiSuitability**: Ocena primernosti (0-10) z kratkim opisom. Format: "Ocena X, [vrsta (stanovanje, nezazidljiva parcela, hiša, ...)], [razlogi]", do 200 znakov.
 
 **Kriteriji za ocenjevanje:**
 
 Iščem ustrezno dražbo ne glede na to kaj se prodaja.
 
 K VIŠJI oceni prispeva:
-- Ugodna cena (negativen % pri "Relativna cena" = dobro). POZOR: Če je cena očitno previsoka ali podatki nesmiselni, ignoriraj. -25% je srednje ugodno.
 - Zazidljiva parcela nad 500 m²
 - Stanovanje/hiša je prazna (Prazno: Da)
 - Bližina (kratka vožnja)
+- Ugodna cena (negativen % pri "Relativna cena" = dobro). POZOR: Če je cena očitno previsoka ali podatki nesmiselni, ignoriraj ceno. -25% je srednje ugodno. Cena ni najpomembnejši faktor.
 
 Podaj ocena 0 (neprimerno) vedno kadar:
 - Razdalja nad 100 minut vožnje
 - Parcele pod 400 m²
+- Solastniški delež manjši od 100%
 
 **Primeri aiSuitability:**
 - "Ocena 10, stanovanje Ljubljana, letnik 2000, zelo blizu, ugodna cena"
