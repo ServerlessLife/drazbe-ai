@@ -1,18 +1,10 @@
 import { z } from "zod";
+import { gursValuationBaseSchema } from "./GursValuationBase.js";
 
 // Schema for GURS parcel valuation data
-export const gursParcelValuationSchema = z.object({
-  // Surface and value
+export const gursParcelValuationSchema = gursValuationBaseSchema.extend({
+  // Surface area
   surfaceArea: z.number().describe("Površina v m²"),
-  value: z.number().describe("Posplošena vrednost v €"),
-
-  // Centroid coordinates
-  centroid: z
-    .object({
-      e: z.number().describe("Koordinata E"),
-      n: z.number().describe("Koordinata N"),
-    })
-    .optional(),
 
   // Intended use (namenska raba)
   intendedUse: z.string().optional().describe("Namenska raba"),

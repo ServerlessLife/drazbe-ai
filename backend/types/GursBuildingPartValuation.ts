@@ -1,25 +1,17 @@
 import { z } from "zod";
+import { gursValuationBaseSchema } from "./GursValuationBase.js";
 
 // Schema for GURS building part valuation data
-export const gursBuildingPartValuationSchema = z.object({
+export const gursBuildingPartValuationSchema = gursValuationBaseSchema.extend({
   // Address
   address: z.string().optional().describe("Naslov"),
-
-  // Value
-  value: z.number().describe("Posplošena vrednost v €"),
 
   // Building part details
   apartmentNumber: z.string().optional().describe("Številka stanovanja / poslovnega prostora"),
   actualUse: z.string().optional().describe("Dejanska raba dela stavbe"),
   floor: z.number().optional().describe("Nadstropje"),
   elevator: z.string().optional().describe("Dvigalo"),
-  netFloorArea: z.number().optional().describe("Neto tlorisna površina v m²"), // Centroid coordinates
-  centroid: z
-    .object({
-      e: z.number().describe("Koordinata E"),
-      n: z.number().describe("Koordinata N"),
-    })
-    .optional(),
+  netFloorArea: z.number().optional().describe("Neto tlorisna površina v m²"),
 
   // Building details
   buildingType: z.string().optional().describe("Tip stavbe"),

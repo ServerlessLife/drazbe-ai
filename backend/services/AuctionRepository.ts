@@ -535,10 +535,59 @@ async function getMainById(
   }
 }
 
+/**
+ * Update the aiTitle field for an auction
+ * @param dataSourceCode - The data source code
+ * @param id - The announcement ID
+ * @param aiTitle - The AI-generated title
+ */
+async function setAiTitle(dataSourceCode: string, id: string, aiTitle: string): Promise<void> {
+  const auctionId = generateAuctionId(dataSourceCode, id);
+  const now = new Date().toISOString();
+
+  logger.log("Setting aiTitle", {
+    auctionId,
+    aiTitle,
+    localStorage: LOCAL_STORAGE,
+  });
+
+  if (LOCAL_STORAGE) {
+    logger.logContent(
+      "aiTitle updated (local storage)",
+      { auctionId, aiTitle },
+      {
+        content: JSON.stringify({ aiTitle }, null, 2),
+        prefix: dataSourceCode,
+        suffix: `${id}-aiTitle`,
+        extension: "json",
+      }
+    );
+    return;
+  }
+
+  await docClient.send(
+    new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        auctionId,
+        recordKey: "MAIN",
+      },
+      UpdateExpression: "SET aiTitle = :aiTitle, updatedAt = :updatedAt",
+      ExpressionAttributeValues: {
+        ":aiTitle": aiTitle,
+        ":updatedAt": now,
+      },
+    })
+  );
+
+  logger.log("aiTitle saved to DynamoDB", { auctionId, aiTitle });
+}
+
 export const AuctionRepository = {
   save,
   savePropertyMap,
   getById,
   getMainById,
   formatAuctionMarkdown,
+  setAiTitle,
 };
