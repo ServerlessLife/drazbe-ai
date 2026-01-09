@@ -35,21 +35,21 @@ Analiziraj podani markdown dokument o dražbi nepremičnine in vrni:
 Iščem ustrezno dražbo ne glede na to kaj se prodaja.
 
 K VIŠJI oceni prispeva:
-- Ugodna cena (negativen % pri "Relativna cena" = dobro). POZOR: Če je cena očitno previsoka ali podatki nesmiselni, ignoriraj.
+- Ugodna cena (negativen % pri "Relativna cena" = dobro). POZOR: Če je cena očitno previsoka ali podatki nesmiselni, ignoriraj. -25% je srednje ugodno.
 - Zazidljiva parcela nad 500 m²
 - Stanovanje/hiša je prazna (Prazno: Da)
 - Bližina (kratka vožnja)
 
-Ocena 0 (neprimerno):
-- Razdalja nad 90 minut vožnje
+Podaj ocena 0 (neprimerno) vedno kadar:
+- Razdalja nad 100 minut vožnje
 - Parcele pod 400 m²
 
 **Primeri aiSuitability:**
-- "Ocena 10, stanovanje, letnik 2000, zelo blizu, ugodna cena"
-- "Ocena 5, zazidljiva parcela, daleč, sorazmerno ugodna cena"
-- "Ocena 0, stanovanje, zelo daleč"
+- "Ocena 10, stanovanje Ljubljana, letnik 2000, zelo blizu, ugodna cena"
+- "Ocena 5, zazidljiva parcela pri Mariboru, daleč, sorazmerno ugodna cena"
+- "Ocena 0, stanovanje pri Murski Soboti, zelo daleč"
 - "Ocena 0, zelo majhna nezazidljiva parcela"
-- "Ocena 3, hiša, letnik 1900, srednja razdalja"`;
+- "Ocena 3, hiša pri Jesenicah, letnik 1900, srednja razdalja"`;
 
 /**
  * Analyze auction markdown and produce AI-generated title, warning, and suitability assessment

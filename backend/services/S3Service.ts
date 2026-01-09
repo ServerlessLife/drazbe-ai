@@ -20,7 +20,26 @@ async function uploadFile(
   contentType: string
 ): Promise<string> {
   if (LOCAL_STORAGE) {
-    logger.log("Local storage mode - skipping S3 upload", { s3Key });
+    // Only save images locally, skip documents
+    if (s3Key.startsWith("images/")) {
+      const body = typeof content === "string" ? await readFile(content) : content;
+      const filename = s3Key.replace("images/", "");
+      const extension = filename.split(".").pop() || "png";
+      const prefix = filename.replace(`.${extension}`, "");
+
+      logger.logContent(
+        "Saved image to local storage",
+        { s3Key },
+        {
+          content: body,
+          prefix,
+          suffix: "map",
+          extension,
+        }
+      );
+      return s3Key;
+    }
+    logger.log("Local storage mode - skipping upload", { s3Key });
     return typeof content === "string" ? content : s3Key;
   }
 

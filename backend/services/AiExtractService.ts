@@ -1095,10 +1095,10 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
   });
 
   // TEMP: Only process first link for testing
-  if (suitableLinks.length > 0) {
-    logger.warn("Processing only first link (TEMP limitation)");
-    suitableLinks = [suitableLinks[0]];
-  }
+  // if (suitableLinks.length > 0) {
+  //   logger.warn("Processing only first link (TEMP limitation)");
+  //   suitableLinks = [suitableLinks[0]];
+  // }
 
   // Step 2: Process each announcement
   logger.log(`Processing ${suitableLinks.length} actions from ${dataSource.name}`, {

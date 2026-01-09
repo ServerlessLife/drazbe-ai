@@ -29,7 +29,7 @@ export const logger = {
     message: string,
     context?: Record<string, any>,
     file?: {
-      content: string;
+      content: string | Buffer;
       prefix: string;
       suffix: string;
       extension?: string;
@@ -52,12 +52,21 @@ export const logger = {
           console.log(message, { fileWritten: filename });
         }
       } else {
-        // Log message with context and file content in one call
-        const fileOutput = `\n-----------\n${file.content}\n-----------\n`;
-        if (context) {
-          console.log(message + fileOutput, context);
+        // Log message with context (skip binary content in console)
+        const isBinary = Buffer.isBuffer(file.content);
+        if (isBinary) {
+          if (context) {
+            console.log(message, { ...context, binarySize: file.content.length });
+          } else {
+            console.log(message, { binarySize: file.content.length });
+          }
         } else {
-          console.log(message + fileOutput);
+          const fileOutput = `\n-----------\n${file.content}\n-----------\n`;
+          if (context) {
+            console.log(message + fileOutput, context);
+          } else {
+            console.log(message + fileOutput);
+          }
         }
       }
     } else {

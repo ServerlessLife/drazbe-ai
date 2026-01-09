@@ -65,9 +65,7 @@ async function getRequiredConfig(key: ConfigKey): Promise<string> {
   if (!value) {
     throw new Error(
       `Required configuration ${key} not found. ` +
-        (IS_LAMBDA
-          ? `Set SSM parameter ${SSM_PARAMETER_NAMES[key]}`
-          : `Set ${key} in .env file`)
+        (IS_LAMBDA ? `Set SSM parameter ${SSM_PARAMETER_NAMES[key]}` : `Set ${key} in .env file`)
     );
   }
   return value;
