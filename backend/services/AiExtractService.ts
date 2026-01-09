@@ -763,14 +763,14 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
       `Processing announcement for data source ${dataSource.code}, title "${objava.title}"`,
       {
         title: objava.title,
-        url: objava.link,
+        url: objava.url,
         dataSourceCode: dataSource.code,
       }
     );
 
     const safeTitle = objava.title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 50);
 
-    const announcementUrl = buildFullUrl(objava.link, dataSource.url);
+    const announcementUrl = buildFullUrl(objava.url, dataSource.url);
     let markdown: string = "";
 
     // Fetch content based on source type
@@ -990,7 +990,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
       {
         dataSourceCode: dataSource.code,
         title: objava.title,
-        url: objava.link,
+        url: objava.url,
       }
     );
     return [];
@@ -1021,7 +1021,7 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
     allLinks = [
       {
         title: dataSource.name,
-        link: dataSource.url,
+        url: dataSource.url,
         suitable: true,
         reason: "Neposredno podana povezava",
       },
