@@ -81,8 +81,8 @@ function formatAuctionMarkdown(auction: Auction, drivingTimeMinutes?: number | n
     lines.push(`- **Ocenjena vrednost:** ${auction.estimatedValue.toLocaleString("sl-SI")} €`);
   if (auction.ownershipShare) lines.push(`- **Delež lastništva:** ${auction.ownershipShare}%`);
   if (auction.yearBuilt) lines.push(`- **Leto izgradnje:** ${auction.yearBuilt}`);
-  if (auction.isVacant && auction.isVacant !== "unknown") {
-    lines.push(`- **Prazno:** ${auction.isVacant === "yes" ? "Da" : "Ne"}`);
+  if (auction.isVacant && auction.isVacant !== "UNKNOWN") {
+    lines.push(`- **Prazno:** ${auction.isVacant === "YES" ? "Da" : "Ne"}`);
   }
 
   // Price to value ratio section (Relativna cena)
@@ -264,6 +264,7 @@ async function save(auction: Auction): Promise<void> {
     urlSources: auction.urlSources,
     title: auction.title,
     aiTitle: auction.aiTitle,
+    aiWarning: auction.aiWarning,
     aiSuitability: auction.aiSuitability,
     type: auction.type,
     isVacant: auction.isVacant,

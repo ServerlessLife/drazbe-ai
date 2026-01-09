@@ -39,11 +39,13 @@ export type Auction = {
   title: string;
   /** AI-generated title for the auction */
   aiTitle: string | null;
+  /** AI-generated warning about unusual aspects */
+  aiWarning: string | null;
   /** AI-generated suitability assessment */
   aiSuitability: string | null;
   type: "auction" | "contract" | "other";
   /** Ali je nepremičnina prazna */
-  isVacant: "yes" | "no" | "unknown" | null;
+  isVacant: "YES" | "NO" | "UNKNOWN" | null;
   publicationDate: string | null;
   dueDate: string | null;
   description: string | null;

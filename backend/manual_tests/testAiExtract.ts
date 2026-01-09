@@ -2,6 +2,7 @@ import fs from "fs";
 import { AiExtractService } from "../services/AiExtractService.js";
 import { AuctionRepository } from "../services/AuctionRepository.js";
 import { GoogleMapsService } from "../services/GoogleMapsService.js";
+import { AiAuctionAnalysisService } from "../services/AiAuctionAnalysisService.js";
 import { Source } from "../types/Source.js";
 import { Auction } from "../types/Auction.js";
 import { logger } from "../utils/logger.js";
@@ -75,6 +76,32 @@ async function main() {
             extension: "md",
           }
         );
+
+        // Analyze auction with AI
+        try {
+          const analysis = await AiAuctionAnalysisService.analyzeAuction(markdown);
+          logger.logContent(
+            "Auction analysis saved",
+            { dataSourceCode: auction.dataSourceCode, announcementId },
+            {
+              content: JSON.stringify(analysis, null, 2),
+              prefix: auction.dataSourceCode,
+              suffix: `${announcementId}-analysis`,
+              extension: "json",
+            }
+          );
+          logger.log("Auction analyzed", {
+            announcementId,
+            aiTitle: analysis.aiTitle,
+            aiSuitability: analysis.aiSuitability,
+            hasWarning: analysis.aiWarning !== null,
+          });
+        } catch (err) {
+          logger.warn("Failed to analyze auction", {
+            announcementId,
+            error: err instanceof Error ? err.message : String(err),
+          });
+        }
       }
 
       allResults.push({ source: source.code, auctions });
