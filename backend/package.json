@@ -2,7 +2,7 @@
   "name": "drazbe-ai-backend",
   "type": "module",
   "scripts": {
-    "start": "tsx index.ts",
+    "test:ai-extract": "tsx manual_tests/testAiExtract.ts",
     "test:parcel-valuation": "tsx manual_tests/testParcelValuation.ts",
     "test:building-valuation": "tsx manual_tests/testBuildingPartValuation.ts",
     "test:screenshot": "tsx manual_tests/testParcelScreenshot.ts",

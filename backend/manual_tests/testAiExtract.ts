@@ -1,9 +1,9 @@
 import fs from "fs";
-import { AiExtractService } from "./services/AiExtractService.js";
-import { AuctionRepository } from "./services/AuctionRepository.js";
-import { Source } from "./types/Source.js";
-import { Auction } from "./types/Auction.js";
-import { logger } from "./utils/logger.js";
+import { AiExtractService } from "../services/AiExtractService.js";
+import { AuctionRepository } from "../services/AuctionRepository.js";
+import { Source } from "../types/Source.js";
+import { Auction } from "../types/Auction.js";
+import { logger } from "../utils/logger.js";
 
 // Load sources from JSON
 const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));
