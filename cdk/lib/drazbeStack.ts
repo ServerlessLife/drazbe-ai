@@ -31,7 +31,6 @@ export class CdkStack extends cdk.Stack {
     const sourceTriggerTable = new dynamodb.TableV2(this, "SourceTriggerTable", {
       partitionKey: { name: "sourceCode", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "timestamp", type: dynamodb.AttributeType.NUMBER },
-      billing: dynamodb.Billing.onDemand(),
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
@@ -39,9 +38,14 @@ export class CdkStack extends cdk.Stack {
     const auctionTable = new dynamodb.TableV2(this, "AuctionTable", {
       partitionKey: { name: "auctionId", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "recordKey", type: dynamodb.AttributeType.STRING },
-      billing: dynamodb.Billing.onDemand(),
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       timeToLiveAttribute: "ttl",
+    });
+
+    // DynamoDB table for tracking visited URLs
+    const visitedUrlTable = new dynamodb.TableV2(this, "VisitedUrlTable", {
+      partitionKey: { name: "url", type: dynamodb.AttributeType.STRING },
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
     // SQS queue for source processing
@@ -90,11 +94,15 @@ export class CdkStack extends cdk.Stack {
       memorySize: 2048,
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
+        VISITED_URL_TABLE_NAME: visitedUrlTable.tableName,
       },
     });
 
     // Grant processor Lambda access to auction table
     auctionTable.grantReadWriteData(processorLambda);
+
+    // Grant processor Lambda access to visited URL table
+    visitedUrlTable.grantReadWriteData(processorLambda);
 
     // Lambda alarms for processor
     new LambdaAlarms(this, "ProcessorAlarms", {
@@ -123,6 +131,11 @@ export class CdkStack extends cdk.Stack {
     new cdk.CfnOutput(this, "AuctionTableName", {
       value: auctionTable.tableName,
       description: "Auction Table Name",
+    });
+
+    new cdk.CfnOutput(this, "VisitedUrlTableName", {
+      value: visitedUrlTable.tableName,
+      description: "Visited URL Table Name",
     });
   }
 }

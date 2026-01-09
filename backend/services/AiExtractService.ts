@@ -13,6 +13,7 @@ import { createCanvas } from "canvas";
 import * as pdfjsLib from "pdfjs-dist";
 import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { AuctionRepository } from "./AuctionRepository.js";
+import { VisitedUrlRepository } from "./VisitedUrlRepository.js";
 import { GursValuationService } from "./GursValuationService.js";
 import { Source } from "../types/Source.js";
 import { AuctionBase, auctionsBaseSchema } from "../types/AuctionBase.js";
@@ -759,6 +760,21 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
  */
 async function processAuction(page: Page, objava: Link, dataSource: Source): Promise<Auction[]> {
   try {
+    const announcementUrl = buildFullUrl(objava.url, dataSource.url);
+
+    // Check if this URL was already visited
+    if (await VisitedUrlRepository.isVisited(announcementUrl)) {
+      logger.log(
+        `Skipping already visited URL for data source ${dataSource.code}, title "${objava.title}"`,
+        {
+          title: objava.title,
+          url: announcementUrl,
+          dataSourceCode: dataSource.code,
+        }
+      );
+      return [];
+    }
+
     logger.log(
       `Processing announcement for data source ${dataSource.code}, title "${objava.title}"`,
       {
@@ -769,8 +785,6 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
     );
 
     const safeTitle = objava.title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 50);
-
-    const announcementUrl = buildFullUrl(objava.url, dataSource.url);
     let markdown: string = "";
 
     // Fetch content based on source type
@@ -981,6 +995,9 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
         resultsExtracted: results.length,
       }
     );
+
+    // Mark URL as visited after successful processing
+    await VisitedUrlRepository.markVisited(announcementUrl, dataSource.code);
 
     return results;
   } catch (err: any) {
