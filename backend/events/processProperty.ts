@@ -2,6 +2,7 @@ import "dotenv/config";
 import { SQSEvent } from "aws-lambda";
 import { AuctionRepository } from "../services/AuctionRepository.js";
 import { ParcelScreenshotService } from "../services/ParcelScreenshotService.js";
+import { S3Service } from "../services/S3Service.js";
 import { PropertyQueueMessage } from "../types/QueueMessages.js";
 import { logger } from "../utils/logger.js";
 
@@ -40,9 +41,9 @@ export async function handler(event: SQSEvent) {
       continue;
     }
 
-    // TODO: Upload screenshot to S3 and get URL
-    // For now, just save the local path
-    const mapImageUrl = screenshotPath;
+    // Upload screenshot to S3
+    const s3Key = `images/${auctionId}/${cadastralMunicipality}-${number}.png`;
+    const mapImageUrl = await S3Service.uploadFile(screenshotPath, s3Key, "image/png");
 
     // Update the property record with the map image URL
     await AuctionRepository.updatePropertyMap(

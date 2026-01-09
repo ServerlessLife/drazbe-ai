@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.709.0",
+    "@aws-sdk/client-s3": "^3.965.0",
     "@aws-sdk/client-sqs": "^3.709.0",
     "@aws-sdk/lib-dynamodb": "^3.709.0",
     "@opendocsg/pdf2md": "^0.2.2",
@@ -20,8 +21,10 @@
     "canvas": "^3.2.0",
     "cheerio": "^1.1.2",
     "dotenv": "^16.4.7",
+    "feed": "^5.1.0",
     "html-minifier-terser": "^7.2.0",
     "mammoth": "^1.11.0",
+    "marked": "^17.0.1",
     "openai": "^6.15.0",
     "pdfjs-dist": "^4.6.82",
     "playwright": "^1.57.0",

@@ -9,6 +9,9 @@ import * as scheduler from "aws-cdk-lib/aws-scheduler";
 import * as targets from "aws-cdk-lib/aws-scheduler-targets";
 import * as lambdaEventSources from "aws-cdk-lib/aws-lambda-event-sources";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as s3 from "aws-cdk-lib/aws-s3";
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import { Construct } from "constructs";
 import { QueueWithDlq } from "./queueWithDlq";
 import { LambdaAlarms } from "./lambdaAlarms";
@@ -63,6 +66,12 @@ export class CdkStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
+    // S3 bucket for files (images, documents) - accessed via CloudFront
+    const contentBucket = new s3.Bucket(this, "ContentBucket", {
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    });
+
     // SQS queue for source processing
     const sourceQueueWithDlq = new QueueWithDlq(this, "SourceQueue", {
       visibilityTimeoutSeconds: 15 * 60, // 15 minutes
@@ -110,6 +119,7 @@ export class CdkStack extends cdk.Stack {
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
         VISITED_URL_TABLE_NAME: visitedUrlTable.tableName,
+        PUBLIC_BUCKET_NAME: contentBucket.bucketName,
       },
     });
 
@@ -118,6 +128,9 @@ export class CdkStack extends cdk.Stack {
 
     // Grant processor Lambda access to visited URL table
     visitedUrlTable.grantReadWriteData(processorLambda);
+
+    // Grant processor Lambda access to S3 bucket for documents
+    contentBucket.grantReadWrite(processorLambda);
 
     // Lambda alarms for processor
     new LambdaAlarms(this, "ProcessorAlarms", {
@@ -198,8 +211,12 @@ export class CdkStack extends cdk.Stack {
       memorySize: 2048,
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
+        PUBLIC_BUCKET_NAME: contentBucket.bucketName,
       },
     });
+
+    // Grant property processor Lambda access to S3 bucket
+    contentBucket.grantReadWrite(propertyProcessorLambda);
 
     // Grant property processor Lambda access to auction table
     auctionTable.grantReadWriteData(propertyProcessorLambda);
@@ -249,6 +266,52 @@ export class CdkStack extends cdk.Stack {
       snsTopicAlarm: alarmTopic,
     });
 
+    // RSS Feed Lambda with Function URL
+    const rssFeedLambda = new NodejsFunction(this, "RssFeedLambda", {
+      entry: "backend/events/rssFeed.ts",
+      timeout: cdk.Duration.seconds(30),
+      memorySize: 512,
+      environment: {
+        AUCTION_TABLE_NAME: auctionTable.tableName,
+        USER_SUITABILITY_TABLE_NAME: userSuitabilityTable.tableName,
+      },
+    });
+
+    // Grant RSS Lambda read access to tables
+    auctionTable.grantReadData(rssFeedLambda);
+    userSuitabilityTable.grantReadData(rssFeedLambda);
+
+    // Create Lambda Function URL for RSS feed
+    const rssFunctionUrl = rssFeedLambda.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+    });
+
+    // CloudFront distribution
+    const distribution = new cloudfront.Distribution(this, "Distribution", {
+      defaultBehavior: {
+        origin: new origins.S3StaticWebsiteOrigin(contentBucket),
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      },
+      additionalBehaviors: {
+        "/images/*": {
+          origin: origins.S3BucketOrigin.withOriginAccessControl(contentBucket),
+          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+        },
+        "/documents/*": {
+          origin: origins.S3BucketOrigin.withOriginAccessControl(contentBucket),
+          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+        },
+        "/rss": {
+          origin: new origins.FunctionUrlOrigin(rssFunctionUrl),
+          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
+        },
+      },
+    });
+
     // Outputs
     new cdk.CfnOutput(this, "SourceQueueUrl", {
       value: sourceQueueWithDlq.queue.queueUrl,
@@ -273,6 +336,21 @@ export class CdkStack extends cdk.Stack {
     new cdk.CfnOutput(this, "UserSuitabilityTableName", {
       value: userSuitabilityTable.tableName,
       description: "User Suitability Table Name",
+    });
+
+    new cdk.CfnOutput(this, "ContentBucketName", {
+      value: contentBucket.bucketName,
+      description: "Content S3 Bucket Name",
+    });
+
+    new cdk.CfnOutput(this, "CloudFrontDistributionUrl", {
+      value: `https://${distribution.distributionDomainName}`,
+      description: "CloudFront Distribution URL",
+    });
+
+    new cdk.CfnOutput(this, "RssFeedUrl", {
+      value: `https://${distribution.distributionDomainName}/rss`,
+      description: "RSS Feed URL",
     });
   }
 }

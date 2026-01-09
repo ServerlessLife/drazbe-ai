@@ -112,6 +112,7 @@ async function save(auction: Auction): Promise<void> {
     ownershipShare: auction.ownershipShare,
     yearBuilt: auction.yearBuilt,
     priceToValueRatio: auction.priceToValueRatio,
+    publishedAt: auction.publishedAt,
   };
   records.push(mainRecord);
 

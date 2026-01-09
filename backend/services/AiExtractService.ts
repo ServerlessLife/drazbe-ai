@@ -15,6 +15,7 @@ import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { AuctionRepository } from "./AuctionRepository.js";
 import { VisitedUrlRepository } from "./VisitedUrlRepository.js";
 import { GursValuationService } from "./GursValuationService.js";
+import { S3Service } from "./S3Service.js";
 import { Source } from "../types/Source.js";
 import { AuctionBase, auctionsBaseSchema } from "../types/AuctionBase.js";
 import { Auction, AuctionProperty } from "../types/Auction.js";
@@ -561,18 +562,22 @@ async function fetchDocument(
       });
     }
 
-    // Generate local URL using UUID
+    // Generate S3 key using UUID and upload to S3
     const uuid = crypto.randomUUID();
     const extension = docType === "docx" ? "docx" : "pdf";
-    const localUrl = `documents/${uuid}.${extension}`;
+    const s3Key = `documents/${uuid}.${extension}`;
+    const contentTypeForS3 = docType === "docx"
+      ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      : "application/pdf";
 
-    // // TODO: Upload buffer to S3 using localUrl
-    // logger.log("Document ready for S3 upload", {
-    //   document: doc.description,
-    //   localUrl,
-    //   announcementUrl,
-    //   dataSourceCode,
-    // });
+    const localUrl = await S3Service.uploadFile(buffer, s3Key, contentTypeForS3);
+
+    logger.log("Document uploaded to S3", {
+      document: doc.description,
+      localUrl,
+      announcementUrl,
+      dataSourceCode,
+    });
 
     return {
       description: doc.description,
@@ -980,6 +985,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
           toEstimatedValue,
           toPropertyValuations,
         },
+        publishedAt: null,
       };
 
       // Save to DynamoDB
