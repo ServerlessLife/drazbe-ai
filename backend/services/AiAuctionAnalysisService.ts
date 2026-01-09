@@ -25,15 +25,17 @@ Analiziraj podani markdown dokument o dražbi nepremičnine in vrni:
 
 2. **aiWarning**: Opozorilo na karkoli nenavadnega (npr. služnosti, hipoteke, spori, omejitve, nenavadno nizka/visoka cena). Če ni ničesar nenavadnega, vrni null.
 
-3. **aiSuitability**: Ocena primernosti (0-10) z kratkim opisom. Format: "Ocena X, [razlogi]"
+3. **aiSuitability**: Ocena primernosti (0-10) z kratkim opisom. Format: "Ocena X, [razlogi]", do 200 znakov.
 
 **Kriteriji za ocenjevanje:**
+
+Iščem ustrezno dražbo ne glede na to kaj se prodaja.
 
 K VIŠJI oceni prispeva:
 - Ugodna cena (negativen % pri "Relativna cena" = dobro). POZOR: Če je cena očitno previsoka ali podatki nesmiselni, ignoriraj.
 - Zazidljiva parcela nad 500 m²
 - Stanovanje/hiša je prazna (Prazno: Da)
-- Bližina (kratka vožnja od doma)
+- Bližina (kratka vožnja)
 
 Ocena 0 (neprimerno):
 - Razdalja nad 90 minut vožnje
