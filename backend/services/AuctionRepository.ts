@@ -5,6 +5,7 @@ import {
   QueryCommand,
   BatchWriteCommand,
   UpdateCommand,
+  paginateQuery,
 } from "@aws-sdk/lib-dynamodb";
 import { Property } from "../types/Property.js";
 import {
@@ -23,6 +24,7 @@ import {
 import { logger } from "../utils/logger.js";
 import { AuctionDocument } from "../types/AuctionDocument.js";
 import { AuctionImage } from "../types/AuctionImage.js";
+import { PropertyKey } from "../types/PropertyIdentifier.js";
 
 const TABLE_NAME = process.env.AUCTION_TABLE_NAME || "AuctionTable";
 const LOCAL_STORAGE = process.env.LOCAL_STORAGE === "true";
@@ -261,38 +263,41 @@ function stripDynamoDbFields<T extends AuctionRecord>(
 }
 
 /**
- * Get all records for an auction by ID
+ * Get all records for an auction by auctionId
  * Returns a clean Auction object without DynamoDB-specific fields
+ * Uses pagination to handle large result sets
+ * @param auctionId - The partition key
  */
-async function getById(
-  dataSourceCode: string,
-  sourceUrl: string,
-  announcementId: string
-): Promise<Auction> {
-  const auctionId = generateAuctionId(dataSourceCode, sourceUrl, announcementId);
+async function getById(auctionId: string): Promise<Auction | undefined> {
+  logger.log("Fetching auction from DynamoDB", { auctionId });
 
-  logger.log("Fetching auction from DynamoDB", {
-    dataSourceCode,
-    announcementId,
-    auctionId,
-  });
-
-  const result = await docClient.send(
-    new QueryCommand({
+  // Use paginator to fetch all records
+  const records: AuctionRecord[] = [];
+  const paginator = paginateQuery(
+    { client: docClient },
+    {
       TableName: TABLE_NAME,
       KeyConditionExpression: "auctionId = :auctionId",
       ExpressionAttributeValues: {
         ":auctionId": auctionId,
       },
-    })
+    }
   );
 
-  const records = (result.Items || []) as AuctionRecord[];
+  for await (const page of paginator) {
+    if (page.Items) {
+      records.push(...(page.Items as AuctionRecord[]));
+    }
+  }
 
   logger.log("Auction fetched from DynamoDB", {
     auctionId,
     recordCount: records.length,
   });
+
+  if (records.length === 0) {
+    return undefined;
+  }
 
   // Collect raw data from records
   let main: Omit<Auction, "properties" | "documents" | "images"> | null = null;
@@ -328,6 +333,10 @@ async function getById(
     }
   }
 
+  if (!main) {
+    throw new Error(`Auction main record not found in DynamoDB: ${auctionId}`);
+  }
+
   // Combine properties with their valuation and mapImageUrl
   const properties: AuctionProperty[] = Array.from(propertiesMap.values()).map(
     ({ property, valuation, mapImageUrl }) => ({
@@ -338,7 +347,7 @@ async function getById(
   );
 
   const auction: Auction = {
-    ...main!,
+    ...main,
     properties,
     documents,
     images,
@@ -348,21 +357,21 @@ async function getById(
 }
 
 /**
- * Get the main record for an auction by ID
- * Returns clean Auction main fields without DynamoDB-specific fields
+ * Get a property record by auctionId and property key
+ * @param auctionId - The partition key
+ * @param propertyKey - The property identifier (type, cadastralMunicipality, number)
  */
-async function getMainById(
-  dataSourceCode: string,
-  sourceUrl: string,
-  announcementId: string
-): Promise<Omit<Auction, "properties" | "documents" | "images"> | null> {
-  const auctionId = generateAuctionId(dataSourceCode, sourceUrl, announcementId);
+async function getProperty(
+  auctionId: string,
+  propertyKey: PropertyKey
+): Promise<AuctionPropertyRecord | null> {
+  const recordKey = `PROPERTY#${generatePropertyId(propertyKey)}`;
+  logger.log("Fetching property record from DynamoDB", { auctionId, recordKey });
 
-  logger.log("Fetching auction main record from DynamoDB", {
-    dataSourceCode,
-    announcementId,
-    auctionId,
-  });
+  if (LOCAL_STORAGE) {
+    logger.log("Local storage mode - cannot fetch property record");
+    return null;
+  }
 
   const result = await docClient.send(
     new QueryCommand({
@@ -370,52 +379,101 @@ async function getMainById(
       KeyConditionExpression: "auctionId = :auctionId AND recordKey = :recordKey",
       ExpressionAttributeValues: {
         ":auctionId": auctionId,
-        ":recordKey": "MAIN",
+        ":recordKey": recordKey,
       },
     })
   );
 
-  const record = result.Items?.[0] as AuctionMainRecord | undefined;
+  const record = result.Items?.[0] as AuctionPropertyRecord | undefined;
 
   if (record) {
-    logger.log("Auction main record fetched from DynamoDB", { auctionId });
-    return stripDynamoDbFields(record) as Omit<Auction, "properties" | "documents" | "images">;
+    logger.log("Property record fetched from DynamoDB", { auctionId, recordKey });
+    return record;
   } else {
-    logger.log("Auction main record not found in DynamoDB", { auctionId });
+    logger.log("Property record not found in DynamoDB", { auctionId, recordKey });
     return null;
   }
 }
 
 /**
- * Update the aiTitle field for an auction
- * @param dataSourceCode - The data source code
- * @param sourceUrl - The source URL
- * @param announcementId - The announcement ID
- * @param aiTitle - The AI-generated title
+ * Update property map URL by keys
+ * @param auctionId - The partition key
+ * @param propertyKey - The property identifier (type, cadastralMunicipality, number)
+ * @param mapImageUrl - The map image URL to save
  */
-async function setAiTitle(
-  dataSourceCode: string,
-  sourceUrl: string,
-  announcementId: string,
-  aiTitle: string
+async function updatePropertyMap(
+  auctionId: string,
+  propertyKey: PropertyKey,
+  mapImageUrl: string
 ): Promise<void> {
-  const auctionId = generateAuctionId(dataSourceCode, sourceUrl, announcementId);
+  const recordKey = `PROPERTY#${generatePropertyId(propertyKey)}`;
   const now = new Date().toISOString();
 
-  logger.log("Setting aiTitle", {
+  logger.log("Updating property map by keys", {
     auctionId,
-    aiTitle,
+    recordKey,
+    mapImageUrl,
     localStorage: LOCAL_STORAGE,
   });
 
   if (LOCAL_STORAGE) {
     logger.logContent(
-      "aiTitle updated (local storage)",
-      { auctionId, aiTitle },
+      "Property map updated (local storage)",
+      { auctionId, recordKey },
       {
-        content: JSON.stringify({ aiTitle }, null, 2),
-        prefix: dataSourceCode,
-        suffix: `${announcementId}-aiTitle`,
+        content: JSON.stringify({ mapImageUrl }, null, 2),
+        prefix: "property-map",
+        suffix: `${auctionId}-${recordKey}`,
+        extension: "json",
+      }
+    );
+    return;
+  }
+
+  await docClient.send(
+    new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        auctionId,
+        recordKey,
+      },
+      UpdateExpression: "SET mapImageUrl = :mapImageUrl, updatedAt = :updatedAt",
+      ExpressionAttributeValues: {
+        ":mapImageUrl": mapImageUrl,
+        ":updatedAt": now,
+      },
+    })
+  );
+
+  logger.log("Property map saved to DynamoDB", { auctionId, recordKey });
+}
+
+/**
+ * Update auction AI analysis fields by auctionId
+ * @param auctionId - The partition key
+ * @param analysis - The AI analysis result (aiTitle, aiWarning)
+ */
+async function updateAuctionAnalysis(
+  auctionId: string,
+  analysis: { aiTitle: string; aiWarning: string | null }
+): Promise<void> {
+  const now = new Date().toISOString();
+
+  logger.log("Updating auction analysis", {
+    auctionId,
+    aiTitle: analysis.aiTitle,
+    hasWarning: analysis.aiWarning !== null,
+    localStorage: LOCAL_STORAGE,
+  });
+
+  if (LOCAL_STORAGE) {
+    logger.logContent(
+      "Auction analysis updated (local storage)",
+      { auctionId },
+      {
+        content: JSON.stringify(analysis, null, 2),
+        prefix: "auction-analysis",
+        suffix: auctionId,
         extension: "json",
       }
     );
@@ -429,21 +487,23 @@ async function setAiTitle(
         auctionId,
         recordKey: "MAIN",
       },
-      UpdateExpression: "SET aiTitle = :aiTitle, updatedAt = :updatedAt",
+      UpdateExpression: "SET aiTitle = :aiTitle, aiWarning = :aiWarning, updatedAt = :updatedAt",
       ExpressionAttributeValues: {
-        ":aiTitle": aiTitle,
+        ":aiTitle": analysis.aiTitle,
+        ":aiWarning": analysis.aiWarning,
         ":updatedAt": now,
       },
     })
   );
 
-  logger.log("aiTitle saved to DynamoDB", { auctionId, aiTitle });
+  logger.log("Auction analysis saved to DynamoDB", { auctionId });
 }
 
 export const AuctionRepository = {
   save,
   savePropertyMap,
   getById,
-  getMainById,
-  setAiTitle,
+  getProperty,
+  updatePropertyMap,
+  updateAuctionAnalysis,
 };
