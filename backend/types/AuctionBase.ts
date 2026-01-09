@@ -2,15 +2,6 @@ import { z } from "zod";
 import { propertySchema } from "./Property.js";
 import { auctionLinkSchema } from "./AuctionLink.js";
 
-/**
- * Enum for vacancy status of a property
- */
-export enum IsVacant {
-  Yes = "yes",
-  No = "no",
-  Unknown = "unknown",
-}
-
 export const auctionBaseSchema = z.object({
   announcementId: z
     .string()
@@ -26,8 +17,10 @@ export const auctionBaseSchema = z.object({
     ),
   isSale: z.boolean().describe("Ali gre za prodajo (true) ali najem, oddaj, menjavo (false)"),
   isVacant: z
-    .nativeEnum(IsVacant)
-    .describe("Ali je nepremičnina prazna: 'yes' = da, 'no' = ne/zasedena, 'unknown' = ni podatka")
+    .enum(["YES", "NO", "UNKNOWN"])
+    .describe(
+      "Ali je nepremičnina prazna: 'YES' = da, 'NO' = ne/zasedena, 'UNKNOWN' = ni podatka. Podatek izpolni samo za hiše in stanovanja. Pusti prazno za parcele, poslovne prostore..."
+    )
     .nullable(),
   publicationDate: z.string().describe("Datum objave").nullable(),
   dueDate: z.string().describe("Rok / aktualno do").nullable(),
