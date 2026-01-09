@@ -11,7 +11,7 @@ import { AuctionImage } from "./AuctionImage.js";
 export type AuctionMain = Pick<
   AuctionInternal,
   | "dataSourceCode"
-  | "accouncementId"
+  | "announcementId"
   | "urlSources"
   | "title"
   | "type"
@@ -39,10 +39,10 @@ export type AuctionPropertyMap = {
 };
 
 /**
- * Property data for an auction with valuations and maps
+ * Property data for an auction with optional valuation and maps
  */
 export type AuctionProperty = Property & {
-  valuations: AuctionPropertyValuation[];
+  valuation?: AuctionPropertyValuation;
   maps: AuctionPropertyMap[];
 };
 

@@ -1,7 +1,7 @@
 import fs from "fs";
 import { AiExtractService } from "./services/AiExtractService.js";
 import { Source } from "./types/Source.js";
-import { AuctionInternal } from "./types/AuctionInternal.js";
+import { AuctionInternalWithValuations } from "./types/AuctionInternal.js";
 
 // Load sources from JSON
 const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));
@@ -12,8 +12,8 @@ async function main() {
 
   const allResults: Array<{
     source: string;
-    rezultati: AuctionInternal[];
-    prodajneObjave: AuctionInternal[];
+    rezultati: AuctionInternalWithValuations[];
+    prodajneObjave: AuctionInternalWithValuations[];
   }> = [];
 
   for (const source of enabledSources) {

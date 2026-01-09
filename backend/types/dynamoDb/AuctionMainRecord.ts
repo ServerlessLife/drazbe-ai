@@ -12,7 +12,7 @@ export type AuctionMainRecord = AuctionRecordBase & {
 } & Pick<
     AuctionInternal,
     | "dataSourceCode"
-    | "accouncementId"
+    | "announcementId"
     | "urlSources"
     | "title"
     | "type"

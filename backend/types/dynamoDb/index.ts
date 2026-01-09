@@ -1,13 +1,11 @@
 // Re-export all DynamoDB types
-export { AuctionRecordType, AuctionRecordBase } from "./AuctionRecordBase.js";
-export { AuctionMainRecord } from "./AuctionMainRecord.js";
-export { AuctionPropertyRecord } from "./AuctionPropertyRecord.js";
-export { AuctionPropertyValuationRecord } from "./AuctionPropertyValuationRecord.js";
-export { AuctionPropertyMapRecord } from "./AuctionPropertyMapRecord.js";
-export { AuctionDocumentRecord } from "./AuctionDocumentRecord.js";
-export { AuctionImageRecord } from "./AuctionImageRecord.js";
+export type { AuctionRecordType, AuctionRecordBase } from "./AuctionRecordBase.js";
+export type { AuctionMainRecord } from "./AuctionMainRecord.js";
+export type { AuctionPropertyRecord } from "./AuctionPropertyRecord.js";
+export type { AuctionDocumentRecord } from "./AuctionDocumentRecord.js";
+export type { AuctionImageRecord } from "./AuctionImageRecord.js";
 export { generateAuctionId, hashUrl, generatePropertyId } from "./helpers.js";
-export {
+export type {
   Auction,
   AuctionMain,
   AuctionProperty,
@@ -15,12 +13,10 @@ export {
   AuctionPropertyMap,
 } from "../Auction.js";
 
-import { AuctionMainRecord } from "./AuctionMainRecord.js";
-import { AuctionPropertyRecord } from "./AuctionPropertyRecord.js";
-import { AuctionPropertyValuationRecord } from "./AuctionPropertyValuationRecord.js";
-import { AuctionPropertyMapRecord } from "./AuctionPropertyMapRecord.js";
-import { AuctionDocumentRecord } from "./AuctionDocumentRecord.js";
-import { AuctionImageRecord } from "./AuctionImageRecord.js";
+import type { AuctionMainRecord } from "./AuctionMainRecord.js";
+import type { AuctionPropertyRecord } from "./AuctionPropertyRecord.js";
+import type { AuctionDocumentRecord } from "./AuctionDocumentRecord.js";
+import type { AuctionImageRecord } from "./AuctionImageRecord.js";
 
 /**
  * Union type for all auction record types
@@ -28,7 +24,5 @@ import { AuctionImageRecord } from "./AuctionImageRecord.js";
 export type AuctionRecord =
   | AuctionMainRecord
   | AuctionPropertyRecord
-  | AuctionPropertyValuationRecord
-  | AuctionPropertyMapRecord
   | AuctionDocumentRecord
   | AuctionImageRecord;

@@ -4,16 +4,13 @@ import {
   PutCommand,
   QueryCommand,
   BatchWriteCommand,
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { AuctionInternal } from "../types/AuctionInternal.js";
+import { AuctionInternalWithValuations } from "../types/AuctionInternal.js";
 import { Property } from "../types/Property.js";
-import { ParcelValuation } from "../types/ParcelValuation.js";
-import { BuildingPartValuation } from "../types/BuildingPartValuation.js";
 import {
   AuctionMainRecord,
   AuctionPropertyRecord,
-  AuctionPropertyValuationRecord,
-  AuctionPropertyMapRecord,
   AuctionDocumentRecord,
   AuctionImageRecord,
   AuctionRecord,
@@ -31,6 +28,7 @@ import { AuctionDocument } from "../types/AuctionDocument.js";
 import { AuctionImage } from "../types/AuctionImage.js";
 
 const TABLE_NAME = process.env.AUCTION_TABLE_NAME || "AuctionTable";
+const LOCAL_STORAGE = process.env.LOCAL_STORAGE === "true";
 const ONE_DAY_IN_SECONDS = 24 * 60 * 60;
 const DEFAULT_TTL_DAYS = 30;
 
@@ -55,17 +53,32 @@ function calculateTtl(dueDate: string | null): number {
 
 /**
  * Save an Auction to DynamoDB
- * Creates multiple records: MAIN, PROPERTY#id, DOCUMENT#id, IMAGE#id
+ * Creates multiple records: MAIN, PROPERTY#id (with valuation), DOCUMENT#id, IMAGE#id
  */
-async function save(auction: AuctionInternal): Promise<void> {
-  const accouncementId = auction.accouncementId || "unknown";
-  const auctionId = generateAuctionId(auction.dataSourceCode, accouncementId);
+async function save(auction: AuctionInternalWithValuations): Promise<void> {
+  const announcementId = auction.announcementId || "unknown";
+  const auctionId = generateAuctionId(auction.dataSourceCode, announcementId);
   const now = new Date().toISOString();
   const ttl = calculateTtl(auction.dueDate);
 
+  // If LOCAL_STORAGE is true, save using logger instead of DynamoDB
+  if (LOCAL_STORAGE) {
+    logger.logContent(
+      "Auction saved to local storage",
+      { auctionId },
+      {
+        content: JSON.stringify(auction, null, 2),
+        prefix: auction.dataSourceCode,
+        suffix: `${announcementId}-auction`,
+        extension: "json",
+      }
+    );
+    return;
+  }
+
   logger.log("Saving auction to DynamoDB", {
     dataSourceCode: auction.dataSourceCode,
-    accouncementId,
+    announcementId,
     auctionId,
     ttl,
   });
@@ -81,7 +94,7 @@ async function save(auction: AuctionInternal): Promise<void> {
     updatedAt: now,
     ttl,
     dataSourceCode: auction.dataSourceCode,
-    accouncementId,
+    announcementId,
     urlSources: auction.urlSources,
     title: auction.title,
     type: auction.type,
@@ -97,17 +110,19 @@ async function save(auction: AuctionInternal): Promise<void> {
   };
   records.push(mainRecord);
 
-  // Create PROPERTY records
+  // Create PROPERTY records (including valuation data if available)
   if (auction.property) {
     for (const property of auction.property) {
+      const { valuation, ...propertyData } = property;
       const propertyRecord: AuctionPropertyRecord = {
         auctionId,
-        recordKey: `PROPERTY#${generatePropertyId(property)}`,
+        recordKey: `PROPERTY#${generatePropertyId(propertyData)}`,
         recordType: "PROPERTY",
         createdAt: now,
         updatedAt: now,
         ttl,
-        ...property,
+        ...propertyData,
+        valuation,
       };
       records.push(propertyRecord);
     }
@@ -174,48 +189,8 @@ async function save(auction: AuctionInternal): Promise<void> {
 }
 
 /**
- * Save property valuation from ValuationService
- */
-async function savePropertyValuation(
-  dataSourceCode: string,
-  id: string,
-  property: Property,
-  valuation: ParcelValuation | BuildingPartValuation,
-  dueDate: string | null
-): Promise<void> {
-  const auctionId = generateAuctionId(dataSourceCode, id);
-  const propertyId = generatePropertyId(property);
-  const now = new Date().toISOString();
-  const ttl = calculateTtl(dueDate);
-
-  logger.log("Saving property valuation to DynamoDB", {
-    auctionId,
-    propertyId,
-  });
-
-  const record: AuctionPropertyValuationRecord = {
-    auctionId,
-    recordKey: `PROPERTY_VALUATION#${propertyId}`,
-    recordType: "PROPERTY_VALUATION",
-    createdAt: now,
-    updatedAt: now,
-    ttl,
-    propertyId,
-    ...valuation,
-  };
-
-  await docClient.send(
-    new PutCommand({
-      TableName: TABLE_NAME,
-      Item: record,
-    })
-  );
-
-  logger.log("Property valuation saved to DynamoDB", { auctionId, propertyId });
-}
-
-/**
  * Save property map/screenshot from ParcelScreenshotService
+ * Updates the existing PROPERTY record with the map URL
  */
 async function savePropertyMap(
   dataSourceCode: string,
@@ -227,29 +202,38 @@ async function savePropertyMap(
   const auctionId = generateAuctionId(dataSourceCode, id);
   const propertyId = generatePropertyId(property);
   const now = new Date().toISOString();
-  const ttl = calculateTtl(dueDate);
 
-  logger.log("Saving property map to DynamoDB", {
+  logger.log("Saving property map", {
     auctionId,
     propertyId,
     localUrl,
+    localStorage: LOCAL_STORAGE,
   });
 
-  const record: AuctionPropertyMapRecord = {
-    auctionId,
-    recordKey: `PROPERTY_MAP#${propertyId}`,
-    recordType: "PROPERTY_MAP",
-    createdAt: now,
-    updatedAt: now,
-    ttl,
-    propertyId,
-    localUrl,
-  };
+  const mapData: AuctionPropertyMap = { localUrl };
 
+  // If LOCAL_STORAGE is true, just log the map data
+  if (LOCAL_STORAGE) {
+    logger.logContent(`property-map-${propertyId}.json`, mapData);
+    logger.log("Property map saved to local storage", { auctionId, propertyId });
+    return;
+  }
+
+  // Update the existing PROPERTY record by appending to maps array
   await docClient.send(
-    new PutCommand({
+    new UpdateCommand({
       TableName: TABLE_NAME,
-      Item: record,
+      Key: {
+        auctionId,
+        recordKey: `PROPERTY#${propertyId}`,
+      },
+      UpdateExpression:
+        "SET maps = list_append(if_not_exists(maps, :emptyList), :newMap), updatedAt = :updatedAt",
+      ExpressionAttributeValues: {
+        ":emptyList": [],
+        ":newMap": [mapData],
+        ":updatedAt": now,
+      },
     })
   );
 
@@ -303,7 +287,7 @@ async function getById(dataSourceCode: string, id: string): Promise<Auction> {
   let main: AuctionMain | null = null;
   const propertiesMap = new Map<
     string,
-    { property: Property; valuations: AuctionPropertyValuation[]; maps: AuctionPropertyMap[] }
+    { property: Property; valuation?: AuctionPropertyValuation; maps: AuctionPropertyMap[] }
   >();
   const documents: AuctionDocument[] = [];
   const images: AuctionImage[] = [];
@@ -314,33 +298,12 @@ async function getById(dataSourceCode: string, id: string): Promise<Auction> {
         main = stripDynamoDbFields(record) as AuctionMain;
         break;
       case "PROPERTY": {
-        const property = stripDynamoDbFields(record) as Property;
-        const propertyId = generatePropertyId(property);
-        if (!propertiesMap.has(propertyId)) {
-          propertiesMap.set(propertyId, { property, valuations: [], maps: [] });
-        } else {
-          propertiesMap.get(propertyId)!.property = property;
-        }
-        break;
-      }
-      case "PROPERTY_VALUATION": {
-        const { propertyId, ...valuation } = stripDynamoDbFields(record) as {
-          propertyId: string;
-        } & AuctionPropertyValuation;
-        if (!propertiesMap.has(propertyId)) {
-          propertiesMap.set(propertyId, { property: {} as Property, valuations: [], maps: [] });
-        }
-        propertiesMap.get(propertyId)!.valuations.push(valuation as AuctionPropertyValuation);
-        break;
-      }
-      case "PROPERTY_MAP": {
-        const { propertyId, ...mapData } = stripDynamoDbFields(record) as {
-          propertyId: string;
-        } & AuctionPropertyMap;
-        if (!propertiesMap.has(propertyId)) {
-          propertiesMap.set(propertyId, { property: {} as Property, valuations: [], maps: [] });
-        }
-        propertiesMap.get(propertyId)!.maps.push(mapData as AuctionPropertyMap);
+        const { valuation, maps, ...propertyData } = stripDynamoDbFields(record) as Property & {
+          valuation?: AuctionPropertyValuation;
+          maps?: AuctionPropertyMap[];
+        };
+        const propertyId = generatePropertyId(propertyData);
+        propertiesMap.set(propertyId, { property: propertyData, valuation, maps: maps || [] });
         break;
       }
       case "DOCUMENT":
@@ -352,11 +315,11 @@ async function getById(dataSourceCode: string, id: string): Promise<Auction> {
     }
   }
 
-  // Combine properties with their valuations and maps
+  // Combine properties with their valuation and maps
   const properties: AuctionProperty[] = Array.from(propertiesMap.values()).map(
-    ({ property, valuations, maps }) => ({
+    ({ property, valuation, maps }) => ({
       ...property,
-      valuations,
+      valuation,
       maps,
     })
   );
@@ -408,7 +371,6 @@ async function getMainById(dataSourceCode: string, id: string): Promise<AuctionM
 
 export const AuctionRepository = {
   save,
-  savePropertyValuation,
   savePropertyMap,
   getById,
   getMainById,

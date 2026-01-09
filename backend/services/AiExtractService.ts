@@ -13,8 +13,15 @@ import { createCanvas } from "canvas";
 import * as pdfjsLib from "pdfjs-dist";
 import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { AuctionRepository } from "./AuctionRepository.js";
+import { ValuationService } from "./ValuationService.js";
 import { Source } from "../types/Source.js";
-import { AuctionBase, AuctionInternal, auctionsSchema } from "../types/AuctionInternal.js";
+import {
+  AuctionBase,
+  AuctionInternal,
+  AuctionInternalWithValuations,
+  PropertyWithValuation,
+  auctionsSchema,
+} from "../types/AuctionInternal.js";
 import { AuctionDocument } from "../types/AuctionDocument.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
@@ -752,14 +759,14 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
 
 /**
  * Process a single auction: fetch content, extract documents, and parse details
- * Saves markdown to file and returns structured auction data
+ * Fetches valuations, saves to DynamoDB, and returns structured auction data
  * Returns empty array if processing fails
  */
 async function processAuction(
   page: Page,
   objava: Link,
   dataSource: Source
-): Promise<AuctionInternal[]> {
+): Promise<AuctionInternalWithValuations[]> {
   try {
     logger.log(
       `Processing announcement for data source ${dataSource.code}, title "${objava.title}"`,
@@ -858,25 +865,65 @@ async function processAuction(
     // Extract structured details
     const auctions = await extractAuctionDetails(markdown);
 
-    // Map to results
-    const results = auctions.map((auction) => ({
-      ...auction,
-      dataSourceCode: dataSource.code,
-      urlSources: [announcementUrl],
+    // Map to results with valuations
+    const results: AuctionInternalWithValuations[] = [];
 
-      documents: auction.documents?.map((doc) => {
-        const foundDoc = documents.find((d) => d.url === doc.sourceUrl);
+    for (const auction of auctions) {
+      // Fetch valuations for each property
+      let propertiesWithValuations: PropertyWithValuation[] | null = null;
+      if (auction.property) {
+        propertiesWithValuations = [];
+        for (const property of auction.property) {
+          property.number = property.number.trim().replace(/[- ]/g, "/");
 
-        return {
-          description: doc.description,
-          sourceUrl: doc.sourceUrl,
-          localUrl: foundDoc?.localUrl,
-          type: foundDoc?.type,
-          ocrUsed: foundDoc?.ocrUsed,
-          usedForExtraction: usedDocumentUrls.has(doc.sourceUrl),
-        };
-      }),
-    }));
+          let valuation = undefined;
+          try {
+            valuation = (await ValuationService.getValuation(property)) ?? undefined;
+            if (valuation) {
+              logger.log("Property valuation fetched", {
+                dataSourceCode: dataSource.code,
+                propertyType: property.type,
+                cadastralMunicipality: property.cadastralMunicipality,
+                number: property.number,
+                value: "value" in valuation ? valuation.value : undefined,
+              });
+            }
+          } catch (valuationErr) {
+            logger.warn("Failed to fetch valuation for property", {
+              dataSourceCode: dataSource.code,
+              propertyType: property.type,
+              cadastralMunicipality: property.cadastralMunicipality,
+              number: property.number,
+              error: valuationErr instanceof Error ? valuationErr.message : String(valuationErr),
+            });
+          }
+          propertiesWithValuations.push({ ...property, valuation });
+        }
+      }
+
+      const result: AuctionInternalWithValuations = {
+        ...auction,
+        dataSourceCode: dataSource.code,
+        urlSources: [announcementUrl],
+        property: propertiesWithValuations,
+        documents:
+          auction.documents?.map((doc) => {
+            const foundDoc = documents.find((d) => d.url === doc.sourceUrl);
+            return {
+              description: doc.description,
+              sourceUrl: doc.sourceUrl,
+              localUrl: foundDoc?.localUrl,
+              type: foundDoc?.type,
+              ocrUsed: foundDoc?.ocrUsed,
+              usedForExtraction: usedDocumentUrls.has(doc.sourceUrl),
+            };
+          }) ?? [],
+      };
+
+      // Save to DynamoDB
+      await AuctionRepository.save(result);
+      results.push(result);
+    }
 
     logger.log(
       `Announcement processed for data source ${dataSource.code}, title "${objava.title}"`,
@@ -908,8 +955,8 @@ async function processAuction(
  * Returns both all results and filtered sale-only results
  */
 async function processSource(dataSource: Source): Promise<{
-  rezultati: AuctionInternal[];
-  prodajneObjave: AuctionInternal[];
+  rezultati: AuctionInternalWithValuations[];
+  prodajneObjave: AuctionInternalWithValuations[];
 }> {
   logger.log(`Processing source: ${dataSource.name}`, {
     code: dataSource.code,
@@ -983,16 +1030,10 @@ async function processSource(dataSource: Source): Promise<{
     dataSourceCode: dataSource.code,
     count: suitableLinks.length,
   });
-  const rezultati: AuctionInternal[] = [];
+  const rezultati: AuctionInternalWithValuations[] = [];
 
   for (const objava of suitableLinks) {
     const auctionResults = await processAuction(page, objava, dataSource);
-
-    // Save each auction to DynamoDB
-    for (const auction of auctionResults) {
-      await AuctionRepository.save(auction);
-    }
-
     rezultati.push(...auctionResults);
   }
 

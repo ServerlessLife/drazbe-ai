@@ -1,11 +1,14 @@
 import { z } from "zod";
-import { propertySchema, Property } from "./Property.js";
-import { AuctionDocument } from "./AuctionDocument.js";
-import { auctionLinkSchema } from "./AuctionLink.js";
-import { ParcelValuation } from "./ParcelValuation.js";
-import { BuildingPartValuation } from "./BuildingPartValuation.js";
+import { propertySchema } from "./Property.js";
 
-export const auctionBaseSchema = z.object({
+export const actionLinkSchema = z.object({
+  sourceUrl: z.string().describe("Povezava do dokumenta (npr. PDF)"),
+  description: z.string().describe("Opis dokumenta").nullable(),
+});
+
+export type ActionLink = z.infer<typeof actionLinkSchema>;
+
+export const actionBaseSchema = z.object({
   announcementId: z
     .string()
     .describe(
@@ -43,40 +46,32 @@ export const auctionBaseSchema = z.object({
     )
     .nullable(),
   documents: z
-    .array(auctionLinkSchema)
+    .array(actionLinkSchema)
     .describe("Seznam povezav do dokumentov, če so na voljo")
     .nullable(),
   images: z
-    .array(auctionLinkSchema)
+    .array(actionLinkSchema)
     .describe("Seznam povezav do slik nepremičnine, če so na voljo")
     .nullable(),
 });
 
-export type AuctionBase = z.infer<typeof auctionBaseSchema>;
+export type ActionBase = z.infer<typeof actionBaseSchema>;
 
-export const auctionsSchema = z.object({
-  auctions: z.array(auctionBaseSchema).describe("Seznam vseh dražb navedenih v dokumentu"),
+export const actionsSchema = z.object({
+  actions: z.array(actionBaseSchema).describe("Seznam vseh dražb navedenih v dokumentu"),
 });
 
-export type Auctions = z.infer<typeof auctionsSchema>;
+export type Actions = z.infer<typeof actionsSchema>;
 
-export type AuctionInternal = AuctionBase & {
+export interface ActionDocument extends ActionLink {
+  localUrl: string;
+  type: "pdf" | "docx" | "unknown";
+  ocrUsed: boolean;
+  usedForExtraction: boolean;
+}
+
+export type Action = ActionBase & {
   dataSourceCode: string;
   urlSources: string[];
-  documents: AuctionDocument[];
-};
-
-/**
- * Property with optional valuation data
- */
-export type PropertyWithValuation = Property & {
-  valuation?: ParcelValuation | BuildingPartValuation;
-};
-
-/**
- * AuctionInternal with properties that include valuation data
- * Used when saving to DynamoDB after fetching valuations
- */
-export type AuctionInternalWithValuations = Omit<AuctionInternal, "property"> & {
-  property: PropertyWithValuation[] | null;
+  documents: ActionDocument[];
 };
