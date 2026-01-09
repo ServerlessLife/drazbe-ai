@@ -1,7 +1,7 @@
 import fs from "fs";
 import { AiExtractService } from "./services/AiExtractService.js";
 import { Source } from "./types/Source.js";
-import { AuctionInternalWithValuations } from "./types/AuctionInternal.js";
+import { Auction } from "./types/Auction.js";
 
 // Load sources from JSON
 const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));
@@ -12,14 +12,13 @@ async function main() {
 
   const allResults: Array<{
     source: string;
-    rezultati: AuctionInternalWithValuations[];
-    prodajneObjave: AuctionInternalWithValuations[];
+    auctions: Auction[];
   }> = [];
 
   for (const source of enabledSources) {
     try {
-      const result = await AiExtractService.processSource(source);
-      allResults.push({ source: source.code, ...result });
+      const auctions = await AiExtractService.processSource(source);
+      allResults.push({ source: source.code, auctions });
     } catch (err) {
       console.error(`Napaka pri obdelavi vira ${source.name}:`, err);
     }

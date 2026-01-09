@@ -1,14 +1,8 @@
 import { z } from "zod";
 import { propertySchema } from "./Property.js";
+import { auctionLinkSchema } from "./AuctionLink.js";
 
-export const actionLinkSchema = z.object({
-  sourceUrl: z.string().describe("Povezava do dokumenta (npr. PDF)"),
-  description: z.string().describe("Opis dokumenta").nullable(),
-});
-
-export type ActionLink = z.infer<typeof actionLinkSchema>;
-
-export const actionBaseSchema = z.object({
+export const auctionBaseSchema = z.object({
   announcementId: z
     .string()
     .describe(
@@ -46,32 +40,19 @@ export const actionBaseSchema = z.object({
     )
     .nullable(),
   documents: z
-    .array(actionLinkSchema)
+    .array(auctionLinkSchema)
     .describe("Seznam povezav do dokumentov, če so na voljo")
     .nullable(),
   images: z
-    .array(actionLinkSchema)
+    .array(auctionLinkSchema)
     .describe("Seznam povezav do slik nepremičnine, če so na voljo")
     .nullable(),
 });
 
-export type ActionBase = z.infer<typeof actionBaseSchema>;
+export type AuctionBase = z.infer<typeof auctionBaseSchema>;
 
-export const actionsSchema = z.object({
-  actions: z.array(actionBaseSchema).describe("Seznam vseh dražb navedenih v dokumentu"),
+export const auctionsBaseSchema = z.object({
+  auctions: z.array(auctionBaseSchema).describe("Seznam vseh dražb navedenih v dokumentu"),
 });
 
-export type Actions = z.infer<typeof actionsSchema>;
-
-export interface ActionDocument extends ActionLink {
-  localUrl: string;
-  type: "pdf" | "docx" | "unknown";
-  ocrUsed: boolean;
-  usedForExtraction: boolean;
-}
-
-export type Action = ActionBase & {
-  dataSourceCode: string;
-  urlSources: string[];
-  documents: ActionDocument[];
-};
+export type AuctionsBase = z.infer<typeof auctionsBaseSchema>;

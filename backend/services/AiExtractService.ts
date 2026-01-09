@@ -15,13 +15,8 @@ import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { AuctionRepository } from "./AuctionRepository.js";
 import { ValuationService } from "./ValuationService.js";
 import { Source } from "../types/Source.js";
-import {
-  AuctionBase,
-  AuctionInternal,
-  AuctionInternalWithValuations,
-  PropertyWithValuation,
-  auctionsSchema,
-} from "../types/AuctionInternal.js";
+import { AuctionBase, auctionsBaseSchema } from "../types/AuctionBase.js";
+import { Auction, AuctionProperty } from "../types/Auction.js";
 import { AuctionDocument } from "../types/AuctionDocument.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
@@ -421,7 +416,7 @@ async function extractAuctionDetails(markdown: string): Promise<AuctionBase[]> {
         content: markdown,
       },
     ],
-    response_format: zodResponseFormat(auctionsSchema, "auction_details"),
+    response_format: zodResponseFormat(auctionsBaseSchema, "auction_details"),
   });
 
   return detailResponse.choices[0].message.parsed!.auctions;
@@ -762,11 +757,7 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
  * Fetches valuations, saves to DynamoDB, and returns structured auction data
  * Returns empty array if processing fails
  */
-async function processAuction(
-  page: Page,
-  objava: Link,
-  dataSource: Source
-): Promise<AuctionInternalWithValuations[]> {
+async function processAuction(page: Page, objava: Link, dataSource: Source): Promise<Auction[]> {
   try {
     logger.log(
       `Processing announcement for data source ${dataSource.code}, title "${objava.title}"`,
@@ -866,11 +857,11 @@ async function processAuction(
     const auctions = await extractAuctionDetails(markdown);
 
     // Map to results with valuations
-    const results: AuctionInternalWithValuations[] = [];
+    const results: Auction[] = [];
 
     for (const auction of auctions) {
       // Fetch valuations for each property
-      let propertiesWithValuations: PropertyWithValuation[] | null = null;
+      let propertiesWithValuations: AuctionProperty[] | null = null;
       if (auction.property) {
         propertiesWithValuations = [];
         for (const property of auction.property) {
@@ -901,11 +892,57 @@ async function processAuction(
         }
       }
 
-      const result: AuctionInternalWithValuations = {
-        ...auction,
+      // Skip non-sale auctions (rentals, exchanges, etc.)
+      if (!auction.isSale) {
+        logger.log("Skipping non-sale auction", {
+          dataSourceCode: dataSource.code,
+          title: auction.title,
+          type: auction.type,
+        });
+        continue;
+      }
+
+      // Calculate price to value ratio (Relativna cena) as discount percentage
+      const price = auction.price ?? null;
+      const estimatedValue = auction.estimatedValue ?? null;
+
+      // Calculate discount from estimated value (higher = better deal)
+      let toEstimatedValue: number | null = null;
+      if (price !== null && estimatedValue !== null && estimatedValue > 0) {
+        toEstimatedValue = Math.round(((estimatedValue - price) / estimatedValue) * 100);
+      }
+
+      // Calculate discount from sum of property valuations
+      let toPropertyValuations: number | null = null;
+      if (price !== null && propertiesWithValuations && propertiesWithValuations.length > 0) {
+        const totalValuation = propertiesWithValuations.reduce((sum, prop) => {
+          if (prop.valuation && "value" in prop.valuation) {
+            return sum + prop.valuation.value;
+          }
+          return sum;
+        }, 0);
+        if (totalValuation > 0) {
+          toPropertyValuations = Math.round(((totalValuation - price) / totalValuation) * 100);
+        }
+      }
+
+      const result: Auction = {
+        announcementId: auction.announcementId ?? null,
+        title: auction.title,
+        aiTitle: null,
+        aiSuitability: null,
+        type: auction.type,
+        publicationDate: auction.publicationDate ?? null,
+        dueDate: auction.dueDate ?? null,
+        description: auction.description ?? null,
+        location: auction.location ?? null,
+        price: price,
+        estimatedValue: estimatedValue,
+        ownershipShare: auction.ownershipShare ?? null,
+        yearBuilt: auction.yearBuilt ?? null,
         dataSourceCode: dataSource.code,
         urlSources: [announcementUrl],
-        property: propertiesWithValuations,
+        properties: propertiesWithValuations,
         documents:
           auction.documents?.map((doc) => {
             const foundDoc = documents.find((d) => d.url === doc.sourceUrl);
@@ -918,6 +955,15 @@ async function processAuction(
               usedForExtraction: usedDocumentUrls.has(doc.sourceUrl),
             };
           }) ?? [],
+        images:
+          auction.images?.map((img) => ({
+            description: img.description,
+            sourceUrl: img.sourceUrl,
+          })) ?? null,
+        priceToValueRatio: {
+          toEstimatedValue,
+          toPropertyValuations,
+        },
       };
 
       // Save to DynamoDB
@@ -952,12 +998,9 @@ async function processAuction(
 /**
  * Main entry point: process a source to extract property sale auctions
  * Steps: navigate to source → extract links → process each auction → save results
- * Returns both all results and filtered sale-only results
+ * Returns sale auction results (non-sale auctions are filtered out during processing)
  */
-async function processSource(dataSource: Source): Promise<{
-  rezultati: AuctionInternalWithValuations[];
-  prodajneObjave: AuctionInternalWithValuations[];
-}> {
+async function processSource(dataSource: Source): Promise<Auction[]> {
   logger.log(`Processing source: ${dataSource.name}`, {
     code: dataSource.code,
     url: dataSource.url,
@@ -1030,7 +1073,7 @@ async function processSource(dataSource: Source): Promise<{
     dataSourceCode: dataSource.code,
     count: suitableLinks.length,
   });
-  const rezultati: AuctionInternalWithValuations[] = [];
+  const rezultati: Auction[] = [];
 
   for (const objava of suitableLinks) {
     const auctionResults = await processAuction(page, objava, dataSource);
@@ -1039,35 +1082,22 @@ async function processSource(dataSource: Source): Promise<{
 
   // Step 3: Save results
   logger.logContent(
-    `Saved ${rezultati.length} announcement results for ${dataSource.name}`,
+    `Saved ${rezultati.length} sale announcements for ${dataSource.name}`,
     { dataSourceCode: dataSource.code, totalResults: rezultati.length },
     {
       content: JSON.stringify(rezultati, null, 2),
-      prefix: dataSource.code,
-      suffix: "vse-objave",
-      extension: "json",
-    }
-  );
-
-  const prodajneObjave = rezultati.filter((r) => r.isSale);
-  logger.log(`Processing complete for ${dataSource.name}`, {
-    dataSourceCode: dataSource.code,
-    totalResults: rezultati.length,
-    saleResults: prodajneObjave.length,
-  });
-
-  logger.logContent(
-    `Saved ${prodajneObjave.length} sale announcements for ${dataSource.name}`,
-    { dataSourceCode: dataSource.code, saleResults: prodajneObjave.length },
-    {
-      content: JSON.stringify(prodajneObjave, null, 2),
       prefix: dataSource.code,
       suffix: "objave-prodaja",
       extension: "json",
     }
   );
 
-  return { rezultati, prodajneObjave };
+  logger.log(`Processing complete for ${dataSource.name}`, {
+    dataSourceCode: dataSource.code,
+    totalResults: rezultati.length,
+  });
+
+  return rezultati;
 }
 
 export const AiExtractService = {

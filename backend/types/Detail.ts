@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { auctionBaseSchema } from "./AuctionInternal.js";
+import { auctionBaseSchema } from "./AuctionBase.js";
 
 export const auctionsSchema = z.object({
   auctions: z.array(auctionBaseSchema).describe("Seznam vseh dražb navedenih v dokumentu"),

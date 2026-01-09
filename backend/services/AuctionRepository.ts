@@ -6,7 +6,6 @@ import {
   BatchWriteCommand,
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { AuctionInternalWithValuations } from "../types/AuctionInternal.js";
 import { Property } from "../types/Property.js";
 import {
   AuctionMainRecord,
@@ -18,10 +17,8 @@ import {
   hashUrl,
   generatePropertyId,
   Auction,
-  AuctionMain,
   AuctionProperty,
   AuctionPropertyValuation,
-  AuctionPropertyMap,
 } from "../types/dynamoDb/index.js";
 import { logger } from "../utils/logger.js";
 import { AuctionDocument } from "../types/AuctionDocument.js";
@@ -52,10 +49,165 @@ function calculateTtl(dueDate: string | null): number {
 }
 
 /**
+ * Format auction data as nicely formatted markdown
+ */
+function formatAuctionMarkdown(auction: Auction): string {
+  const lines: string[] = [];
+
+  // Title (use aiTitle if available, otherwise original title)
+  lines.push(`# ${auction.aiTitle || auction.title}`);
+  lines.push("");
+
+  // Main details
+  lines.push("## Osnovni podatki");
+  lines.push("");
+  if (auction.announcementId) lines.push(`- **ID objave:** ${auction.announcementId}`);
+  lines.push(
+    `- **Tip:** ${auction.type === "auction" ? "Javna dražba" : auction.type === "contract" ? "Neposredna pogodba" : "Drugo"}`
+  );
+  if (auction.publicationDate) lines.push(`- **Datum objave:** ${auction.publicationDate}`);
+  if (auction.dueDate) lines.push(`- **Rok:** ${auction.dueDate}`);
+  if (auction.location) lines.push(`- **Lokacija:** ${auction.location}`);
+  if (auction.price) lines.push(`- **Cena:** ${auction.price.toLocaleString("sl-SI")} €`);
+  if (auction.estimatedValue)
+    lines.push(`- **Ocenjena vrednost:** ${auction.estimatedValue.toLocaleString("sl-SI")} €`);
+  if (auction.ownershipShare) lines.push(`- **Delež lastništva:** ${auction.ownershipShare}%`);
+  if (auction.yearBuilt) lines.push(`- **Leto izgradnje:** ${auction.yearBuilt}`);
+
+  // Price to value ratio section (Relativna cena)
+  const { toEstimatedValue, toPropertyValuations } = auction.priceToValueRatio;
+  if (toEstimatedValue !== null || toPropertyValuations !== null) {
+    lines.push("");
+    lines.push("### Relativna cena");
+    lines.push("");
+
+    // Determine which discount is higher (better deal)
+    const estHigher =
+      toEstimatedValue !== null &&
+      (toPropertyValuations === null || toEstimatedValue >= toPropertyValuations);
+    const valHigher =
+      toPropertyValuations !== null &&
+      (toEstimatedValue === null || toPropertyValuations > toEstimatedValue);
+
+    if (toEstimatedValue !== null) {
+      const suffix = estHigher ? " **" : "";
+      const prefixBold = estHigher ? "**" : "";
+      lines.push(
+        `- ${prefixBold}Glede na ocenjeno vrednost cenilca: ${toEstimatedValue}%${suffix}`
+      );
+    }
+    if (toPropertyValuations !== null) {
+      const suffix = valHigher ? " **" : "";
+      const prefixBold = valHigher ? "**" : "";
+      lines.push(
+        `- ${prefixBold}Glede na GURS posplošeno vrednost: ${toPropertyValuations}%${suffix}`
+      );
+    }
+  }
+  lines.push("");
+
+  // Description
+  if (auction.description) {
+    lines.push("## Opis");
+    lines.push("");
+    lines.push(auction.description);
+    lines.push("");
+  }
+
+  // Properties
+  if (auction.properties && auction.properties.length > 0) {
+    lines.push("## Nepremičnine");
+    lines.push("");
+    for (const prop of auction.properties) {
+      const typeLabel = prop.type === "parcel" ? "" : prop.type === "building" ? "*" : "*";
+      const propId = `${prop.cadastralMunicipality}-${typeLabel}${prop.number}`;
+      lines.push(`### ${propId}`);
+      lines.push("");
+      lines.push(
+        `- **Tip:** ${prop.type === "parcel" ? "Parcela" : prop.type === "building" ? "Stavba" : "Del stavbe"}`
+      );
+      if (prop.parcelType) lines.push(`- **Vrsta parcele:** ${prop.parcelType}`);
+      if (prop.buildingType) lines.push(`- **Vrsta stavbe:** ${prop.buildingType}`);
+      if (prop.area) lines.push(`- **Površina:** ${prop.area} m²`);
+      if (prop.ownershipShare) lines.push(`- **Delež lastništva:** ${prop.ownershipShare}%`);
+
+      // Map image
+      if (prop.mapImageUrl) {
+        lines.push("");
+        lines.push(`![Zemljevid](${prop.mapImageUrl})`);
+      }
+
+      // Valuation
+      if (prop.valuation) {
+        lines.push("");
+        lines.push("#### Vrednotenje");
+        lines.push(`- **Vrednost:** ${prop.valuation.value.toLocaleString("sl-SI")} €`);
+        if ("surfaceArea" in prop.valuation && prop.valuation.surfaceArea) {
+          lines.push(`- **Površina:** ${prop.valuation.surfaceArea} m²`);
+        }
+        if ("netFloorArea" in prop.valuation && prop.valuation.netFloorArea) {
+          lines.push(`- **Neto tlorisna površina:** ${prop.valuation.netFloorArea} m²`);
+        }
+        if ("intendedUse" in prop.valuation && prop.valuation.intendedUse) {
+          lines.push(`- **Namenska raba:** ${prop.valuation.intendedUse}`);
+        }
+        if ("actualUse" in prop.valuation && prop.valuation.actualUse) {
+          lines.push(`- **Dejanska raba:** ${prop.valuation.actualUse}`);
+        }
+        if ("buildingType" in prop.valuation && prop.valuation.buildingType) {
+          lines.push(`- **Tip stavbe:** ${prop.valuation.buildingType}`);
+        }
+        if ("yearBuilt" in prop.valuation && prop.valuation.yearBuilt) {
+          lines.push(`- **Leto izgradnje:** ${prop.valuation.yearBuilt}`);
+        }
+        if ("address" in prop.valuation && prop.valuation.address) {
+          lines.push(`- **Naslov:** ${prop.valuation.address}`);
+        }
+      }
+      lines.push("");
+    }
+  }
+
+  // Documents
+  if (auction.documents && auction.documents.length > 0) {
+    lines.push("## Dokumenti");
+    lines.push("");
+    for (const doc of auction.documents) {
+      const desc = doc.description || "Dokument";
+      lines.push(`- [${desc}](${doc.sourceUrl})`);
+    }
+    lines.push("");
+  }
+
+  // Images
+  if (auction.images && auction.images.length > 0) {
+    lines.push("## Slike");
+    lines.push("");
+    for (const img of auction.images) {
+      const desc = img.description || "Slika";
+      lines.push(`![${desc}](${img.sourceUrl})`);
+    }
+    lines.push("");
+  }
+
+  // Source URLs
+  if (auction.urlSources && auction.urlSources.length > 0) {
+    lines.push("## Viri");
+    lines.push("");
+    for (const url of auction.urlSources) {
+      lines.push(`- ${url}`);
+    }
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+/**
  * Save an Auction to DynamoDB
  * Creates multiple records: MAIN, PROPERTY#id (with valuation), DOCUMENT#id, IMAGE#id
  */
-async function save(auction: AuctionInternalWithValuations): Promise<void> {
+async function save(auction: Auction): Promise<void> {
   const announcementId = auction.announcementId || "unknown";
   const auctionId = generateAuctionId(auction.dataSourceCode, announcementId);
   const now = new Date().toISOString();
@@ -64,13 +216,26 @@ async function save(auction: AuctionInternalWithValuations): Promise<void> {
   // If LOCAL_STORAGE is true, save using logger instead of DynamoDB
   if (LOCAL_STORAGE) {
     logger.logContent(
-      "Auction saved to local storage",
+      "Auction saved",
       { auctionId },
       {
         content: JSON.stringify(auction, null, 2),
         prefix: auction.dataSourceCode,
         suffix: `${announcementId}-auction`,
         extension: "json",
+      }
+    );
+
+    // Also save as nicely formatted markdown
+    const markdown = formatAuctionMarkdown(auction);
+    logger.logContent(
+      "Auction markdown saved",
+      { auctionId },
+      {
+        content: markdown,
+        prefix: auction.dataSourceCode,
+        suffix: `${announcementId}-auction`,
+        extension: "md",
       }
     );
     return;
@@ -97,8 +262,9 @@ async function save(auction: AuctionInternalWithValuations): Promise<void> {
     announcementId,
     urlSources: auction.urlSources,
     title: auction.title,
+    aiTitle: auction.aiTitle,
+    aiSuitability: auction.aiSuitability,
     type: auction.type,
-    isSale: auction.isSale,
     publicationDate: auction.publicationDate,
     dueDate: auction.dueDate,
     description: auction.description,
@@ -107,12 +273,13 @@ async function save(auction: AuctionInternalWithValuations): Promise<void> {
     estimatedValue: auction.estimatedValue,
     ownershipShare: auction.ownershipShare,
     yearBuilt: auction.yearBuilt,
+    priceToValueRatio: auction.priceToValueRatio,
   };
   records.push(mainRecord);
 
   // Create PROPERTY records (including valuation data if available)
-  if (auction.property) {
-    for (const property of auction.property) {
+  if (auction.properties) {
+    for (const property of auction.properties) {
       const { valuation, ...propertyData } = property;
       const propertyRecord: AuctionPropertyRecord = {
         auctionId,
@@ -190,13 +357,13 @@ async function save(auction: AuctionInternalWithValuations): Promise<void> {
 
 /**
  * Save property map/screenshot from ParcelScreenshotService
- * Updates the existing PROPERTY record with the map URL
+ * Updates the existing PROPERTY record with the map image URL
  */
 async function savePropertyMap(
   dataSourceCode: string,
   id: string,
   property: Property,
-  localUrl: string,
+  mapImageUrl: string,
   dueDate: string | null
 ): Promise<void> {
   const auctionId = generateAuctionId(dataSourceCode, id);
@@ -206,20 +373,26 @@ async function savePropertyMap(
   logger.log("Saving property map", {
     auctionId,
     propertyId,
-    localUrl,
+    mapImageUrl,
     localStorage: LOCAL_STORAGE,
   });
 
-  const mapData: AuctionPropertyMap = { localUrl };
-
   // If LOCAL_STORAGE is true, just log the map data
   if (LOCAL_STORAGE) {
-    logger.logContent(`property-map-${propertyId}.json`, mapData);
-    logger.log("Property map saved to local storage", { auctionId, propertyId });
+    logger.logContent(
+      "Property map saved to local storage",
+      { auctionId, propertyId },
+      {
+        content: JSON.stringify({ mapImageUrl }, null, 2),
+        prefix: dataSourceCode,
+        suffix: `${id}-property-map-${propertyId}`,
+        extension: "json",
+      }
+    );
     return;
   }
 
-  // Update the existing PROPERTY record by appending to maps array
+  // Update the existing PROPERTY record with mapImageUrl
   await docClient.send(
     new UpdateCommand({
       TableName: TABLE_NAME,
@@ -227,11 +400,9 @@ async function savePropertyMap(
         auctionId,
         recordKey: `PROPERTY#${propertyId}`,
       },
-      UpdateExpression:
-        "SET maps = list_append(if_not_exists(maps, :emptyList), :newMap), updatedAt = :updatedAt",
+      UpdateExpression: "SET mapImageUrl = :mapImageUrl, updatedAt = :updatedAt",
       ExpressionAttributeValues: {
-        ":emptyList": [],
-        ":newMap": [mapData],
+        ":mapImageUrl": mapImageUrl,
         ":updatedAt": now,
       },
     })
@@ -284,10 +455,10 @@ async function getById(dataSourceCode: string, id: string): Promise<Auction> {
   });
 
   // Collect raw data from records
-  let main: AuctionMain | null = null;
+  let main: Omit<Auction, "properties" | "documents" | "images"> | null = null;
   const propertiesMap = new Map<
     string,
-    { property: Property; valuation?: AuctionPropertyValuation; maps: AuctionPropertyMap[] }
+    { property: Property; valuation?: AuctionPropertyValuation; mapImageUrl?: string }
   >();
   const documents: AuctionDocument[] = [];
   const images: AuctionImage[] = [];
@@ -295,15 +466,17 @@ async function getById(dataSourceCode: string, id: string): Promise<Auction> {
   for (const record of records) {
     switch (record.recordType) {
       case "MAIN":
-        main = stripDynamoDbFields(record) as AuctionMain;
+        main = stripDynamoDbFields(record) as Omit<Auction, "properties" | "documents" | "images">;
         break;
       case "PROPERTY": {
-        const { valuation, maps, ...propertyData } = stripDynamoDbFields(record) as Property & {
+        const { valuation, mapImageUrl, ...propertyData } = stripDynamoDbFields(
+          record
+        ) as Property & {
           valuation?: AuctionPropertyValuation;
-          maps?: AuctionPropertyMap[];
+          mapImageUrl?: string;
         };
         const propertyId = generatePropertyId(propertyData);
-        propertiesMap.set(propertyId, { property: propertyData, valuation, maps: maps || [] });
+        propertiesMap.set(propertyId, { property: propertyData, valuation, mapImageUrl });
         break;
       }
       case "DOCUMENT":
@@ -315,17 +488,17 @@ async function getById(dataSourceCode: string, id: string): Promise<Auction> {
     }
   }
 
-  // Combine properties with their valuation and maps
+  // Combine properties with their valuation and mapImageUrl
   const properties: AuctionProperty[] = Array.from(propertiesMap.values()).map(
-    ({ property, valuation, maps }) => ({
+    ({ property, valuation, mapImageUrl }) => ({
       ...property,
       valuation,
-      maps,
+      mapImageUrl,
     })
   );
 
   const auction: Auction = {
-    main,
+    ...main!,
     properties,
     documents,
     images,
@@ -336,9 +509,12 @@ async function getById(dataSourceCode: string, id: string): Promise<Auction> {
 
 /**
  * Get the main record for an auction by ID
- * Returns clean AuctionMain without DynamoDB-specific fields
+ * Returns clean Auction main fields without DynamoDB-specific fields
  */
-async function getMainById(dataSourceCode: string, id: string): Promise<AuctionMain | null> {
+async function getMainById(
+  dataSourceCode: string,
+  id: string
+): Promise<Omit<Auction, "properties" | "documents" | "images"> | null> {
   const auctionId = generateAuctionId(dataSourceCode, id);
 
   logger.log("Fetching auction main record from DynamoDB", {
@@ -362,7 +538,7 @@ async function getMainById(dataSourceCode: string, id: string): Promise<AuctionM
 
   if (record) {
     logger.log("Auction main record fetched from DynamoDB", { auctionId });
-    return stripDynamoDbFields(record) as AuctionMain;
+    return stripDynamoDbFields(record) as Omit<Auction, "properties" | "documents" | "images">;
   } else {
     logger.log("Auction main record not found in DynamoDB", { auctionId });
     return null;

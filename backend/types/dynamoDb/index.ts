@@ -7,10 +7,9 @@ export type { AuctionImageRecord } from "./AuctionImageRecord.js";
 export { generateAuctionId, hashUrl, generatePropertyId } from "./helpers.js";
 export type {
   Auction,
-  AuctionMain,
   AuctionProperty,
   AuctionPropertyValuation,
-  AuctionPropertyMap,
+  PriceToValueRatio,
 } from "../Auction.js";
 
 import type { AuctionMainRecord } from "./AuctionMainRecord.js";
