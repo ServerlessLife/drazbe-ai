@@ -13,7 +13,7 @@ import { createCanvas } from "canvas";
 import * as pdfjsLib from "pdfjs-dist";
 import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { AuctionRepository } from "./AuctionRepository.js";
-import { ValuationService } from "./ValuationService.js";
+import { GursValuationService } from "./GursValuationService.js";
 import { Source } from "../types/Source.js";
 import { AuctionBase, auctionsBaseSchema } from "../types/AuctionBase.js";
 import { Auction, AuctionProperty } from "../types/Auction.js";
@@ -869,7 +869,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
 
           let valuation = undefined;
           try {
-            valuation = (await ValuationService.getValuation(property)) ?? undefined;
+            valuation = (await GursValuationService.getValuation(property)) ?? undefined;
             if (valuation) {
               logger.log("Property valuation fetched", {
                 dataSourceCode: dataSource.code,

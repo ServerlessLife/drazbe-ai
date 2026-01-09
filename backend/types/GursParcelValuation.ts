@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// Schema for parcel valuation data
-export const parcelValuationSchema = z.object({
+// Schema for GURS parcel valuation data
+export const gursParcelValuationSchema = z.object({
   // Surface and value
   surfaceArea: z.number().describe("Površina v m²"),
   value: z.number().describe("Posplošena vrednost v €"),
@@ -21,4 +21,4 @@ export const parcelValuationSchema = z.object({
   actualUse: z.string().optional().describe("Dejanska raba"),
 });
 
-export type ParcelValuation = z.infer<typeof parcelValuationSchema>;
+export type GursParcelValuation = z.infer<typeof gursParcelValuationSchema>;

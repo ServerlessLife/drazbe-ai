@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// Schema for building part valuation data
-export const buildingPartValuationSchema = z.object({
+// Schema for GURS building part valuation data
+export const gursBuildingPartValuationSchema = z.object({
   // Address
   address: z.string().optional().describe("Naslov"),
 
@@ -28,4 +28,4 @@ export const buildingPartValuationSchema = z.object({
   yearBuilt: z.number().optional().describe("Leto izgradnje"),
 });
 
-export type BuildingPartValuation = z.infer<typeof buildingPartValuationSchema>;
+export type GursBuildingPartValuation = z.infer<typeof gursBuildingPartValuationSchema>;

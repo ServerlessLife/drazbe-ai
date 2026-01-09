@@ -1,13 +1,13 @@
 import { AuctionDocument } from "./AuctionDocument.js";
 import { Property } from "./Property.js";
-import { ParcelValuation } from "./ParcelValuation.js";
-import { BuildingPartValuation } from "./BuildingPartValuation.js";
+import { GursParcelValuation } from "./GursParcelValuation.js";
+import { GursBuildingPartValuation } from "./GursBuildingPartValuation.js";
 import { AuctionImage } from "./AuctionImage.js";
 
 /**
  * Property valuation data
  */
-export type AuctionPropertyValuation = ParcelValuation | BuildingPartValuation;
+export type AuctionPropertyValuation = GursParcelValuation | GursBuildingPartValuation;
 
 /**
  * Property data for an auction with optional valuation and map image

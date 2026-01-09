@@ -1,4 +1,4 @@
-import { ValuationService } from "../services/ValuationService.js";
+import { GursValuationService } from "../services/GursValuationService.js";
 
 async function test() {
   const query = {
@@ -9,7 +9,7 @@ async function test() {
 
   console.log("Fetching valuation data...\n");
 
-  const result = await ValuationService.getParcelValuation(query);
+  const result = await GursValuationService.getParcelValuation(query);
 
   if (result) {
     console.log("\n=== PARCEL VALUATION DATA ===\n");

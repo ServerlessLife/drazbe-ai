@@ -1,14 +1,14 @@
-import { ParcelValuation, parcelValuationSchema } from "../types/ParcelValuation.js";
+import { GursParcelValuation, gursParcelValuationSchema } from "../types/GursParcelValuation.js";
 import {
-  BuildingPartValuation,
-  buildingPartValuationSchema,
-} from "../types/BuildingPartValuation.js";
+  GursBuildingPartValuation,
+  gursBuildingPartValuationSchema,
+} from "../types/GursBuildingPartValuation.js";
 import { PropertyKey, propertyKeySchema } from "../types/PropertyIdentifier.js";
 import { logger } from "../utils/logger.js";
 
 const BASE_URL = "https://vrednotenje.gov.si/EV_Javni_Server/podatki";
 
-async function getParcelValuation(query: PropertyKey): Promise<ParcelValuation | null> {
+async function getParcelValuation(query: PropertyKey): Promise<GursParcelValuation | null> {
   logger.log("Fetching parcel valuation", {
     municipality: query.cadastralMunicipality,
     number: query.number,
@@ -60,7 +60,9 @@ async function getParcelValuation(query: PropertyKey): Promise<ParcelValuation |
   return result;
 }
 
-async function getBuildingPartValuation(query: PropertyKey): Promise<BuildingPartValuation | null> {
+async function getBuildingPartValuation(
+  query: PropertyKey
+): Promise<GursBuildingPartValuation | null> {
   logger.log("Fetching building part valuation", {
     municipality: query.cadastralMunicipality,
     number: query.number,
@@ -149,7 +151,7 @@ async function getBuildingPartValuation(query: PropertyKey): Promise<BuildingPar
 
 async function getValuation(
   query: PropertyKey
-): Promise<ParcelValuation | BuildingPartValuation | null> {
+): Promise<GursParcelValuation | GursBuildingPartValuation | null> {
   logger.log("Getting valuation", {
     type: query.type,
     municipality: query.cadastralMunicipality,
@@ -187,4 +189,4 @@ async function getValuation(
   }
 }
 
-export const ValuationService = { getParcelValuation, getBuildingPartValuation, getValuation };
+export const GursValuationService = { getParcelValuation, getBuildingPartValuation, getValuation };
