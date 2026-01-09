@@ -89,18 +89,21 @@ function formatAuctionMarkdown(auction: Auction): string {
       toPropertyValuations !== null &&
       (toEstimatedValue === null || toPropertyValuations > toEstimatedValue);
 
+    // Format percentage with sign (negative = price below value = good deal)
+    const formatPercent = (value: number) => (value > 0 ? `-${value}` : `+${Math.abs(value)}`);
+
     if (toEstimatedValue !== null) {
-      const suffix = estHigher ? " **" : "";
+      const suffix = estHigher ? "**" : "";
       const prefixBold = estHigher ? "**" : "";
       lines.push(
-        `- ${prefixBold}Glede na ocenjeno vrednost cenilca: ${toEstimatedValue}%${suffix}`
+        `- ${prefixBold}Glede na ocenjeno vrednost cenilca: ${formatPercent(toEstimatedValue)}%${suffix}`
       );
     }
     if (toPropertyValuations !== null) {
-      const suffix = valHigher ? " **" : "";
+      const suffix = valHigher ? "**" : "";
       const prefixBold = valHigher ? "**" : "";
       lines.push(
-        `- ${prefixBold}Glede na GURS posplošeno vrednost: ${toPropertyValuations}%${suffix}`
+        `- ${prefixBold}Glede na GURS posplošeno vrednost: ${formatPercent(toPropertyValuations)}%${suffix}`
       );
     }
   }
