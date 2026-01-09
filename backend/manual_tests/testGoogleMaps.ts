@@ -37,7 +37,10 @@ async function main() {
   const addressDestination = "Rakuševa ulica 4, Ljubljana, Slovenia";
   console.log(`Destination address: ${addressDestination}`);
 
-  const drivingInfoAddress = await GoogleMapsService.getDrivingInfo(HOME_ADDRESS, addressDestination);
+  const drivingInfoAddress = await GoogleMapsService.getDrivingInfo(
+    HOME_ADDRESS,
+    addressDestination
+  );
 
   if (drivingInfoAddress !== null) {
     console.log(`\n✓ Driving time (by address): ${drivingInfoAddress.drivingTimeMinutes} minutes`);

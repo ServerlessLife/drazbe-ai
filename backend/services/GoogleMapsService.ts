@@ -45,7 +45,10 @@ function formatLocation(location: Location): string {
  * @param destination - Ending location (centroid or address)
  * @returns Driving time in minutes and distance in km, or null if route not found
  */
-async function getDrivingInfo(origin: Location, destination: Location): Promise<DrivingResult | null> {
+async function getDrivingInfo(
+  origin: Location,
+  destination: Location
+): Promise<DrivingResult | null> {
   if (!GOOGLE_MAPS_API_KEY) {
     throw new Error(
       "Google Maps API key not configured. Set GOOGLE_MAPS_API_KEY environment variable."

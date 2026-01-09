@@ -1,6 +1,7 @@
 import fs from "fs";
 import { AiExtractService } from "../services/AiExtractService.js";
 import { AuctionRepository } from "../services/AuctionRepository.js";
+import { AuctionMarkdownService } from "../services/AuctionMarkdownService.js";
 import { GoogleMapsService } from "../services/GoogleMapsService.js";
 import { AiAuctionAnalysisService } from "../services/AiAuctionAnalysisService.js";
 import { Source } from "../types/Source.js";
@@ -67,7 +68,7 @@ async function main() {
           });
         }
 
-        const markdown = AuctionRepository.formatAuctionMarkdown(auction, drivingInfo);
+        const markdown = AuctionMarkdownService.formatAuctionMarkdown(auction, drivingInfo);
         logger.logContent(
           "Auction markdown saved",
           { dataSourceCode: auction.dataSourceCode, announcementId },
