@@ -161,7 +161,7 @@ export class CdkStack extends cdk.Stack {
       snsTopicAlarm: alarmTopic,
     });
 
-    // Stream processor Lambda - routes DynamoDB stream events to appropriate queues
+    // Stream processor Lambda - routes DynamoDB stream events to appropriate queues and handles cleanup
     const streamProcessorLambda = new NodejsFunction(this, "StreamProcessor", {
       entry: "backend/events/processStream.ts",
       timeout: cdk.Duration.seconds(30),
@@ -169,12 +169,16 @@ export class CdkStack extends cdk.Stack {
       environment: {
         PROPERTY_QUEUE_URL: propertyQueueWithDlq.queue.queueUrl,
         AUCTION_ANALYSIS_QUEUE_URL: auctionAnalysisQueueWithDlq.queue.queueUrl,
+        CONTENT_BUCKET_NAME: contentBucket.bucketName,
       },
     });
 
     // Grant stream processor Lambda permissions to send messages to queues
     propertyQueueWithDlq.queue.grantSendMessages(streamProcessorLambda);
     auctionAnalysisQueueWithDlq.queue.grantSendMessages(streamProcessorLambda);
+
+    // Grant stream processor Lambda permissions to delete from S3 bucket
+    contentBucket.grantDelete(streamProcessorLambda);
 
     // Add DynamoDB stream trigger to stream processor with filter
     streamProcessorLambda.addEventSource(
@@ -183,13 +187,24 @@ export class CdkStack extends cdk.Stack {
         batchSize: 10,
         retryAttempts: 3,
         filters: [
-          // Only process INSERT events for PROPERTY or MAIN record types
+          // Process INSERT events for PROPERTY or MAIN record types
           lambda.FilterCriteria.filter({
             eventName: lambda.FilterRule.isEqual("INSERT"),
             dynamodb: {
               NewImage: {
                 recordType: {
                   S: lambda.FilterRule.or("PROPERTY", "MAIN"),
+                },
+              },
+            },
+          }),
+          // Process REMOVE events for PROPERTY or DOCUMENT record types (cleanup S3 files)
+          lambda.FilterCriteria.filter({
+            eventName: lambda.FilterRule.isEqual("REMOVE"),
+            dynamodb: {
+              OldImage: {
+                recordType: {
+                  S: lambda.FilterRule.or("PROPERTY", "DOCUMENT"),
                 },
               },
             },

@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { readFile } from "fs/promises";
 import { logger } from "../utils/logger.js";
 
@@ -42,6 +42,29 @@ async function uploadFile(
   return s3Key;
 }
 
+/**
+ * Delete a file from S3
+ * @param s3Key - S3 key (path) of the file to delete
+ */
+async function deleteFile(s3Key: string): Promise<void> {
+  if (LOCAL_STORAGE) {
+    logger.log("Local storage mode - skipping S3 delete", { s3Key });
+    return;
+  }
+
+  logger.log("Deleting file from S3", { s3Key });
+
+  await s3Client.send(
+    new DeleteObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: s3Key,
+    })
+  );
+
+  logger.log("File deleted from S3", { s3Key });
+}
+
 export const S3Service = {
   uploadFile,
+  deleteFile,
 };

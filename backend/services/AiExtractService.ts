@@ -566,9 +566,10 @@ async function fetchDocument(
     const uuid = crypto.randomUUID();
     const extension = docType === "docx" ? "docx" : "pdf";
     const s3Key = `documents/${uuid}.${extension}`;
-    const contentTypeForS3 = docType === "docx"
-      ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      : "application/pdf";
+    const contentTypeForS3 =
+      docType === "docx"
+        ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        : "application/pdf";
 
     const localUrl = await S3Service.uploadFile(buffer, s3Key, contentTypeForS3);
 
