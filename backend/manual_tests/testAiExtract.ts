@@ -13,11 +13,13 @@ const HOME_ADDRESS = process.env.HOME_ADDRESS;
 // Load sources from JSON
 const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));
 
+import { DrivingResult } from "../types/DrivingResult.js";
+
 /**
- * Get driving time from home to the auction property
+ * Get driving info from home to the auction property
  * Uses first property's centroid that has one, or falls back to auction location
  */
-async function getDrivingTimeFromHome(auction: Auction): Promise<number | null> {
+async function getDrivingInfoFromHome(auction: Auction): Promise<DrivingResult | null> {
   if (!HOME_ADDRESS) {
     return null;
   }
@@ -26,12 +28,12 @@ async function getDrivingTimeFromHome(auction: Auction): Promise<number | null> 
   const centroid = auction.properties?.find((p) => p.valuation?.centroid)?.valuation?.centroid;
 
   if (centroid) {
-    return GoogleMapsService.getDrivingTime(HOME_ADDRESS, centroid);
+    return GoogleMapsService.getDrivingInfo(HOME_ADDRESS, centroid);
   }
 
   // Fallback to location address if available
   if (auction.location) {
-    return GoogleMapsService.getDrivingTime(HOME_ADDRESS, auction.location);
+    return GoogleMapsService.getDrivingInfo(HOME_ADDRESS, auction.location);
   }
 
   return null;
@@ -54,18 +56,18 @@ async function main() {
       for (const auction of auctions) {
         const announcementId = auction.announcementId || "unknown";
 
-        // Calculate driving time from home
-        let drivingTimeMinutes: number | null = null;
+        // Calculate driving info from home
+        let drivingInfo: DrivingResult | null = null;
         try {
-          drivingTimeMinutes = await getDrivingTimeFromHome(auction);
+          drivingInfo = await getDrivingInfoFromHome(auction);
         } catch (err) {
-          logger.warn("Failed to calculate driving time", {
+          logger.warn("Failed to calculate driving info", {
             announcementId,
             error: err instanceof Error ? err.message : String(err),
           });
         }
 
-        const markdown = AuctionRepository.formatAuctionMarkdown(auction, drivingTimeMinutes);
+        const markdown = AuctionRepository.formatAuctionMarkdown(auction, drivingInfo);
         logger.logContent(
           "Auction markdown saved",
           { dataSourceCode: auction.dataSourceCode, announcementId },

@@ -1,5 +1,9 @@
 import { logger } from "../utils/logger.js";
 import { Centroid } from "../types/GursValuationBase.js";
+import { DrivingResult } from "../types/DrivingResult.js";
+import proj4 from "proj4";
+
+export type { DrivingResult };
 
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
@@ -8,21 +12,18 @@ const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
  */
 export type Location = Centroid | string;
 
+// Define D96/TM (EPSG:3794) projection for Slovenia
+// Source: https://epsg.io/3794
+proj4.defs(
+  "EPSG:3794",
+  "+proj=tmerc +lat_0=0 +lon_0=15 +k=0.9999 +x_0=500000 +y_0=-5000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+);
+
 /**
  * Convert Slovenian D96/TM coordinates (EPSG:3794) to WGS84 (lat/lng)
- * Using approximate transformation for Slovenia region
  */
 function convertD96ToWGS84(centroid: Centroid): { lat: number; lng: number } {
-  // D96/TM (EPSG:3794) to WGS84 approximate conversion for Slovenia
-  // This is a simplified transformation - for high precision, use proj4 library
-  const e = centroid.e;
-  const n = centroid.n;
-
-  // Central meridian for D96/TM is 15°E, false easting 500000, false northing -5000000
-  // Approximate inverse transformation
-  const lng = 15 + (e - 500000) / (111320 * Math.cos((46 * Math.PI) / 180));
-  const lat = (n + 5000000) / 110540;
-
+  const [lng, lat] = proj4("EPSG:3794", "WGS84", [centroid.e, centroid.n]);
   return { lat, lng };
 }
 
@@ -39,12 +40,12 @@ function formatLocation(location: Location): string {
 }
 
 /**
- * Calculate driving time between two locations using Google Maps Distance Matrix API
+ * Calculate driving time and distance between two locations using Google Maps Distance Matrix API
  * @param origin - Starting location (centroid or address)
  * @param destination - Ending location (centroid or address)
- * @returns Driving time in minutes, or null if route not found
+ * @returns Driving time in minutes and distance in km, or null if route not found
  */
-async function getDrivingTime(origin: Location, destination: Location): Promise<number | null> {
+async function getDrivingInfo(origin: Location, destination: Location): Promise<DrivingResult | null> {
   if (!GOOGLE_MAPS_API_KEY) {
     throw new Error(
       "Google Maps API key not configured. Set GOOGLE_MAPS_API_KEY environment variable."
@@ -86,18 +87,19 @@ async function getDrivingTime(origin: Location, destination: Location): Promise<
 
     // Duration is returned in seconds, convert to minutes
     const durationSeconds = element.duration.value;
-    const durationMinutes = Math.round(durationSeconds / 60);
+    const drivingTimeMinutes = Math.round(durationSeconds / 60);
+    const drivingDistanceKm = Math.round(element.distance.value / 1000);
 
-    logger.log("Driving time calculated", {
-      durationMinutes,
+    logger.log("Driving info calculated", {
+      drivingTimeMinutes,
       durationText: element.duration.text,
-      distanceKm: Math.round(element.distance.value / 1000),
+      drivingDistanceKm,
       distanceText: element.distance.text,
     });
 
-    return durationMinutes;
+    return { drivingTimeMinutes, drivingDistanceKm };
   } catch (error) {
-    logger.error("Failed to calculate driving time", error as Error, {
+    logger.error("Failed to calculate driving info", error as Error, {
       origin: originStr,
       destination: destinationStr,
     });
@@ -106,6 +108,5 @@ async function getDrivingTime(origin: Location, destination: Location): Promise<
 }
 
 export const GoogleMapsService = {
-  getDrivingTime,
-  convertD96ToWGS84,
+  getDrivingInfo,
 };

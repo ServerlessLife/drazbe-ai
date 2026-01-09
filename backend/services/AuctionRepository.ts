@@ -7,6 +7,7 @@ import {
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { Property } from "../types/Property.js";
+import { DrivingResult } from "../types/DrivingResult.js";
 import {
   AuctionMainRecord,
   AuctionPropertyRecord,
@@ -51,9 +52,9 @@ function calculateTtl(dueDate: string | null): number {
 /**
  * Format auction data as nicely formatted markdown
  * @param auction - The auction data
- * @param drivingTimeMinutes - Optional driving time from home in minutes
+ * @param drivingInfo - Optional driving info from home (time and distance)
  */
-function formatAuctionMarkdown(auction: Auction, drivingTimeMinutes?: number | null): string {
+function formatAuctionMarkdown(auction: Auction, drivingInfo?: DrivingResult | null): string {
   const lines: string[] = [];
 
   // Title (use aiTitle if available, otherwise original title)
@@ -70,11 +71,11 @@ function formatAuctionMarkdown(auction: Auction, drivingTimeMinutes?: number | n
   if (auction.publicationDate) lines.push(`- **Datum objave:** ${auction.publicationDate}`);
   if (auction.dueDate) lines.push(`- **Rok:** ${auction.dueDate}`);
   if (auction.location) lines.push(`- **Lokacija:** ${auction.location}`);
-  if (drivingTimeMinutes != null) {
-    const hours = Math.floor(drivingTimeMinutes / 60);
-    const mins = drivingTimeMinutes % 60;
+  if (drivingInfo != null) {
+    const hours = Math.floor(drivingInfo.drivingTimeMinutes / 60);
+    const mins = drivingInfo.drivingTimeMinutes % 60;
     const timeStr = hours > 0 ? `${hours} h ${mins} min` : `${mins} min`;
-    lines.push(`- **Vožnja od doma:** ${timeStr}`);
+    lines.push(`- **Vožnja od doma:** ${timeStr} (${drivingInfo.drivingDistanceKm} km)`);
   }
   if (auction.price) lines.push(`- **Cena:** ${auction.price.toLocaleString("sl-SI")} €`);
   if (auction.estimatedValue)
