@@ -123,6 +123,16 @@ async function main() {
               extension: "json",
             }
           );
+          logger.logContent(
+            "Auction suitability saved",
+            { dataSourceCode: auction.dataSourceCode, announcementId },
+            {
+              content: analysis.aiSuitability || "",
+              prefix: auction.dataSourceCode,
+              suffix: `${announcementId}-suitability`,
+              extension: "txt",
+            }
+          );
           logger.log("Auction analyzed", {
             announcementId,
             aiTitle: analysis.aiTitle,
