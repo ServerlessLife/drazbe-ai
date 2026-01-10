@@ -17,9 +17,22 @@ function formatAuctionMarkdown(auction: Auction, drivingInfo?: DrivingResult | n
   lines.push("## Osnovni podatki");
   lines.push("");
   if (auction.announcementId) lines.push(`- **ID objave:** ${auction.announcementId}`);
-  lines.push(
-    `- **Tip:** ${auction.type === "auction" ? "Javna dražba" : auction.type === "contract" ? "Neposredna pogodba" : "Drugo"}`
-  );
+
+  const typeLabels: Record<string, string> = {
+    "public-auction": "Javna dražba",
+    "classic-sale": "Klasična prodaja",
+    "binding-public-bidding": "Zavezujoče javno zbiranje ponudb",
+    "non-binding-public-bidding": "Nezavezujoče javno zbiranje ponudb",
+    "intent-to-sell": "Namera o prodaji",
+    "electronic-auction": "Elektronska dražba",
+    "electronic-public-auction": "Elektronska javna dražba",
+    other: "Drugo",
+    // Legacy values
+    auction: "Javna dražba",
+    contract: "Neposredna pogodba",
+  };
+  lines.push(`- **Tip:** ${typeLabels[auction.type] || auction.type}`);
+
   if (auction.publicationDate) lines.push(`- **Datum objave:** ${auction.publicationDate}`);
   if (auction.dueDate) lines.push(`- **Rok:** ${auction.dueDate}`);
   if (auction.location) lines.push(`- **Lokacija:** ${auction.location}`);

@@ -895,7 +895,9 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
 
           let valuation = undefined;
           try {
-            valuation = (await GursValuationService.getValuation(property)) ?? undefined;
+            const ownershipShare = property.ownershipShare ?? auction.ownershipShare;
+            valuation =
+              (await GursValuationService.getValuation(property, ownershipShare)) ?? undefined;
             if (valuation) {
               logger.log("Property valuation fetched", {
                 dataSourceCode: dataSource.code,

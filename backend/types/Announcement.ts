@@ -30,9 +30,18 @@ export const announcementSchema = z.object({
     .nullable(),
   title: z.string().describe("Naslov objave"),
   type: z
-    .enum(["auction", "contract", "other"])
+    .enum([
+      "public-auction",
+      "classic-sale",
+      "binding-public-bidding",
+      "non-binding-public-bidding",
+      "intent-to-sell",
+      "electronic-auction",
+      "electronic-public-auction",
+      "other",
+    ])
     .describe(
-      "Tip objave: 'auction' = javna dražba, 'contract' = namera za sklenitev neposredne pogodbe, 'other' = drugo"
+      "Tip objave: 'public-auction' = Javna dražba, 'classic-sale' = Klasična prodaja, 'binding-public-bidding' = Zavezujoče javno zbiranje ponudb, 'non-binding-public-bidding' = Nezavezujoče javno zbiranje ponudb, 'intent-to-sell' = Namera o prodaji, 'electronic-auction' = Elektronska dražba, 'electronic-public-auction' = Elektronska javna dražba, 'other' = Drugo"
     ),
   isSale: z.boolean().describe("Ali gre za prodajo (true) ali najem, oddaj, menjavo (false)"),
   publicationDate: z.string().describe("Datum objave").nullable(),

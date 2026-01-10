@@ -9,39 +9,44 @@ async function test() {
 
   console.log("Fetching building part valuation data...\n");
 
-  const result = await GursValuationService.getBuildingPartValuation(query);
+  const result = await GursValuationService.getValuation(query, null);
 
   if (result) {
     console.log("\n=== BUILDING PART VALUATION DATA ===\n");
-    if (result.address) {
+    if ("address" in result && result.address) {
       console.log(`Address: ${result.address}`);
     }
     console.log(`Value: ${result.value.toLocaleString()} €`);
-    if (result.apartmentNumber) {
+    if ("apartmentNumber" in result && result.apartmentNumber) {
       console.log(`Apartment/Office Number: ${result.apartmentNumber}`);
     }
     if (result.actualUse) {
       console.log(`Actual Use: ${result.actualUse}`);
     }
-    if (result.floor !== undefined) {
+    if ("floor" in result && result.floor !== undefined) {
       console.log(`Floor: ${result.floor}`);
     }
-    if (result.elevator) {
+    if ("elevator" in result && result.elevator) {
       console.log(`Elevator: ${result.elevator}`);
     }
-    if (result.netFloorArea) {
+    if ("netFloorArea" in result && result.netFloorArea) {
       console.log(`Net Floor Area: ${result.netFloorArea} m²`);
     }
     if (result.centroid) {
       console.log(`Centroid: E=${result.centroid.e}, N=${result.centroid.n}`);
     }
-    if (result.buildingType || result.numberOfFloors) {
-      console.log(`Building Type: ${result.buildingType}, Floors: ${result.numberOfFloors}`);
+    if (
+      ("buildingType" in result && result.buildingType) ||
+      ("numberOfFloors" in result && result.numberOfFloors)
+    ) {
+      console.log(
+        `Building Type: ${"buildingType" in result ? result.buildingType : "N/A"}, Floors: ${"numberOfFloors" in result ? result.numberOfFloors : "N/A"}`
+      );
     }
-    if (result.numberOfApartments) {
+    if ("numberOfApartments" in result && result.numberOfApartments) {
       console.log(`Number of Apartments: ${result.numberOfApartments}`);
     }
-    if (result.yearBuilt) {
+    if ("yearBuilt" in result && result.yearBuilt) {
       console.log(`Year Built: ${result.yearBuilt}`);
     }
 

@@ -150,12 +150,14 @@ async function getBuildingPartValuation(
 }
 
 async function getValuation(
-  query: PropertyKey
+  query: PropertyKey,
+  ownershipShare: number | null
 ): Promise<GursParcelValuation | GursBuildingPartValuation | null> {
   logger.log("Getting valuation", {
     type: query.type,
     municipality: query.cadastralMunicipality,
     number: query.number,
+    ownershipShare,
   });
 
   const validated = propertyKeySchema.safeParse(query);
@@ -170,23 +172,40 @@ async function getValuation(
   // Use the provided type as a hint for which API to try first
   // If the first attempt fails (returns null), automatically fallback to the other type
   // This handles cases where the type property might be incorrect or mismatched
+  let result: GursParcelValuation | GursBuildingPartValuation | null = null;
+
   if (validated.data.type === "parcel") {
     // Try parcel first
     logger.log("Trying as parcel first");
-    const result = await getParcelValuation(validated.data);
-    if (result) return result;
-    // Parcel lookup failed, try as building part instead
-    logger.log("Parcel lookup failed, trying as building part");
-    return getBuildingPartValuation({ ...validated.data, type: "building_part" });
+    result = await getParcelValuation(validated.data);
+    if (!result) {
+      // Parcel lookup failed, try as building part instead
+      logger.log("Parcel lookup failed, trying as building part");
+      result = await getBuildingPartValuation({ ...validated.data, type: "building_part" });
+    }
   } else {
     // Try building part first
     logger.log("Trying as building part first");
-    const result = await getBuildingPartValuation(validated.data);
-    if (result) return result;
-    // Building part lookup failed, try as parcel instead
-    logger.log("Building part lookup failed, trying as parcel");
-    return getParcelValuation({ ...validated.data, type: "parcel" });
+    result = await getBuildingPartValuation(validated.data);
+    if (!result) {
+      // Building part lookup failed, try as parcel instead
+      logger.log("Building part lookup failed, trying as parcel");
+      result = await getParcelValuation({ ...validated.data, type: "parcel" });
+    }
   }
+
+  // Apply ownership share to value if provided
+  if (result && ownershipShare != null && ownershipShare > 0 && ownershipShare < 100) {
+    const adjustedValue = Math.round(result.value * (ownershipShare / 100));
+    logger.log("Adjusting value for ownership share", {
+      originalValue: result.value,
+      ownershipShare,
+      adjustedValue,
+    });
+    result = { ...result, value: adjustedValue };
+  }
+
+  return result;
 }
 
-export const GursValuationService = { getParcelValuation, getBuildingPartValuation, getValuation };
+export const GursValuationService = { getValuation };

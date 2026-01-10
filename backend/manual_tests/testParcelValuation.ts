@@ -9,18 +9,20 @@ async function test() {
 
   console.log("Fetching valuation data...\n");
 
-  const result = await GursValuationService.getParcelValuation(query);
+  const result = await GursValuationService.getValuation(query, null);
 
   if (result) {
     console.log("\n=== PARCEL VALUATION DATA ===\n");
-    console.log(`Surface Area: ${result.surfaceArea} m²`);
+    if ("surfaceArea" in result) {
+      console.log(`Surface Area: ${result.surfaceArea} m²`);
+    }
     console.log(`Value: ${result.value} €`);
 
     if (result.centroid) {
       console.log(`Centroid: E=${result.centroid.e}, N=${result.centroid.n}`);
     }
 
-    if (result.intendedUse) {
+    if ("intendedUse" in result && result.intendedUse) {
       console.log(`\nIntended Use (Namenska raba): ${result.intendedUse}`);
     }
 
