@@ -36,11 +36,20 @@ K VIŠJI oceni prispeva:
 - Stanovanje/hiša je prazna (Prazno: Da)
 - Bližina (kratka vožnja)
 - Ugodna cena (negativen % pri "Relativna cena" = dobro). POZOR: Če je cena očitno previsoka ali podatki nesmiselni, ignoriraj ceno. -25% je srednje ugodno. Cena ni najpomembnejši faktor.
+- Zavezujoče ali nezavezujoče javno zbiranje ponudb
+- Klasična prodaja
 
 Podaj ocena 0 (neprimerno) vedno kadar:
 - Razdalja nad 100 minut vožnje
 - Parcele pod 400 m²
 - Solastniški delež manjši od 100%
+
+Podaj ocena 10 (zelo primerno) kadar:
+- Stanovanje/hiša je prazna (Prazno: Da)
+- Klasična prodaja do 60 minut vožnje
+- Zavezujoče ali nezavezujoče javno zbiranje ponudb do 60 minut vožnje
+- Namera o prodaji do 60 minut vožnje
+- Neposredna pogodba do 60 minut vožnje
 
 **Primeri aiSuitability:**
 - "Ocena 10, stanovanje Ljubljana, letnik 2000, zelo blizu, ugodna cena"
