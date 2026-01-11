@@ -6,7 +6,7 @@ import { Auction } from "../types/dynamoDb/index.js";
  * @param auction - The auction data
  * @param drivingInfo - Optional driving info from home (time and distance)
  */
-function formatAuctionMarkdown(auction: Auction, drivingInfo?: DrivingResult | null): string {
+function formatAuctionMarkdown(auction: Auction, drivingInfo: DrivingResult | null): string {
   const lines: string[] = [];
 
   // Title (use aiTitle if available, otherwise original title)

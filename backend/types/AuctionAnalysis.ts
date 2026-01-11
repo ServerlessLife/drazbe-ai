@@ -4,11 +4,12 @@ import { z } from "zod";
  * Analysis result schema for AI-generated auction analysis
  */
 export const auctionAnalysisSchema = z.object({
-  aiTitle: z.string().describe("Kratek opis dražbe. Do 150 znakov."),
   aiWarning: z
     .string()
     .nullable()
-    .describe("Karkoli je nenavadnega ali opozorilo. Null če ni ničesar nenavadnega."),
+    .describe(
+      "Dodatna opozorila odkrita med analizo vrednotenja. Nikdar ne odstrani obstoječih opozoril, samo dodaj novo po potrebi in prilagodi besedilo."
+    ),
   aiSuitability: z
     .string()
     .describe(

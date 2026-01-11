@@ -135,7 +135,6 @@ async function main() {
           );
           logger.log("Auction analyzed", {
             announcementId,
-            aiTitle: analysis.aiTitle,
             aiSuitability: analysis.aiSuitability,
             hasWarning: analysis.aiWarning !== null,
           });

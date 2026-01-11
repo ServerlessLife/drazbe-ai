@@ -64,6 +64,16 @@ export const auctionBaseSchema = z.object({
     .array(auctionLinkSchema)
     .describe("Seznam povezav do slik nepremičnine, če so na voljo")
     .nullable(),
+  aiTitle: z
+    .string()
+    .describe(
+      "Naslov dražbe. Lahko je enak uradnemu naslovu ali kreiran primernejši. Do 150 znakov."
+    )
+    .nullable(),
+  aiWarning: z
+    .string()
+    .nullable()
+    .describe("Karkoli je nenavadnega ali opozorilo. Null če ni ničesar nenavadnega."),
 });
 
 export type AuctionBase = z.infer<typeof auctionBaseSchema>;

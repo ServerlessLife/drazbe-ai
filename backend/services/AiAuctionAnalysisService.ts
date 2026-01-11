@@ -86,7 +86,6 @@ async function analyzeAuction(auctionMarkdown: string): Promise<AuctionAnalysis>
   const result = auctionAnalysisSchema.parse(JSON.parse(content));
 
   logger.log("Auction analysis complete", {
-    aiTitle: result.aiTitle,
     aiSuitability: result.aiSuitability.substring(0, 50),
     hasWarning: result.aiWarning !== null,
   });
