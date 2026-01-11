@@ -15,6 +15,7 @@ import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
+import { LambdaErrorSnsSender } from "lambda-error-sns-sender";
 import { QueueWithDlq } from "./queueWithDlq";
 import { LambdaAlarms } from "./lambdaAlarms";
 import { DlqAlarm } from "./dlqAlarm";
@@ -31,6 +32,11 @@ export class CdkStack extends cdk.Stack {
     alarmTopic.addSubscription(
       new snsSubscriptions.EmailSubscription("marko@strukelj.net"),
     );
+
+    // Lambda Error SNS Sender - sends detailed Lambda error logs via SNS
+    new LambdaErrorSnsSender(this, "LambdaErrorSnsSender", {
+      snsTopics: [alarmTopic],
+    });
 
     // Secrets Manager for sensitive API keys
     // These are created with placeholder values - update them in AWS Console or via CLI
