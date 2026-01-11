@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { SchedulerService } from "../services/SchedulerService.js";
 
 interface SchedulerEvent {

@@ -62,25 +62,25 @@ export class LambdaAlarms extends constructs.Construct {
       period: cdk.Duration.minutes(props.throttlesPeriod ?? 1),
     });
 
-    const alarmFunctionThrottles = functionThrottlesMetric.createAlarm(
-      this,
-      "LambdaThrottlesAlarm",
-      {
-        threshold: props.throttlesThreshold ?? 0,
-        comparisonOperator:
-          cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
-        evaluationPeriods: props.throttlesEvaluationPeriods ?? 1,
-        datapointsToAlarm: props.throttlesDatapointsToAlarm ?? 1,
-        alarmDescription: "Over 0 throttles per minute",
-        treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
-      },
-    );
-    alarmFunctionThrottles.addAlarmAction(
-      new cwactions.SnsAction(props.snsTopicAlarm),
-    );
-    alarmFunctionThrottles.addOkAction(
-      new cwactions.SnsAction(props.snsTopicAlarm),
-    );
+    // const alarmFunctionThrottles = functionThrottlesMetric.createAlarm(
+    //   this,
+    //   "LambdaThrottlesAlarm",
+    //   {
+    //     threshold: props.throttlesThreshold ?? 0,
+    //     comparisonOperator:
+    //       cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+    //     evaluationPeriods: props.throttlesEvaluationPeriods ?? 1,
+    //     datapointsToAlarm: props.throttlesDatapointsToAlarm ?? 1,
+    //     alarmDescription: "Over 0 throttles per minute",
+    //     treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    //   },
+    // );
+    // alarmFunctionThrottles.addAlarmAction(
+    //   new cwactions.SnsAction(props.snsTopicAlarm),
+    // );
+    // alarmFunctionThrottles.addOkAction(
+    //   new cwactions.SnsAction(props.snsTopicAlarm),
+    // );
 
     // alarm for timeout
     const timeoutSec =

@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { Feed } from "feed";
 import { marked } from "marked";
 import { AuctionRepository } from "../services/AuctionRepository.js";

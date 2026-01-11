@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { DynamoDBStreamEvent } from "aws-lambda";
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import { PropertyKey } from "../types/PropertyIdentifier.js";

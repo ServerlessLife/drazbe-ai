@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { SQSEvent } from "aws-lambda";
 import { AuctionRepository } from "../services/AuctionRepository.js";
 import { ParcelScreenshotService } from "../services/ParcelScreenshotService.js";

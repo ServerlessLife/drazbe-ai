@@ -13,6 +13,7 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as ssm from "aws-cdk-lib/aws-ssm";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
 import { QueueWithDlq } from "./queueWithDlq";
 import { LambdaAlarms } from "./lambdaAlarms";
@@ -31,25 +32,22 @@ export class CdkStack extends cdk.Stack {
       new snsSubscriptions.EmailSubscription("marko@strukelj.net"),
     );
 
-    // SSM Parameters for sensitive configuration
+    // Secrets Manager for sensitive API keys
     // These are created with placeholder values - update them in AWS Console or via CLI
-    const openaiApiKeyParam = new ssm.StringParameter(this, "OpenAIApiKey", {
-      parameterName: "/drazbe-ai/openai-api-key",
-      stringValue: "PLACEHOLDER_UPDATE_IN_CONSOLE",
+    const openaiApiKeySecret = new secretsmanager.Secret(this, "OpenAIApiKeySecret", {
+      secretName: "/drazbe-ai/openai-api-key",
       description: "OpenAI API Key for AI services",
-      tier: ssm.ParameterTier.STANDARD,
     });
 
-    const googleMapsApiKeyParam = new ssm.StringParameter(this, "GoogleMapsApiKey", {
-      parameterName: "/drazbe-ai/google-maps-api-key",
-      stringValue: "PLACEHOLDER_UPDATE_IN_CONSOLE",
+    const googleMapsApiKeySecret = new secretsmanager.Secret(this, "GoogleMapsApiKeySecret", {
+      secretName: "/drazbe-ai/google-maps-api-key",
       description: "Google Maps API Key for distance calculations",
-      tier: ssm.ParameterTier.STANDARD,
     });
 
+    // SSM Parameter for non-sensitive configuration
     const homeAddressParam = new ssm.StringParameter(this, "HomeAddress", {
       parameterName: "/drazbe-ai/home-address",
-      stringValue: "PLACEHOLDER_UPDATE_IN_CONSOLE",
+      stringValue: "Beblerjev trg 3, 1000 Ljubljana, Slovenia",
       description: "Home address for driving distance calculations",
       tier: ssm.ParameterTier.STANDARD,
     });
@@ -107,13 +105,22 @@ export class CdkStack extends cdk.Stack {
 
     // Scheduler Lambda - runs at 18:00 Slovenia time (17:00 UTC in winter, 16:00 UTC in summer)
     const schedulerLambda = new NodejsFunction(this, "SourceScheduler", {
-      entry: "backend/events/scheduler.ts",
+      entry: "../backend/events/scheduler.ts",
       timeout: cdk.Duration.minutes(2),
       environment: {
         SOURCE_QUEUE_URL: sourceQueueWithDlq.queue.queueUrl,
         SOURCE_TRIGGER_TABLE_NAME: sourceTriggerTable.tableName,
       },
       memorySize: 512,
+      bundling: {
+        commandHooks: {
+          beforeBundling: () => [],
+          beforeInstall: () => [],
+          afterBundling: (inputDir, outputDir) => [
+            `cp ${inputDir}/backend/sources.json ${outputDir}/`,
+          ],
+        },
+      },
     });
 
     // Grant permissions
@@ -141,13 +148,20 @@ export class CdkStack extends cdk.Stack {
 
     // Source processor Lambda - processes items from queue
     const processorLambda = new NodejsFunction(this, "SourceProcessor", {
-      entry: "backend/events/processSource.ts",
+      entry: "../backend/events/processSource.ts",
       timeout: cdk.Duration.minutes(15),
       memorySize: 2048,
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
         VISITED_URL_TABLE_NAME: visitedUrlTable.tableName,
         PUBLIC_BUCKET_NAME: contentBucket.bucketName,
+      },
+      bundling: {
+        externalModules: [
+          "playwright-core",
+          "canvas",
+          "chromium-bidi",
+        ],
       },
     });
 
@@ -160,8 +174,8 @@ export class CdkStack extends cdk.Stack {
     // Grant processor Lambda access to S3 bucket for documents
     contentBucket.grantReadWrite(processorLambda);
 
-    // Grant processor Lambda access to SSM parameters
-    openaiApiKeyParam.grantRead(processorLambda);
+    // Grant processor Lambda access to secrets
+    openaiApiKeySecret.grantRead(processorLambda);
 
     // Lambda alarms for processor
     new LambdaAlarms(this, "ProcessorAlarms", {
@@ -194,7 +208,7 @@ export class CdkStack extends cdk.Stack {
 
     // Stream processor Lambda - routes DynamoDB stream events to appropriate queues and handles cleanup
     const streamProcessorLambda = new NodejsFunction(this, "StreamProcessor", {
-      entry: "backend/events/processStream.ts",
+      entry: "../backend/events/processStream.ts",
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
       environment: {
@@ -252,12 +266,18 @@ export class CdkStack extends cdk.Stack {
 
     // Property screenshot processor Lambda
     const propertyProcessorLambda = new NodejsFunction(this, "PropertyProcessor", {
-      entry: "backend/events/processProperty.ts",
+      entry: "../backend/events/processProperty.ts",
       timeout: cdk.Duration.minutes(5),
       memorySize: 2048,
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
         PUBLIC_BUCKET_NAME: contentBucket.bucketName,
+      },
+      bundling: {
+        externalModules: [
+          "playwright-core",
+          "chromium-bidi",
+        ],
       },
     });
 
@@ -282,7 +302,7 @@ export class CdkStack extends cdk.Stack {
 
     // Auction AI analysis processor Lambda
     const auctionAnalysisProcessorLambda = new NodejsFunction(this, "AuctionAnalysisProcessor", {
-      entry: "backend/events/processAuctionAnalysis.ts",
+      entry: "../backend/events/processAuctionAnalysis.ts",
       timeout: cdk.Duration.minutes(2),
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
@@ -296,9 +316,9 @@ export class CdkStack extends cdk.Stack {
     // Grant auction analysis processor Lambda access to user suitability table
     userSuitabilityTable.grantReadWriteData(auctionAnalysisProcessorLambda);
 
-    // Grant auction analysis processor Lambda access to SSM parameters
-    openaiApiKeyParam.grantRead(auctionAnalysisProcessorLambda);
-    googleMapsApiKeyParam.grantRead(auctionAnalysisProcessorLambda);
+    // Grant auction analysis processor Lambda access to secrets and SSM parameters
+    openaiApiKeySecret.grantRead(auctionAnalysisProcessorLambda);
+    googleMapsApiKeySecret.grantRead(auctionAnalysisProcessorLambda);
     homeAddressParam.grantRead(auctionAnalysisProcessorLambda);
 
     // Add SQS trigger to auction analysis processor Lambda
@@ -316,7 +336,7 @@ export class CdkStack extends cdk.Stack {
 
     // RSS Feed Lambda with Function URL
     const rssFeedLambda = new NodejsFunction(this, "RssFeedLambda", {
-      entry: "backend/events/rssFeed.ts",
+      entry: "../backend/events/rssFeed.ts",
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
       environment: {

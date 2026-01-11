@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { SQSEvent } from "aws-lambda";
 import { AiExtractService } from "../services/AiExtractService.js";
 import { logger } from "../utils/logger.js";

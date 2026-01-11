@@ -19,7 +19,7 @@ export class LambdaNodeDefaults implements IPropertyInjector {
   ): NodejsFunctionProps {
     return {
       runtime: lambda.Runtime.NODEJS_22_X,
-      logGroup: new logs.LogGroup(context.scope, "LogGroup", {
+      logGroup: new logs.LogGroup(context.scope, `${context.id}LogGroup`, {
         retention: logs.RetentionDays.TWO_WEEKS,
         removalPolicy: RemovalPolicy.DESTROY,
       }),

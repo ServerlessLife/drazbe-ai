@@ -135,7 +135,7 @@
     "name": "Javni stanovanjski sklad Mestne občine Ljubljana",
     "code": "jssmol",
     "url": "https://www.jssmol.si/javne-objave/razpolaganje-s-premozenjem",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Javni medobčinski stanovanjski sklad Maribor",
@@ -209,7 +209,7 @@
     "name": "Mestna občina Ljubljana",
     "code": "ljubljana",
     "url": "https://www.ljubljana.si/sl/mestni-servis/razpisi-razgrnitve-in-javne-objave?cat=2&status=all&year=&nrOfItems=20#filter",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Maribor",
