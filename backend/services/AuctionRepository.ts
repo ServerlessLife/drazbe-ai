@@ -357,6 +357,7 @@ async function getById(auctionId: string): Promise<Auction | undefined> {
     documents,
     images,
     aiSuitability: suitabilityRecord?.aiSuitability ?? null,
+    drivingInfo: suitabilityRecord?.drivingInfo ?? null,
   };
 
   return auction;

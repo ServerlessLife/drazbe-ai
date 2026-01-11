@@ -63,6 +63,7 @@ async function main() {
         let drivingInfo: DrivingResult | null = null;
         try {
           drivingInfo = await getDrivingInfoFromHome(auction);
+          auction.drivingInfo = drivingInfo;
         } catch (err) {
           logger.warn("Failed to calculate driving info", {
             announcementId,
@@ -98,7 +99,7 @@ async function main() {
           }
         }
 
-        const markdown = AuctionMarkdownService.formatAuctionMarkdown(auction, drivingInfo);
+        const markdown = AuctionMarkdownService.formatAuctionMarkdown(auction);
         logger.logContent(
           "Auction markdown saved",
           { dataSourceCode: auction.dataSourceCode, announcementId },

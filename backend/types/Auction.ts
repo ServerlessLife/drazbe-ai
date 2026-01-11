@@ -4,6 +4,7 @@ import { GursParcelValuation } from "./GursParcelValuation.js";
 import { GursBuildingPartValuation } from "./GursBuildingPartValuation.js";
 import { AuctionImage } from "./AuctionImage.js";
 import { AuctionBase } from "./AuctionBase.js";
+import { DrivingResult } from "./DrivingResult.js";
 
 /**
  * Property valuation data
@@ -42,6 +43,8 @@ export type Auction = Omit<AuctionBase, "property" | "documents" | "images" | "i
   aiWarning: string | null;
   /** AI-generated suitability assessment */
   aiSuitability: string | null;
+  /** Driving info from user's home */
+  drivingInfo: DrivingResult | null;
   properties: AuctionProperty[] | null;
   documents: AuctionDocument[];
   images: AuctionImage[] | null;

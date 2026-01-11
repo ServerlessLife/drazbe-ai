@@ -994,6 +994,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
           toEstimatedValue,
           toPropertyValuations,
         },
+        drivingInfo: null,
         publishedAt: null,
       };
 

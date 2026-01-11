@@ -126,6 +126,7 @@ export class CdkStack extends cdk.Stack {
       snsTopicAlarm: alarmTopic,
     });
 
+    /*
     // EventBridge Scheduler to trigger processing
     new scheduler.Schedule(this, "SchedulerSchedule", {
       //  schedule: scheduler.ScheduleExpression.cron({
@@ -136,6 +137,7 @@ export class CdkStack extends cdk.Stack {
       schedule: scheduler.ScheduleExpression.rate(cdk.Duration.minutes(30)),
       target: new targets.LambdaInvoke(schedulerLambda, {}),
     });
+    */
 
     // Source processor Lambda - processes items from queue
     const processorLambda = new NodejsFunction(this, "SourceProcessor", {

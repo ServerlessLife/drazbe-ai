@@ -2,7 +2,7 @@
 import * as cdk from 'aws-cdk-lib/core';
 import { PropertyInjectors } from 'aws-cdk-lib';
 import { CdkStack } from '../lib/drazbeStack';
-import { LambdaNodeDefaults } from '../lib/lambdaNode22Defaults';
+import { LambdaNodeDefaults } from '../lib/lambdaNodeDefaults';
 
 const app = new cdk.App();
 

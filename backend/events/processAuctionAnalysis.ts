@@ -61,7 +61,10 @@ export async function handler(event: SQSEvent) {
     let drivingInfo: DrivingResult | null = null;
     try {
       drivingInfo = await getDrivingInfoFromHome(auction);
+      auction.drivingInfo = drivingInfo;
       logger.log("Driving info calculated", { auctionId, drivingInfo });
+
+      await UserSuitabilityRepository.saveDrivingInfo(auctionId, drivingInfo);
     } catch (err) {
       logger.error("Failed to calculate driving info", {
         auctionId,
@@ -69,7 +72,7 @@ export async function handler(event: SQSEvent) {
       });
     }
 
-    const markdown = AuctionMarkdownService.formatAuctionMarkdown(auction, drivingInfo);
+    const markdown = AuctionMarkdownService.formatAuctionMarkdown(auction);
 
     logger.log("Auction markdown generated", { auctionId, markdown });
 
@@ -78,8 +81,8 @@ export async function handler(event: SQSEvent) {
 
     logger.log("AI analysis completed", { auctionId, analysis });
 
-    // Save the suitability to UserSuitabilityTable
-    await UserSuitabilityRepository.save(auctionId, analysis.aiSuitability);
+    // Save the suitability and driving info to UserSuitabilityTable
+    await UserSuitabilityRepository.saveSuitability(auctionId, analysis.aiSuitability);
 
     // Save the analysis to AuctionTable (aiWarning)
     await AuctionRepository.updateAuctionAnalysis(auctionId, {

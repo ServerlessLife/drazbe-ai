@@ -1,11 +1,12 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DynamoDBDocumentClient,
-  PutCommand,
+  UpdateCommand,
   QueryCommand,
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { logger } from "../utils/logger.js";
+import { DrivingResult } from "../types/DrivingResult.js";
 
 const TABLE_NAME = process.env.USER_SUITABILITY_TABLE_NAME || "UserSuitabilityTable";
 const LOCAL_STORAGE = process.env.LOCAL_STORAGE === "true";
@@ -20,18 +21,19 @@ const docClient = DynamoDBDocumentClient.from(client);
 export type UserSuitabilityRecord = {
   userId: string;
   auctionId: string;
-  aiSuitability: string;
+  aiSuitability?: string;
+  drivingInfo?: DrivingResult | null;
   createdAt: string;
   updatedAt: string;
 };
 
 /**
- * Save user suitability for an auction
+ * Save AI suitability for an auction
  * @param auctionId - The auction ID
  * @param aiSuitability - The AI-generated suitability analysis
  * @param userId - The user ID (defaults to "marko")
  */
-async function save(
+async function saveSuitability(
   auctionId: string,
   aiSuitability: string,
   userId: string = DEFAULT_USER_ID
@@ -58,22 +60,77 @@ async function save(
     return;
   }
 
-  const record: UserSuitabilityRecord = {
-    userId,
-    auctionId,
-    aiSuitability,
-    createdAt: now,
-    updatedAt: now,
-  };
-
   await docClient.send(
-    new PutCommand({
+    new UpdateCommand({
       TableName: TABLE_NAME,
-      Item: record,
+      Key: {
+        userId,
+        auctionId,
+      },
+      UpdateExpression:
+        "SET aiSuitability = :aiSuitability, updatedAt = :updatedAt, createdAt = if_not_exists(createdAt, :createdAt)",
+      ExpressionAttributeValues: {
+        ":aiSuitability": aiSuitability,
+        ":updatedAt": now,
+        ":createdAt": now,
+      },
     })
   );
 
   logger.log("User suitability saved to DynamoDB", { userId, auctionId });
+}
+
+/**
+ * Save driving info for an auction
+ * @param auctionId - The auction ID
+ * @param drivingInfo - The driving info from home
+ * @param userId - The user ID (defaults to "marko")
+ */
+async function saveDrivingInfo(
+  auctionId: string,
+  drivingInfo: DrivingResult | null,
+  userId: string = DEFAULT_USER_ID
+): Promise<void> {
+  const now = new Date().toISOString();
+
+  logger.log("Saving driving info", {
+    userId,
+    auctionId,
+    localStorage: LOCAL_STORAGE,
+  });
+
+  if (LOCAL_STORAGE) {
+    logger.logContent(
+      "Driving info saved (local storage)",
+      { userId, auctionId },
+      {
+        content: JSON.stringify({ userId, auctionId, drivingInfo }, null, 2),
+        prefix: "driving-info",
+        suffix: `${userId}-${auctionId}`,
+        extension: "json",
+      }
+    );
+    return;
+  }
+
+  await docClient.send(
+    new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        userId,
+        auctionId,
+      },
+      UpdateExpression:
+        "SET drivingInfo = :drivingInfo, updatedAt = :updatedAt, createdAt = if_not_exists(createdAt, :createdAt)",
+      ExpressionAttributeValues: {
+        ":drivingInfo": drivingInfo,
+        ":updatedAt": now,
+        ":createdAt": now,
+      },
+    })
+  );
+
+  logger.log("Driving info saved to DynamoDB", { userId, auctionId });
 }
 
 /**
@@ -146,7 +203,8 @@ async function getAllByUserId(userId: string = DEFAULT_USER_ID): Promise<UserSui
 }
 
 export const UserSuitabilityRepository = {
-  save,
+  saveSuitability,
+  saveDrivingInfo,
   getByAuctionId,
   getAllByUserId,
 };
