@@ -331,6 +331,8 @@
     "name": "Občina Bovec",
     "code": "bovec",
     "url": "https://obcina.bovec.si/objave/58",
+    "linksSelector": ".tab-content",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
@@ -355,6 +357,8 @@
     "name": "Občina Brežice",
     "code": "brezice",
     "url": "https://www.brezice.si/sl/novice/",
+    "linksSelector": ".news-list-wrapper",
+    "contentSelector": ".content-wrapper",
     "enabled": true
   },
   {

@@ -14,7 +14,7 @@ function formatAuctionMarkdown(auction: Auction): string {
 
   // AI Warning (if present)
   if (auction.aiWarning) {
-    lines.push(`> ⚠️ **Opozorilo:** ${auction.aiWarning}`);
+    lines.push(`> **Opozorilo:** ${auction.aiWarning}`);
     lines.push("");
   }
 
