@@ -3,6 +3,8 @@ import { launchBrowser } from "../utils/browser.js";
 import { PropertyKey } from "../types/PropertyIdentifier.js";
 import { logger } from "../utils/logger.js";
 
+  let browser: Browser | null = null;
+
 async function captureParcelScreenshot(query: PropertyKey): Promise<string | null> {
   logger.log("Capturing parcel screenshot", {
     type: query.type,
@@ -10,7 +12,7 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
     number: query.number,
   });
 
-  let browser: Browser | null = null;
+
 
   try {
     const result = await launchBrowser();
@@ -84,13 +86,14 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
       clip: { x: 119, y: 173, width: 785, height: 466 },
     });
 
-    await browser.close();
+    //await browser.close(); // do not close browser after each screenshot to improve performance
     logger.log("Screenshot captured successfully", { path: outputPath });
 
     return outputPath;
   } catch (error) {
     if (browser) {
       await browser.close();
+      browser = null;
     }
     logger.warn("Failed to capture screenshot", error, {
       propertyType: query.type,
@@ -102,4 +105,12 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
   }
 }
 
-export const ParcelScreenshotService = { captureParcelScreenshot };
+// function to close browser if still open
+async function closeBrowser() {
+  if (browser) {
+    await browser.close();
+    browser = null;
+  }
+}
+
+export const ParcelScreenshotService = { captureParcelScreenshot, closeBrowser };

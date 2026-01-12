@@ -92,7 +92,7 @@ async function ensurePage(): Promise<Page> {
 /**
  * Close the browser instance and clean up resources
  */
-async function close(): Promise<void> {
+async function closeBrowser(): Promise<void> {
   if (browser) {
     await browser.close();
   }
@@ -1093,6 +1093,6 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
 
 export const AiExtractService = {
   processSource,
-  close,
+  close: closeBrowser,
   fetchAndAppendDocument: fetchDocument,
 };

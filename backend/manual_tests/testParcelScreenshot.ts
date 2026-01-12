@@ -15,6 +15,8 @@ async function test() {
     number: "22/8",
   });
 
+  await ParcelScreenshotService.closeBrowser();
+
   if (result) {
     console.log(`Screenshot saved to: ${result}`);
   } else {

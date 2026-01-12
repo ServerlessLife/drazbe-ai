@@ -105,7 +105,7 @@
     "name": "AJPES",
     "code": "ajpes",
     "url": "https://www.ajpes.si/eObjave/rezultati.asp?podrobno=0&id_skupina=51&TipDolznika=-1&TipPostopka=-1&id_SkupinaVrsta=51&id_skupinaPodVrsta=86&Dolznik=&Oblika=&MS=&DS=&StStevilka=&Sodisce=-1&DatumDejanja_od=&DatumDejanja_do=&sys_ZacetekObjave_od=&sys_ZacetekObjave_do=&MAXREC=10",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Sodne dražbe",
@@ -117,7 +117,7 @@
     "name": "eDražbe",
     "code": "edrazbe",
     "url": "https://edrazbe.si/list?saleSubject=2ee072ab-7833-48e6-9e83-d9cf8d7b92f0",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Nepremičnine.net javne dražbe",
@@ -129,7 +129,7 @@
     "name": "Stanovanjski sklad Republike Slovenije",
     "code": "ssrs",
     "url": "https://ssrs.si/javne-drazbe/seznam-nepremicnin/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Javni stanovanjski sklad Mestne občine Ljubljana",
@@ -203,43 +203,43 @@
     "name": "Mestna občina Krško",
     "code": "krsko",
     "url": "https://www.krsko.si/objave/58",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Ljubljana",
     "code": "ljubljana",
     "url": "https://www.ljubljana.si/sl/mestni-servis/razpisi-razgrnitve-in-javne-objave?cat=2&status=all&year=&nrOfItems=20#filter",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Maribor",
     "code": "maribor",
     "url": "https://maribor.si/nepremicnine/prodaja-nepremicnin/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Murska Sobota",
     "code": "murska-sobota",
     "url": "https://murska-sobota.si/javne-objave?search=",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Nova Gorica - Razpisi",
     "code": "nova-gorica-razpisi",
     "url": "https://www.nova-gorica.si/sl/javne-objave/?status=1&rubric=2025013008311235768",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Nova Gorica - Namere",
     "code": "nova-gorica-namere",
     "url": "https://www.nova-gorica.si/sl/javne-objave/?status=1&rubric=2025013010372254270",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Novo mesto",
     "code": "novo-mesto",
     "url": "https://www.novomesto.si/postopki/uradne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Ptuj",
@@ -247,7 +247,7 @@
     "url": "https://www.ptuj.si/objave/58",
     "linksSelector": ".tab-content",
     "contentSelector": ".osrednji_vsebina",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Slovenj Gradec",
@@ -255,25 +255,25 @@
     "url": "https://www.slovenjgradec.si/Naro%C4%8Dila-in-objave",
     "linksSelector": ".main-content-area",
     "contentSelector": ".main-content-area",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Velenje",
     "code": "velenje",
     "url": "https://www.velenje.si/za-obcane/javne-objave-in-razpisi/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Ajdovščina",
     "code": "ajdovscina",
     "url": "https://www.ajdovscina.si/javna_narocila_in_razpisi/obvestila_obcinske_nepremicnine/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Ankaran",
     "code": "ankaran",
     "url": "https://obcina-ankaran.si/sl/nasa-obcina/uradne-objave",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Apače",
@@ -281,79 +281,79 @@
     "url": "https://www.obcina-apace.si/razpisi",
     "linksSelector": "#aktualni",
     "contentSelector": ".tab-content",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Beltinci",
     "code": "beltinci",
     "url": "https://www.beltinci.si/objave/58",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Benedikt",
     "code": "benedikt",
     "url": "https://www.benedikt.si/objave/58",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Bistrica ob Sotli",
     "code": "bistrica-ob-sotli",
     "url": "https://www.bistricaobsotli.si/objave/58",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Bled",
     "code": "bled",
     "url": "https://www.e-bled.si/za-obcane/javni-razpisi/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Bloke",
     "code": "bloke",
     "url": "https://www.bloke.si/javni-razpisi",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Bohinj",
     "code": "bohinj",
     "url": "https://obcina.bohinj.si/razpisi",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Borovnica",
     "code": "borovnica",
     "url": "https://www.borovnica.si/razpisi",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Bovec",
     "code": "bovec",
     "url": "https://obcina.bovec.si/objave/58",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Braslovče",
     "code": "braslovce",
     "url": "https://www.braslovce.si/objave/58",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Brda",
     "code": "brda",
     "url": "https://www.obcina-brda.si/sl/objave-in-razpisi/nepremicnine-v-prodaji/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Brezovica",
     "code": "brezovica",
     "url": "https://www.brezovica.si/za-obcane/razpisi/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Brežice",
     "code": "brezice",
     "url": "https://www.brezice.si/sl/novice/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Cankova",

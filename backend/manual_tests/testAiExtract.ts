@@ -155,6 +155,7 @@ async function main() {
   }
 
   await AiExtractService.close();
+  await ParcelScreenshotService.closeBrowser();
 
   console.log(`\n========================================`);
   console.log(`Končano. Obdelanih ${allResults.length} virov.`);
