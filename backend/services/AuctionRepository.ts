@@ -356,6 +356,7 @@ async function getById(auctionId: string): Promise<Auction | undefined> {
 
   const auction: Auction = {
     ...main,
+    auctionId,
     properties,
     documents,
     images,

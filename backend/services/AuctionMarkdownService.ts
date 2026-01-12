@@ -12,9 +12,16 @@ function formatAuctionMarkdown(auction: Auction): string {
   lines.push(`# ${auction.aiTitle || auction.title}`);
   lines.push("");
 
+  // AI Warning (if present)
+  if (auction.aiWarning) {
+    lines.push(`> ⚠️ **Opozorilo:** ${auction.aiWarning}`);
+    lines.push("");
+  }
+
   // Main details
   lines.push("## Osnovni podatki");
   lines.push("");
+  if (auction.auctionId) lines.push(`- **Interni ID:** ${auction.auctionId}`);
   if (auction.announcementId) lines.push(`- **ID objave:** ${auction.announcementId}`);
 
   const typeLabels: Record<string, string> = {
@@ -164,7 +171,7 @@ function formatAuctionMarkdown(auction: Auction): string {
     lines.push("");
     for (const img of auction.images) {
       const desc = img.description || "Slika";
-      lines.push(`![${desc}](${img.sourceUrl})`);
+      lines.push(`- [${desc}](${img.sourceUrl})`);
     }
     lines.push("");
   }
