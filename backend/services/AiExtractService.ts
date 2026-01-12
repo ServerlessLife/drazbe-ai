@@ -427,6 +427,7 @@ async function fetchDocument(
   cookies?: string
 ): Promise<DocumentResult | null> {
   try {
+    /*
     if (doc.description.toLowerCase().includes("cenitveno poročilo")) {
       logger.log("Skipping valuation report", {
         document: doc.description,
@@ -435,6 +436,7 @@ async function fetchDocument(
       });
       return null;
     }
+      */
 
     logger.log("Downloading document", {
       document: doc.description,

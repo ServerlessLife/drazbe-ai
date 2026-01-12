@@ -10,6 +10,9 @@ export const auctionAnalysisSchema = z.object({
     .describe(
       "Dodatna opozorila odkrita med analizo vrednotenja. Nikdar ne odstrani obstoječih opozoril, samo dodaj novo po potrebi in prilagodi besedilo."
     ),
+  aiGursValuationMakesSense: z
+    .boolean()
+    .describe("Ali GURS vrednotenje smiselno odraža tržno vrednost nepremičnine?"),
   aiSuitability: z
     .string()
     .describe(

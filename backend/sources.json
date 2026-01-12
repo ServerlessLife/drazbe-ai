@@ -299,7 +299,7 @@
     "name": "Občina Bistrica ob Sotli",
     "code": "bistrica-ob-sotli",
     "url": "https://www.bistricaobsotli.si/objave/58",
-    "linksSelector": ".tab-content",
+    "linksSelector": ".posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },

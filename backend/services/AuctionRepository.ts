@@ -472,17 +472,18 @@ async function updatePropertyMap(
 /**
  * Update auction AI analysis fields by auctionId
  * @param auctionId - The partition key
- * @param analysis - The AI analysis result (aiWarning)
+ * @param analysis - The AI analysis result
  */
 async function updateAuctionAnalysis(
   auctionId: string,
-  analysis: { aiWarning: string | null }
+  analysis: { aiWarning: string | null; aiGursValuationMakesSense: boolean }
 ): Promise<void> {
   const now = new Date().toISOString();
 
   logger.log("Updating auction analysis", {
     auctionId,
     hasWarning: analysis.aiWarning !== null,
+    aiGursValuationMakesSense: analysis.aiGursValuationMakesSense,
     localStorage: LOCAL_STORAGE,
   });
 
@@ -508,10 +509,11 @@ async function updateAuctionAnalysis(
         recordKey: "MAIN",
       },
       UpdateExpression:
-        "SET aiWarning = :aiWarning, gsiPk = :gsiPk, #date = :date, publishedAt = :publishedAt, updatedAt = :updatedAt",
+        "SET aiWarning = :aiWarning, aiGursValuationMakesSense = :aiGursValuationMakesSense, gsiPk = :gsiPk, #date = :date, publishedAt = :publishedAt, updatedAt = :updatedAt",
       ExpressionAttributeNames: { "#date": "date" },
       ExpressionAttributeValues: {
         ":aiWarning": analysis.aiWarning,
+        ":aiGursValuationMakesSense": analysis.aiGursValuationMakesSense,
         ":gsiPk": "PUBLISHED",
         ":date": now,
         ":publishedAt": now,

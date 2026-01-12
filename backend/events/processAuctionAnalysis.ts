@@ -80,17 +80,25 @@ export async function handler(event: SQSEvent) {
 
     logger.log("AI analysis completed", { auctionId, analysis });
 
+    // Build aiWarning - combine existing warning with GURS valuation warning if needed
+    let aiWarning = analysis.aiWarning;
+    if (!analysis.aiGursValuationMakesSense) {
+      const gursWarning = "GURS vrednotenje ne odraža tržne vrednosti";
+      aiWarning = aiWarning ? `${aiWarning}. ${gursWarning}` : gursWarning;
+    }
+
     // Save the suitability and driving info to UserSuitabilityTable
     await UserSuitabilityRepository.saveSuitability(auctionId, analysis.aiSuitability);
 
-    // Save the analysis to AuctionTable (aiWarning)
+    // Save the analysis to AuctionTable (aiWarning + aiGursValuationMakesSense)
     await AuctionRepository.updateAuctionAnalysis(auctionId, {
-      aiWarning: analysis.aiWarning,
+      aiWarning,
+      aiGursValuationMakesSense: analysis.aiGursValuationMakesSense,
     });
 
     logger.log("Auction analysis completed and saved", {
       auctionId,
-      aiWarning: analysis.aiWarning,
+      aiWarning,
       aiSuitability: analysis.aiSuitability,
     });
   }

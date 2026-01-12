@@ -43,6 +43,8 @@ export type Auction = Omit<AuctionBase, "property" | "documents" | "images" | "i
   aiTitle: string | null;
   /** AI-generated warning about unusual aspects */
   aiWarning: string | null;
+  /** AI assessment: does GURS valuation reflect market value? */
+  aiGursValuationMakesSense: boolean | null;
   /** AI-generated suitability assessment */
   aiSuitability: string | null;
   /** Driving info from user's home */

@@ -29,8 +29,16 @@ export async function handler() {
     for (const auction of auctions) {
       const markdown = AuctionMarkdownService.formatAuctionMarkdown(auction);
       const baseTitle = auction.aiSuitability || auction.aiTitle || auction.title;
-      //const title = auction.aiWarning ? `⚠️ ${baseTitle}` : baseTitle;
-      const title = baseTitle;
+
+      let aiGursValuationMakesSense = auction.aiGursValuationMakesSense === false;
+
+      //check if all properties have valuation, else set aiGursValuationMakesSense to false
+      const allPropertiesHaveValuation = auction.properties?.every((p) => p.valuation !== undefined && p.valuation !== null);
+      if (!allPropertiesHaveValuation) {
+        aiGursValuationMakesSense = false;
+      }
+
+      const title = aiGursValuationMakesSense ? `⚠️ ${baseTitle}` : baseTitle;
       const link = auction.urlSources[0] || "";
       const pubDate = auction.publishedAt ? new Date(auction.publishedAt) : new Date();
       const html = await marked(markdown);
