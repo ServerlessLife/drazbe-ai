@@ -13,7 +13,6 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as ssm from "aws-cdk-lib/aws-ssm";
-import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
 import { LambdaErrorSnsSender } from "lambda-error-sns-sender";
 import { QueueWithDlq } from "./queueWithDlq";
@@ -29,26 +28,30 @@ export class CdkStack extends cdk.Stack {
       displayName: "Drazbe AI Alarms",
     });
 
-    alarmTopic.addSubscription(
-      new snsSubscriptions.EmailSubscription("marko@strukelj.net"),
-    );
+    alarmTopic.addSubscription(new snsSubscriptions.EmailSubscription("marko@strukelj.net"));
 
     // Lambda Error SNS Sender - sends detailed Lambda error logs via SNS
     new LambdaErrorSnsSender(this, "LambdaErrorSnsSender", {
       snsTopics: [alarmTopic],
     });
 
-    // Secrets Manager for sensitive API keys
-    // These are created with placeholder values - update them in AWS Console or via CLI
-    const openaiApiKeySecret = new secretsmanager.Secret(this, "OpenAIApiKeySecret", {
-      secretName: "/drazbe-ai/openai-api-key",
-      description: "OpenAI API Key for AI services",
-    });
+    // SSM Parameters for configuration
+    // Note: For sensitive values, update these via AWS Console after deployment
+    const openaiApiKeyParam = ssm.StringParameter.fromSecureStringParameterAttributes(
+      this,
+      "OpenAIApiKeyParam",
+      {
+        parameterName: "/drazbe-ai/openai-api-key",
+      }
+    );
 
-    const googleMapsApiKeySecret = new secretsmanager.Secret(this, "GoogleMapsApiKeySecret", {
-      secretName: "/drazbe-ai/google-maps-api-key",
-      description: "Google Maps API Key for distance calculations",
-    });
+    const googleMapsApiKeyParam = ssm.StringParameter.fromSecureStringParameterAttributes(
+      this,
+      "GoogleMapsApiKeyParam",
+      {
+        parameterName: "/drazbe-ai/google-maps-api-key",
+      }
+    );
 
     // SSM Parameter for non-sensitive configuration
     const homeAddressParam = new ssm.StringParameter(this, "HomeAddress", {
@@ -164,7 +167,16 @@ export class CdkStack extends cdk.Stack {
       },
       bundling: {
         externalModules: [
+          "playwright",
           "playwright-core",
+          "@sparticuz/chromium",
+          "canvas",
+          "chromium-bidi",
+        ],
+        nodeModules: [
+          "playwright",
+          "playwright-core",
+          "@sparticuz/chromium",
           "canvas",
           "chromium-bidi",
         ],
@@ -180,8 +192,8 @@ export class CdkStack extends cdk.Stack {
     // Grant processor Lambda access to S3 bucket for documents
     contentBucket.grantReadWrite(processorLambda);
 
-    // Grant processor Lambda access to secrets
-    openaiApiKeySecret.grantRead(processorLambda);
+    // Grant processor Lambda access to SSM parameters
+    openaiApiKeyParam.grantRead(processorLambda);
 
     // Lambda alarms for processor
     new LambdaAlarms(this, "ProcessorAlarms", {
@@ -193,7 +205,7 @@ export class CdkStack extends cdk.Stack {
     processorLambda.addEventSource(
       new lambdaEventSources.SqsEventSource(sourceQueueWithDlq.queue, {
         batchSize: 1, // Process one source at a time
-      }),
+      })
     );
 
     // SQS queue for property screenshot processing (triggered by DynamoDB stream)
@@ -261,7 +273,7 @@ export class CdkStack extends cdk.Stack {
             },
           }),
         ],
-      }),
+      })
     );
 
     // Lambda alarms for stream processor
@@ -281,7 +293,17 @@ export class CdkStack extends cdk.Stack {
       },
       bundling: {
         externalModules: [
+          "playwright",
           "playwright-core",
+          "@sparticuz/chromium",
+          "canvas",
+          "chromium-bidi",
+        ],
+        nodeModules: [
+          "playwright",
+          "playwright-core",
+          "@sparticuz/chromium",
+          "canvas",
           "chromium-bidi",
         ],
       },
@@ -297,7 +319,7 @@ export class CdkStack extends cdk.Stack {
     propertyProcessorLambda.addEventSource(
       new lambdaEventSources.SqsEventSource(propertyQueueWithDlq.queue, {
         batchSize: 1,
-      }),
+      })
     );
 
     // Lambda alarms for property processor
@@ -322,16 +344,16 @@ export class CdkStack extends cdk.Stack {
     // Grant auction analysis processor Lambda access to user suitability table
     userSuitabilityTable.grantReadWriteData(auctionAnalysisProcessorLambda);
 
-    // Grant auction analysis processor Lambda access to secrets and SSM parameters
-    openaiApiKeySecret.grantRead(auctionAnalysisProcessorLambda);
-    googleMapsApiKeySecret.grantRead(auctionAnalysisProcessorLambda);
+    // Grant auction analysis processor Lambda access to SSM parameters
+    openaiApiKeyParam.grantRead(auctionAnalysisProcessorLambda);
+    googleMapsApiKeyParam.grantRead(auctionAnalysisProcessorLambda);
     homeAddressParam.grantRead(auctionAnalysisProcessorLambda);
 
     // Add SQS trigger to auction analysis processor Lambda
     auctionAnalysisProcessorLambda.addEventSource(
       new lambdaEventSources.SqsEventSource(auctionAnalysisQueueWithDlq.queue, {
         batchSize: 1,
-      }),
+      })
     );
 
     // Lambda alarms for auction analysis processor

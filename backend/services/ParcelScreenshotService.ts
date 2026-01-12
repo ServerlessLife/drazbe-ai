@@ -1,4 +1,5 @@
-import { chromium, Browser, Page } from "playwright";
+import { Browser, Page } from "playwright-core";
+import { launchBrowser } from "../utils/browser.js";
 import { PropertyKey } from "../types/PropertyIdentifier.js";
 import { logger } from "../utils/logger.js";
 
@@ -12,11 +13,9 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
   let browser: Browser | null = null;
 
   try {
-    // Launch browser with headless mode from env (defaults to true)
-    const headless = process.env.PLAYWRIGHT_HEADLESS !== "false";
-    browser = await chromium.launch({ headless });
-    const context = await browser.newContext();
-    const page: Page = await context.newPage();
+    const result = await launchBrowser();
+    browser = result.browser;
+    const page: Page = result.page;
 
     // 1. Open the page
     logger.log("Opening eProstor page");

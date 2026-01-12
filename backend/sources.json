@@ -197,7 +197,7 @@
     "code": "kranj",
     "url": "https://www.kranj.si/mestna-obcina/javni-razpisi-narocila-razgrnitve",
     "skipSearchingForLinks": true,
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Krško",
@@ -209,7 +209,7 @@
     "name": "Mestna občina Ljubljana",
     "code": "ljubljana",
     "url": "https://www.ljubljana.si/sl/mestni-servis/razpisi-razgrnitve-in-javne-objave?cat=2&status=all&year=&nrOfItems=20#filter",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Maribor",

@@ -1,4 +1,5 @@
-import { chromium, Page, Browser, BrowserContext } from "playwright";
+import { Page, Browser } from "playwright-core";
+import { launchBrowser } from "../utils/browser.js";
 import crypto from "crypto";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
@@ -26,7 +27,6 @@ import { logger } from "../utils/logger.js";
 import { config } from "../utils/config.js";
 
 let browser: Browser | null = null;
-let context: BrowserContext | null = null;
 let page: Page | null = null;
 let openai: OpenAI | undefined;
 
@@ -36,7 +36,7 @@ let openai: OpenAI | undefined;
  */
 async function getOpenAI(): Promise<OpenAI> {
   if (!openai) {
-    const apiKey = await config.get("OPENAI_API_KEY");
+    const apiKey = await config.get("/drazbe-ai/openai-api-key");
     openai = new OpenAI({ apiKey });
   }
   return openai;
@@ -78,61 +78,15 @@ function extractDocumentLinks(markdown: string): Array<{ description: string; ur
 }
 
 /**
- * Get or create a browser instance with a page (singleton pattern)
- * Uses Playwright with Chrome user agent to avoid bot detection
+ * Get or create a browser page (singleton pattern)
  */
-async function ensureBrowser(): Promise<Page> {
-  if (!browser) {
-    // Use headless mode from env (defaults to true)
-    const headless = process.env.PLAYWRIGHT_HEADLESS !== "false";
-    browser = await chromium.launch({
-      headless,
-      args: [
-        "--disable-blink-features=AutomationControlled",
-        // "--disable-features=IsolateOrigins,site-per-process",
-        // "--no-sandbox",
-        // "--disable-setuid-sandbox",
-        // "--disable-dev-shm-usage",
-        // "--disable-accelerated-2d-canvas",
-        // "--disable-gpu",
-      ],
-    });
-    context = await browser.newContext({
-      userAgent:
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      // viewport: { width: 1920, height: 1080 },
-      // locale: "sl-SI",
-      // timezoneId: "Europe/Ljubljana",
-      // extraHTTPHeaders: {
-      //   "Accept-Language": "sl-SI,sl;q=0.9,en;q=0.8",
-      //   Accept:
-      //     "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-      //   "Sec-Fetch-Dest": "document",
-      //   "Sec-Fetch-Mode": "navigate",
-      //   "Sec-Fetch-Site": "none",
-      //   "Sec-Fetch-User": "?1",
-      //   "Upgrade-Insecure-Requests": "1",
-      // },
-    });
-
-    // Remove webdriver property to avoid detection
-    // await context.addInitScript(() => {
-    //   Object.defineProperty(navigator, "webdriver", {
-    //     get: () => undefined,
-    //   });
-    //   // Override plugins
-    //   Object.defineProperty(navigator, "plugins", {
-    //     get: () => [1, 2, 3, 4, 5],
-    //   });
-    //   // Override languages
-    //   Object.defineProperty(navigator, "languages", {
-    //     get: () => ["sl-SI", "sl", "en-US", "en"],
-    //   });
-    // });
-
-    page = await context.newPage();
+async function ensurePage(): Promise<Page> {
+  if (!page) {
+    const result = await launchBrowser();
+    browser = result.browser;
+    page = result.page;
   }
-  return page!;
+  return page;
 }
 
 /**
@@ -141,10 +95,9 @@ async function ensureBrowser(): Promise<Page> {
 async function close(): Promise<void> {
   if (browser) {
     await browser.close();
-    browser = null;
-    context = null;
-    page = null;
   }
+  browser = null;
+  page = null;
 }
 
 /**
@@ -1017,16 +970,19 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
 
     return results;
   } catch (err: any) {
-    logger.error(
-      `Failed to process announcement for data source ${dataSource.code}, title "${objava.title}"`,
-      err,
-      {
-        dataSourceCode: dataSource.code,
-        title: objava.title,
-        url: objava.url,
-      }
+    throw new Error(
+      `Failed to process announcement for data source ${dataSource.code}, title "${objava.title}": ${err.message}`, { cause: err }
     );
-    return [];
+    // logger.error(
+    //   `Failed to process announcement for data source ${dataSource.code}, title "${objava.title}"`,
+    //   err,
+    //   {
+    //     dataSourceCode: dataSource.code,
+    //     title: objava.title,
+    //     url: objava.url,
+    //   }
+    // );
+    // return [];
   }
 }
 
@@ -1042,7 +998,7 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
     skipSearching: dataSource.skipSearchingForLinks,
   });
 
-  const page = await ensureBrowser();
+  const page = await ensurePage();
   let allLinks: Link[];
 
   // Use url directly if skipSearchingForLinks is true, otherwise extract from page

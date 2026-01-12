@@ -15,7 +15,7 @@ import { config } from "../utils/config.js";
  * Uses first property's centroid that has one, or falls back to auction location
  */
 async function getDrivingInfoFromHome(auction: Auction): Promise<DrivingResult | null> {
-  const homeAddress = await config.get("HOME_ADDRESS");
+  const homeAddress = await config.get("/drazbe-ai/home-address");
   if (!homeAddress) {
     logger.warn("HOME_ADDRESS not configured, skipping driving info calculation");
     return null;

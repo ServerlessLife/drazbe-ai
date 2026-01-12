@@ -48,7 +48,7 @@ async function getDrivingInfo(
   origin: Location,
   destination: Location
 ): Promise<DrivingResult | null> {
-  const apiKey = await config.get("GOOGLE_MAPS_API_KEY");
+  const apiKey = await config.get("/drazbe-ai/google-maps-api-key");
   if (!apiKey) {
     throw new Error(
       "Google Maps API key not configured. Set GOOGLE_MAPS_API_KEY in .env or SSM Parameter Store."

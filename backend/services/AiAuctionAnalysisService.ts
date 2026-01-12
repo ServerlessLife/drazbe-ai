@@ -14,7 +14,7 @@ let openai: OpenAI | undefined;
  */
 async function getOpenAI(): Promise<OpenAI> {
   if (!openai) {
-    const apiKey = await config.get("OPENAI_API_KEY");
+    const apiKey = await config.get("/drazbe-ai/openai-api-key");
     openai = new OpenAI({ apiKey });
   }
   return openai;

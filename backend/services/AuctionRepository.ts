@@ -64,13 +64,14 @@ async function save(auction: Auction): Promise<void> {
 
   // If LOCAL_STORAGE is true, save using logger instead of DynamoDB
   if (LOCAL_STORAGE) {
+    const safeAnnouncementId = announcementId.replace(/\//g, "-");
     logger.logContent(
       "Auction saved",
       { auctionId },
       {
         content: JSON.stringify(auction, null, 2),
         prefix: auction.dataSourceCode,
-        suffix: `${announcementId}-auction`,
+        suffix: `${safeAnnouncementId}-auction`,
         extension: "json",
       }
     );

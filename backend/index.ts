@@ -24,6 +24,7 @@ async function main() {
       // Save each auction as nicely formatted markdown
       for (const auction of auctions) {
         const announcementId = auction.announcementId || "unknown";
+        const safeAnnouncementId = announcementId.replace(/\//g, "-");
         const markdown = AuctionMarkdownService.formatAuctionMarkdown(auction);
         logger.logContent(
           "Auction markdown saved",
@@ -31,7 +32,7 @@ async function main() {
           {
             content: markdown,
             prefix: auction.dataSourceCode,
-            suffix: `${announcementId}-auction`,
+            suffix: `${safeAnnouncementId}-auction`,
             extension: "md",
           }
         );

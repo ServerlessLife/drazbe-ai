@@ -14,5 +14,8 @@
   "devDependencies": {
     "tsx": "^4.21.0",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "prettier": "^3.7.4"
   }
 }

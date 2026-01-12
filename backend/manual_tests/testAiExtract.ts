@@ -58,6 +58,7 @@ async function main() {
       // Save each auction as nicely formatted markdown
       for (const auction of auctions) {
         const announcementId = auction.announcementId || "unknown";
+        const safeAnnouncementId = announcementId.replace(/\//g, "-");
 
         // Calculate driving info from home
         let drivingInfo: DrivingResult | null = null;
@@ -106,7 +107,7 @@ async function main() {
           {
             content: markdown,
             prefix: auction.dataSourceCode,
-            suffix: `${announcementId}-auction`,
+            suffix: `${safeAnnouncementId}-auction`,
             extension: "md",
           }
         );
@@ -120,7 +121,7 @@ async function main() {
             {
               content: JSON.stringify(analysis, null, 2),
               prefix: auction.dataSourceCode,
-              suffix: `${announcementId}-analysis`,
+              suffix: `${safeAnnouncementId}-analysis`,
               extension: "json",
             }
           );
@@ -130,7 +131,7 @@ async function main() {
             {
               content: analysis.aiSuitability || "",
               prefix: auction.dataSourceCode,
-              suffix: `${announcementId}-suitability`,
+              suffix: `${safeAnnouncementId}-suitability`,
               extension: "txt",
             }
           );
