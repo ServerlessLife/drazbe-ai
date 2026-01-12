@@ -49,7 +49,10 @@ async function getParcelValuation(query: PropertyKey): Promise<GursParcelValuati
     0
   );
 
-  const result = {
+  const result: GursParcelValuation = {
+    type: "parcel",
+    cadastralMunicipality: validated.data.cadastralMunicipality,
+    number: validated.data.number,
     surfaceArea: basic?.povrsina || 0,
     value: totalValue,
     centroid: basic?.cenx && basic?.ceny ? { e: basic.ceny, n: basic.cenx } : undefined,
@@ -131,7 +134,10 @@ async function getBuildingPartValuation(
   const getIzvorni = (prefix: string) =>
     izvorniPodatki.find((p: any) => p.prefix?.toLowerCase() === prefix.toLowerCase())?.vrednost;
 
-  const result = {
+  const result: GursBuildingPartValuation = {
+    type: "building_part",
+    cadastralMunicipality: validated.data.cadastralMunicipality,
+    number: validated.data.number,
     address: address?.polniNaslov,
     value: value?.posplosenaVrednost || 0,
     apartmentNumber: part?.stevStan,

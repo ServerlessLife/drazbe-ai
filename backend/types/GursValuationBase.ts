@@ -15,6 +15,12 @@ export type Centroid = z.infer<typeof centroidSchema>;
  * Common fields shared by parcel and building part valuations
  */
 export const gursValuationBaseSchema = z.object({
+  /** Property type */
+  type: z.enum(["parcel", "building", "building_part"]).describe("Tip nepremičnine"),
+  /** Cadastral municipality code */
+  cadastralMunicipality: z.string().describe("Katastrska občina"),
+  /** Property number */
+  number: z.string().describe("Številka parcele/stavbe"),
   value: z.number().describe("Posplošena vrednost v €"),
   centroid: centroidSchema.optional(),
 });
