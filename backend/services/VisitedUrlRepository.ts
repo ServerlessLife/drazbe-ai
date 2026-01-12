@@ -46,9 +46,10 @@ async function isVisited(dataSourceCode: string, url: string): Promise<boolean> 
     logger.log("Checked URL visit status", { dataSourceCode, url, visited });
     return visited;
   } catch (error) {
-    logger.error("Failed to check visited URL", error, { dataSourceCode, url });
-    // On error, return false to allow processing
-    return false;
+    throw new Error(`Failed to check visited URL for ${dataSourceCode} - ${url}`, { cause: error });
+    // logger.error("Failed to check visited URL", error, { dataSourceCode, url });
+    // // On error, return false to allow processing
+    // return false;
   }
 }
 
@@ -79,7 +80,8 @@ async function markVisited(dataSourceCode: string, url: string): Promise<void> {
     );
     logger.log("Marked URL as visited", { dataSourceCode, url });
   } catch (error) {
-    logger.error("Failed to mark URL as visited", error, { dataSourceCode, url });
+    throw new Error(`Failed to mark visited URL for ${dataSourceCode} - ${url}`, { cause: error });
+    // logger.error("Failed to mark URL as visited", error, { dataSourceCode, url });
     // Don't throw - failing to mark shouldn't break processing
   }
 }

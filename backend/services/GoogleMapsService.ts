@@ -102,7 +102,7 @@ async function getDrivingInfo(
 
     return { drivingTimeMinutes, drivingDistanceKm };
   } catch (error) {
-    logger.error("Failed to calculate driving info", error as Error, {
+    logger.warn("Failed to calculate driving info", error as Error, {
       origin: originStr,
       destination: destinationStr,
     });

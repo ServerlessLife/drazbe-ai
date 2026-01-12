@@ -167,7 +167,7 @@ async function extractContent(
 
     return await compactHtml(content, dataSourceCode, sourceUrl);
   } catch (error) {
-    logger.error("Failed to extract content, using original HTML", error, {
+    logger.warn("Failed to extract content, using original HTML", error, {
       htmlLength: html.length,
       dataSourceCode,
       sourceUrl,
@@ -252,11 +252,11 @@ async function extractLinks(
 
     return filterResult.links;
   } catch (error) {
-    logger.error("Failed to extract links", error, {
-      dataSourceCode,
-      sourceUrl,
-    });
-    throw error;
+    // logger.error("Failed to extract links", error, {
+    //   dataSourceCode,
+    //   sourceUrl,
+    // });
+    throw new Error(`Failed to extract links: ${error}`, { cause: error });
   }
 }
 
@@ -339,8 +339,8 @@ async function convertHtmlToMarkdown(
 
     return markdown;
   } catch (error) {
-    logger.error("Failed to convert HTML to markdown", error);
-    throw error;
+    //logger.error("Failed to convert HTML to markdown", error);
+    throw new Error(`Failed to convert HTML to markdown: ${error}`, { cause: error });
   }
 }
 
@@ -451,7 +451,7 @@ async function fetchDocument(
     const docResponse = await fetch(doc.url, { headers });
 
     if (!docResponse.ok) {
-      logger.error("Failed to download document", new Error(`HTTP ${docResponse.status}`), {
+      logger.warn("Failed to download document", new Error(`HTTP ${docResponse.status}`), {
         document: doc.description,
         documentUrl: doc.url,
         httpStatus: docResponse.status,
@@ -548,7 +548,7 @@ async function fetchDocument(
       markdown: content,
     };
   } catch (docErr: any) {
-    logger.error("Document processing error", docErr, {
+    logger.warn("Document processing error", docErr, {
       document: doc.description,
       documentUrl: doc.url,
       announcementUrl,
@@ -589,7 +589,7 @@ async function fetchDocuments(
       }
       return result;
     } catch (error) {
-      logger.error("Failed to process document", error, {
+      logger.warn("Failed to process document", error, {
         document: doc.description,
         announcementUrl,
         dataSourceCode,
@@ -695,7 +695,7 @@ async function pdfToMarkdown(buffer: Buffer): Promise<{ content: string; ocrUsed
     logger.warn("OCR found no text", { totalPages: pdfDoc.numPages });
     return { content: pdfMarkdown, ocrUsed: false };
   } catch (ocrErr) {
-    logger.error("OCR error", ocrErr);
+    logger.warn("OCR error", ocrErr);
     return { content: pdfMarkdown, ocrUsed: false };
   }
 }
@@ -757,7 +757,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
       try {
         markdown = await SodneDrazbeService.fetchMarkdown(announcementUrl);
       } catch (err) {
-        logger.error(
+        logger.warn(
           `Failed to fetch auction data from sodnedrazbe.si for "${objava.title}"`,
           err,
           {

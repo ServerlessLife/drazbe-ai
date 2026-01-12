@@ -65,7 +65,7 @@ export async function handler(event: SQSEvent) {
 
       await UserSuitabilityRepository.saveDrivingInfo(auctionId, drivingInfo);
     } catch (err) {
-      logger.error("Failed to calculate driving info", {
+      logger.warn("Failed to calculate driving info", {
         auctionId,
         error: err,
       });

@@ -249,11 +249,14 @@ async function fetchMarkdown(fullUrl: string): Promise<string> {
     });
 
     if (!jsonResponse.ok) {
-      logger.error("Failed to fetch sodnedrazbe data", new Error(`HTTP ${jsonResponse.status}`), {
-        httpStatus: jsonResponse.status,
-        publicationId,
-        url: fullUrl,
-      });
+      throw new Error(
+        `Failed to fetch sodnedrazbe data frrom ${fullUrl}, HTTP ${jsonResponse.status}`
+      );
+      // logger.error("Failed to fetch sodnedrazbe data", new Error(`HTTP ${jsonResponse.status}`), {
+      //   httpStatus: jsonResponse.status,
+      //   publicationId,
+      //   url: fullUrl,
+      // });
       return "";
     }
 
@@ -288,11 +291,12 @@ async function fetchMarkdown(fullUrl: string): Promise<string> {
 
     return markdown;
   } catch (error) {
-    logger.error("Error fetching sodnedrazbe data", error, {
-      publicationId,
-      url: fullUrl,
-    });
-    return "";
+    throw new Error(`Failed to fetch sodnedrazbe data from ${fullUrl}`, { cause: error });
+    // logger.error("Error fetching sodnedrazbe data", error, {
+    //   publicationId,
+    //   url: fullUrl,
+    // });
+    // return "";
   }
 }
 

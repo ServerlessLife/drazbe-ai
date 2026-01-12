@@ -31,11 +31,12 @@ export async function handler(event: SQSEvent) {
 
       logger.log("Successfully processed source", { source: source.code });
     } catch (error) {
-      logger.error("Error processing source from queue", error, {
-        source: (JSON.parse(record.body) as Partial<Source>).code,
-      });
+      // logger.error("Error processing source from queue", error, {
+      //   source: (JSON.parse(record.body) as Partial<Source>).code,
+      // });
       // Re-throw to allow SQS to retry if needed
-      throw error;
+
+      throw new Error(`Error processing source from queue: ${error}`, { cause: error });
     }
   }
 

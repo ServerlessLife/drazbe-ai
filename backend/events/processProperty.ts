@@ -31,7 +31,7 @@ export async function handler(event: SQSEvent) {
     });
 
     if (!screenshotPath) {
-      logger.error("Failed to capture screenshot for property", {
+      logger.warn("Failed to capture screenshot for property", {
         auctionId,
         type,
         cadastralMunicipality,

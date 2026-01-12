@@ -92,7 +92,7 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
     if (browser) {
       await browser.close();
     }
-    logger.error("Failed to capture screenshot", error, {
+    logger.warn("Failed to capture screenshot", error, {
       propertyType: query.type,
       cadastralMunicipality: query.cadastralMunicipality,
       propertyNumber: query.number,

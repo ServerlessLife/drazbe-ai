@@ -85,7 +85,7 @@ export async function handler(event: DynamoDBStreamEvent) {
           logger.log("Sent MAIN record to auction analysis queue", { auctionId });
         }
       } catch (error) {
-        logger.error("Failed to send message to queue", error, {
+        logger.warn("Failed to send message to queue", error, {
           auctionId,
           recordType,
         });
