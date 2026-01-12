@@ -54,12 +54,23 @@ export async function handler(event: DynamoDBStreamEvent) {
             continue;
           }
 
+          // Extract valuation data if available (contains corrected type/cadastralMunicipality/number)
+          const valuationMap = newImage.valuation?.M;
+          const valuation = valuationMap
+            ? {
+                type: valuationMap.type?.S as PropertyKey["type"],
+                cadastralMunicipality: valuationMap.cadastralMunicipality?.S ?? cadastralMunicipality,
+                number: valuationMap.number?.S ?? propertyNumber,
+              }
+            : undefined;
+
           // Send to property queue for screenshot processing
           const message: PropertyQueueMessage = {
             auctionId,
             type: propertyType,
             cadastralMunicipality,
             number: propertyNumber,
+            valuation,
           };
           await sqsClient.send(
             new SendMessageCommand({

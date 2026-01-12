@@ -103,6 +103,7 @@ async function save(auction: Auction): Promise<void> {
     title: auction.title,
     aiTitle: auction.aiTitle,
     aiWarning: auction.aiWarning,
+    aiGursValuationMakesSense: auction.aiGursValuationMakesSense,
     aiSuitability: auction.aiSuitability,
     type: auction.type,
     isVacant: auction.isVacant,

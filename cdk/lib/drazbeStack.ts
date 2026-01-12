@@ -63,6 +63,7 @@ export class CdkStack extends cdk.Stack {
 
     // DynamoDB table to track last trigger times
     const sourceTriggerTable = new dynamodb.TableV2(this, "SourceTriggerTable", {
+      tableName: "drazbe-source-trigger",
       partitionKey: { name: "sourceCode", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "timestamp", type: dynamodb.AttributeType.NUMBER },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -70,6 +71,7 @@ export class CdkStack extends cdk.Stack {
 
     // DynamoDB table for auction data with stream for async processing
     const auctionTable = new dynamodb.TableV2(this, "AuctionTable", {
+      tableName: "drazbe-auction",
       partitionKey: { name: "auctionId", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "recordKey", type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -86,6 +88,7 @@ export class CdkStack extends cdk.Stack {
 
     // DynamoDB table for tracking visited URLs
     const visitedUrlTable = new dynamodb.TableV2(this, "VisitedUrlTable", {
+      tableName: "drazbe-visited-url",
       partitionKey: { name: "dataSourceCode", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "url", type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -93,6 +96,7 @@ export class CdkStack extends cdk.Stack {
 
     // DynamoDB table for user-specific auction suitability
     const userSuitabilityTable = new dynamodb.TableV2(this, "UserSuitabilityTable", {
+      tableName: "drazbe-user-suitability",
       partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "auctionId", type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY,

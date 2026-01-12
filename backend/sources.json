@@ -123,7 +123,7 @@
     "name": "Nepremičnine.net javne dražbe",
     "code": "nepremicnine-net",
     "url": "https://www.nepremicnine.net/javne-drazbe/oglasi-prodaja/?s=16",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Stanovanjski sklad Republike Slovenije",
@@ -331,7 +331,7 @@
     "name": "Občina Bovec",
     "code": "bovec",
     "url": "https://obcina.bovec.si/objave/58",
-    "linksSelector": ".tab-content",
+    "linksSelector": ".posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
