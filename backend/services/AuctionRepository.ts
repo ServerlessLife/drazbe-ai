@@ -87,7 +87,7 @@ async function save(auction: Auction): Promise<void> {
     ttl,
   });
 
-  const records: AuctionRecord[] = [];
+  const records: Map<string, AuctionRecord> = new Map();
 
   // Create MAIN record
   const mainRecord: AuctionMainRecord = {
@@ -117,23 +117,26 @@ async function save(auction: Auction): Promise<void> {
     priceToValueRatio: auction.priceToValueRatio,
     publishedAt: auction.publishedAt,
   };
-  records.push(mainRecord);
+  records.set(mainRecord.recordKey, mainRecord);
 
   // Create PROPERTY records (including valuation data if available)
   if (auction.properties) {
     for (const property of auction.properties) {
       const { valuation, ...propertyData } = property;
-      const propertyRecord: AuctionPropertyRecord = {
-        auctionId,
-        recordKey: `PROPERTY#${generatePropertyId(propertyData)}`,
-        recordType: "PROPERTY",
-        createdAt: now,
-        updatedAt: now,
-        ttl,
-        ...propertyData,
-        valuation,
-      };
-      records.push(propertyRecord);
+      const recordKey = `PROPERTY#${generatePropertyId(propertyData)}` as const;
+      if (!records.has(recordKey)) {
+        const propertyRecord: AuctionPropertyRecord = {
+          auctionId,
+          recordKey,
+          recordType: "PROPERTY",
+          createdAt: now,
+          updatedAt: now,
+          ttl,
+          ...propertyData,
+          valuation,
+        };
+        records.set(recordKey, propertyRecord);
+      }
     }
   }
 
@@ -141,16 +144,19 @@ async function save(auction: Auction): Promise<void> {
   if (auction.documents) {
     for (const document of auction.documents) {
       const documentId = hash(document.sourceUrl);
-      const documentRecord: AuctionDocumentRecord = {
-        auctionId,
-        recordKey: `DOCUMENT#${documentId}`,
-        recordType: "DOCUMENT",
-        createdAt: now,
-        updatedAt: now,
-        ttl,
-        ...document,
-      };
-      records.push(documentRecord);
+      const recordKey = `DOCUMENT#${documentId}` as const;
+      if (!records.has(recordKey)) {
+        const documentRecord: AuctionDocumentRecord = {
+          auctionId,
+          recordKey,
+          recordType: "DOCUMENT",
+          createdAt: now,
+          updatedAt: now,
+          ttl,
+          ...document,
+        };
+        records.set(recordKey, documentRecord);
+      }
     }
   }
 
@@ -158,23 +164,27 @@ async function save(auction: Auction): Promise<void> {
   if (auction.images) {
     for (const image of auction.images) {
       const imageId = hash(image.sourceUrl);
-      const imageRecord: AuctionImageRecord = {
-        auctionId,
-        recordKey: `IMAGE#${imageId}`,
-        recordType: "IMAGE",
-        createdAt: now,
-        updatedAt: now,
-        ttl,
-        ...image,
-      };
-      records.push(imageRecord);
+      const recordKey = `IMAGE#${imageId}` as const;
+      if (!records.has(recordKey)) {
+        const imageRecord: AuctionImageRecord = {
+          auctionId,
+          recordKey,
+          recordType: "IMAGE",
+          createdAt: now,
+          updatedAt: now,
+          ttl,
+          ...image,
+        };
+        records.set(recordKey, imageRecord);
+      }
     }
   }
 
   // Batch write all records (DynamoDB allows up to 25 items per batch)
+  const recordsArray = Array.from(records.values());
   const batches: AuctionRecord[][] = [];
-  for (let i = 0; i < records.length; i += 25) {
-    batches.push(records.slice(i, i + 25));
+  for (let i = 0; i < recordsArray.length; i += 25) {
+    batches.push(recordsArray.slice(i, i + 25));
   }
 
   for (const batch of batches) {
@@ -191,9 +201,9 @@ async function save(auction: Auction): Promise<void> {
     );
   }
 
-  logger.log("Action saved to DynamoDB", {
+  logger.log("Auction saved to DynamoDB", {
     auctionId,
-    recordCount: records.length,
+    recordCount: records.size,
   });
 }
 
