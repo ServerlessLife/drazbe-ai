@@ -72,6 +72,12 @@ function formatAuctionMarkdown(auction: Auction): string {
       toPropertyValuations !== null &&
       (toEstimatedValue === null || toPropertyValuations > toEstimatedValue);
 
+    // Check if all properties have GURS valuation
+    const totalProperties = auction.properties?.length || 0;
+    const propertiesWithValuation =
+      auction.properties?.filter((p) => p.valuation && p.valuation.value > 0).length || 0;
+    const allHaveValuation = totalProperties > 0 && propertiesWithValuation === totalProperties;
+
     // Format percentage with sign (negative = price below value = good deal)
     const formatPercent = (value: number) => (value > 0 ? `-${value}` : `+${Math.abs(value)}`);
 
@@ -85,8 +91,11 @@ function formatAuctionMarkdown(auction: Auction): string {
     if (toPropertyValuations !== null) {
       const suffix = valHigher ? "**" : "";
       const prefixBold = valHigher ? "**" : "";
+      const partialNote = allHaveValuation
+        ? ""
+        : ` ⚠️ vrednotenje za ${propertiesWithValuation} od ${totalProperties} delov`;
       lines.push(
-        `- ${prefixBold}Glede na GURS posplošeno vrednost: ${formatPercent(toPropertyValuations)}%${suffix}`
+        `- ${prefixBold}Glede na GURS posplošeno vrednost: ${formatPercent(toPropertyValuations)}%${suffix}${partialNote}`
       );
     }
   }
