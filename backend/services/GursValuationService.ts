@@ -206,6 +206,18 @@ async function getValuation(
     }
   }
 
+  // If failed, try with cleaned number (only digits and /)
+  if (!result) {
+    const cleanedNumber = validated.data.number.replace(/[^0-9/]/g, "");
+    if (cleanedNumber !== validated.data.number && cleanedNumber.length > 0) {
+      logger.log("Retrying with cleaned number", {
+        original: validated.data.number,
+        cleaned: cleanedNumber,
+      });
+      return getValuation({ ...validated.data, number: cleanedNumber }, ownershipShare);
+    }
+  }
+
   // Apply ownership share to value if provided
   if (result && ownershipShare != null && ownershipShare > 0 && ownershipShare < 100) {
     const adjustedValue = Math.round(result.value * (ownershipShare / 100));
