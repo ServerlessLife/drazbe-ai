@@ -21,6 +21,7 @@
     "constructs": "^10.0.0",
     "lambda-error-sns-sender": "^1.0.0",
     "playwright": "^1.57.0",
-    "playwright-core": "^1.57.0"
+    "playwright-core": "^1.57.0",
+    "tesseract.js": "^7.0.0"
   }
 }

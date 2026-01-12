@@ -172,6 +172,7 @@ export class CdkStack extends cdk.Stack {
           "@sparticuz/chromium",
           "canvas",
           "chromium-bidi",
+          "tesseract.js",
         ],
         nodeModules: [
           "playwright",
@@ -179,6 +180,7 @@ export class CdkStack extends cdk.Stack {
           "@sparticuz/chromium",
           "canvas",
           "chromium-bidi",
+          "tesseract.js",
         ],
       },
     });
