@@ -3,8 +3,8 @@ import { GursValuationService } from "../services/GursValuationService.js";
 async function test() {
   const query = {
     type: "building_part" as const,
-    cadastralMunicipality: "636",
-    number: "479",
+    cadastralMunicipality: "2637",
+    number: "5",
   };
 
   console.log("Fetching building part valuation data...\n");

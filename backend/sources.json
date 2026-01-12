@@ -111,7 +111,7 @@
     "name": "Sodne dražbe",
     "code": "sodnedrazbe",
     "url": "https://sodnedrazbe.si/?subjectType=7d70c0dc-71f7-4b64-9854-444e84219a37",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "eDražbe",
@@ -123,7 +123,7 @@
     "name": "Nepremičnine.net javne dražbe",
     "code": "nepremicnine-net",
     "url": "https://www.nepremicnine.net/javne-drazbe/oglasi-prodaja/?s=16",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Stanovanjski sklad Republike Slovenije",

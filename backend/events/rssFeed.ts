@@ -28,7 +28,8 @@ export async function handler() {
 
     for (const auction of auctions) {
       const markdown = AuctionMarkdownService.formatAuctionMarkdown(auction);
-      const title = auction.aiSuitability || auction.aiTitle || auction.title;
+      const baseTitle = auction.aiSuitability || auction.aiTitle || auction.title;
+      const title = auction.aiWarning ? `⚠️ ${baseTitle}` : baseTitle;
       const link = auction.urlSources[0] || "";
       const pubDate = auction.publishedAt ? new Date(auction.publishedAt) : new Date();
       const html = await marked(markdown);
