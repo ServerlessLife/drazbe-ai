@@ -38,7 +38,7 @@ export async function handler() {
         aiGursValuationMakesSense = false;
       }
 
-      const title = aiGursValuationMakesSense ? `⚠️ ${baseTitle}` : baseTitle;
+      const title = auction.dataSourceCode + ": " + (aiGursValuationMakesSense ? `⚠️ ${baseTitle}` : baseTitle);
       const link = auction.urlSources[0] || "";
       const pubDate = auction.publishedAt ? new Date(auction.publishedAt) : new Date();
       const html = await marked(markdown);
