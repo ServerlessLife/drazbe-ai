@@ -86,15 +86,12 @@ async function getBuildingPartValuation(
     return null;
   }
 
-  const [buildingNum, partNum] = validated.data.number.split("/");
-  if (!buildingNum || !partNum) {
-    logger.warn(
-      "Invalid building part number format - expected format: buildingNumber/partNumber",
-      {
-        providedNumber: validated.data.number,
-        municipality: validated.data.cadastralMunicipality,
-      }
-    );
+  const [buildingNum, partNum = "1"] = validated.data.number.split("/");
+  if (!buildingNum) {
+    logger.warn("Invalid building number format - missing building number", {
+      providedNumber: validated.data.number,
+      municipality: validated.data.cadastralMunicipality,
+    });
     return null;
   }
 
@@ -186,24 +183,32 @@ async function getValuation(
   // This handles cases where the type property might be incorrect or mismatched
   let result: GursParcelValuation | GursBuildingPartValuation | null = null;
 
-  if (validated.data.type === "parcel") {
-    // Try parcel first
-    logger.log("Trying as parcel first");
-    result = await getParcelValuation(validated.data);
-    if (!result) {
-      // Parcel lookup failed, try as building part instead
-      logger.log("Parcel lookup failed, trying as building part");
-      result = await getBuildingPartValuation({ ...validated.data, type: "building_part" });
+  try {
+    if (validated.data.type === "parcel") {
+      // Try parcel first
+      logger.log("Trying as parcel first");
+      result = await getParcelValuation(validated.data);
+      if (!result) {
+        // Parcel lookup failed, try as building part instead
+        logger.log("Parcel lookup failed, trying as building part");
+        result = await getBuildingPartValuation({ ...validated.data, type: "building_part" });
+      }
+    } else {
+      // Try building part first
+      logger.log("Trying as building part first");
+      result = await getBuildingPartValuation(validated.data);
+      if (!result) {
+        // Building part lookup failed, try as parcel instead
+        logger.log("Building part lookup failed, trying as parcel");
+        result = await getParcelValuation({ ...validated.data, type: "parcel" });
+      }
     }
-  } else {
-    // Try building part first
-    logger.log("Trying as building part first");
-    result = await getBuildingPartValuation(validated.data);
-    if (!result) {
-      // Building part lookup failed, try as parcel instead
-      logger.log("Building part lookup failed, trying as parcel");
-      result = await getParcelValuation({ ...validated.data, type: "parcel" });
-    }
+  } catch (error) {
+    logger.warn("Error occurred during valuation retrieval", error, {
+      type: validated.data.type,
+      municipality: validated.data.cadastralMunicipality,
+      number: validated.data.number,
+    });
   }
 
   // If failed, try with cleaned number (only digits and /)
