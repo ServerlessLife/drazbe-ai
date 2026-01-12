@@ -33,7 +33,9 @@ const ONE_DAY_IN_SECONDS = 24 * 60 * 60;
 const DEFAULT_TTL_DAYS = 30;
 
 const client = new DynamoDBClient({});
-const docClient = DynamoDBDocumentClient.from(client);
+const docClient = DynamoDBDocumentClient.from(client, {
+  marshallOptions: { removeUndefinedValues: true },
+});
 
 /**
  * Calculate TTL as 1 day after dueDate

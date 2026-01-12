@@ -13,7 +13,9 @@ const LOCAL_STORAGE = process.env.LOCAL_STORAGE === "true";
 const DEFAULT_USER_ID = "marko";
 
 const client = new DynamoDBClient({});
-const docClient = DynamoDBDocumentClient.from(client);
+const docClient = DynamoDBDocumentClient.from(client, {
+  marshallOptions: { removeUndefinedValues: true },
+});
 
 /**
  * User suitability record structure

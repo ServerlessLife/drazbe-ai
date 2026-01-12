@@ -6,7 +6,9 @@ const TABLE_NAME = process.env.VISITED_URL_TABLE_NAME || "VisitedUrlTable";
 const LOCAL_STORAGE = process.env.LOCAL_STORAGE === "true";
 
 const client = new DynamoDBClient({});
-const docClient = DynamoDBDocumentClient.from(client);
+const docClient = DynamoDBDocumentClient.from(client, {
+  marshallOptions: { removeUndefinedValues: true },
+});
 
 /**
  * Record structure for visited URLs in DynamoDB

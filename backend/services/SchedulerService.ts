@@ -7,7 +7,9 @@ import { Source } from "../types/Source.js";
 import { logger } from "../utils/logger.js";
 
 const dynamoClient = new DynamoDBClient({});
-const docClient = DynamoDBDocumentClient.from(dynamoClient);
+const docClient = DynamoDBDocumentClient.from(dynamoClient, {
+  marshallOptions: { removeUndefinedValues: true },
+});
 const sqsClient = new SQSClient({});
 
 const QUEUE_URL = process.env.SOURCE_QUEUE_URL!;
