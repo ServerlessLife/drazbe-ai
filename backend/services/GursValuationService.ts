@@ -38,16 +38,22 @@ async function getParcelValuation(query: PropertyKey): Promise<GursParcelValuati
 
   const id = searchRes[0].pcMid;
   logger.log("Fetching parcel details", { pcMid: id });
-  const [basic, value] = await Promise.all([
+  const [basic, valueArr] = await Promise.all([
     fetch(`${BASE_URL}/parcela/${id}`).then((r) => r.json()),
     fetch(`${BASE_URL}/parcela/${id}/vrednost?expandOkoliscine=true`).then((r) => r.json()),
   ]);
 
+  // Sum all posplosenaVrednost values from different valuation models
+  const totalValue = (valueArr || []).reduce(
+    (sum: number, v: any) => sum + (v?.posplosenaVrednost || 0),
+    0
+  );
+
   const result = {
     surfaceArea: basic?.povrsina || 0,
-    value: value?.[0]?.posplosenaVrednost || 0,
+    value: totalValue,
     centroid: basic?.cenx && basic?.ceny ? { e: basic.ceny, n: basic.cenx } : undefined,
-    intendedUse: value?.[0]?.izracun?.faktorji?.[0]?.podatki?.find(
+    intendedUse: valueArr?.[0]?.izracun?.faktorji?.[0]?.podatki?.find(
       (p: any) => p.key?.opis === "Namenska raba zemljišča"
     )?.vrednost,
   };
