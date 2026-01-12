@@ -3,97 +3,97 @@
     "name": "Gov.si javne objave",
     "code": "gov-si",
     "url": "https://www.gov.si/zbirke/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "FURS",
     "code": "furs",
     "url": "https://furs.edrazbe.si/list",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za delo, družino, socialne zadeve in enake možnosti",
     "code": "ministrstvo-za-delo-druzino-socialne-zadeve-in-enake-moznosti",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-delo-druzino-socialne-zadeve-in-enake-moznosti/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za finance",
     "code": "ministrstvo-za-finance",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-finance/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za infrastrukturo",
     "code": "ministrstvo-za-infrastrukturo",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-infrastrukturo/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za javno upravo",
     "code": "ministrstvo-za-javno-upravo",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-javno-upravo/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za kmetijstvo, gozdarstvo in prehrano",
     "code": "ministrstvo-za-kmetijstvo-gozdarstvo-in-prehrano",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-kmetijstvo-gozdarstvo-in-prehrano/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za kulturo",
     "code": "ministrstvo-za-kulturo",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-kulturo/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za naravne vire in prostor",
     "code": "ministrstvo-za-naravne-vire-in-prostor",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-naravne-vire-in-prostor/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za notranje zadeve",
     "code": "ministrstvo-za-notranje-zadeve",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-notranje-zadeve/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za obrambo",
     "code": "ministrstvo-za-obrambo",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-obrambo/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za pravosodje",
     "code": "ministrstvo-za-pravosodje",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-pravosodje/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za solidarno prihodnost",
     "code": "ministrstvo-za-solidarno-prihodnost",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-solidarno-prihodnost/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za visoko šolstvo, znanost in inovacije",
     "code": "ministrstvo-za-visoko-solstvo-znanost-in-inovacije",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-visoko-solstvo-znanost-in-inovacije/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za vzgojo in izobraževanje",
     "code": "ministrstvo-za-vzgojo-in-izobrazevanje",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-vzgojo-in-izobrazevanje/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Ministrstvo za zdravje",
     "code": "ministrstvo-za-zdravje",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-zdravje/javne-objave/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Finance",
@@ -111,7 +111,7 @@
     "name": "Sodne dražbe",
     "code": "sodnedrazbe",
     "url": "https://sodnedrazbe.si/?subjectType=7d70c0dc-71f7-4b64-9854-444e84219a37",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "eDražbe",
@@ -135,62 +135,62 @@
     "name": "Javni stanovanjski sklad Mestne občine Ljubljana",
     "code": "jssmol",
     "url": "https://www.jssmol.si/javne-objave/razpolaganje-s-premozenjem",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Javni medobčinski stanovanjski sklad Maribor",
     "code": "jmssmb",
     "url": "https://www.jmss-mb.si/prodaja-nepremicnin/javna-drazba/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Javni stanovanjski sklad Mestne občine Koper",
     "code": "jssmok",
     "url": "https://www.jss-mok.si/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Javni stanovanjski sklad Mestne občine Murska Sobota",
     "code": "jssmoms",
     "url": "https://www.jss-moms.si/si/aktualno/novice",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Nepremičninski sklad pokojninskega in invalidskega zavarovanja",
     "code": "nspiz",
     "url": "https://www.ns-piz.si/si/odprodaja-stanovanj/",
     "skipSearchingForLinks": true,
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Spekter d.o.o.",
     "code": "spekter",
     "url": "https://www.spekter.info/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Stanovanjski sklad Mestne občine Nova Gorica",
     "code": "ssmong",
     "url": "https://ssmong.si/razpolaganje-s-premozenjem",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Nepremičnine Celje d.o.o.",
     "code": "nepremicnine-celje",
     "url": "https://www.nepremicnine-celje.si/prodaja-oglasi/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Celje",
     "code": "celje",
     "url": "https://moc.celje.si/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Koper",
     "code": "koper",
     "url": "https://www.koper.si/public_tender/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Mestna občina Kranj",

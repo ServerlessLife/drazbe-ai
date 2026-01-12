@@ -119,7 +119,7 @@ function formatAuctionMarkdown(auction: Auction): string {
       // Valuation
       if (prop.valuation) {
         lines.push("");
-        lines.push("#### Vrednotenje");
+        lines.push("#### GURS vrednotenje");
         lines.push(`- **Vrednost:** ${prop.valuation.value.toLocaleString("sl-SI")} €`);
         if ("surfaceArea" in prop.valuation && prop.valuation.surfaceArea) {
           lines.push(`- **Površina:** ${prop.valuation.surfaceArea} m²`);
