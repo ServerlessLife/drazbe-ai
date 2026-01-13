@@ -4,6 +4,7 @@ import { PropertyKey } from "../types/PropertyIdentifier.js";
 import { logger } from "../utils/logger.js";
 
 let browser: Browser | null = null;
+let page: Page | null = null;
 
 async function captureParcelScreenshot(query: PropertyKey): Promise<string | null> {
   logger.log("Capturing parcel screenshot", {
@@ -13,9 +14,11 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
   });
 
   try {
-    const result = await launchBrowser();
-    browser = result.browser;
-    const page: Page = result.page;
+    if (!browser) {
+      const result = await launchBrowser();
+      browser = result.browser;
+      page = result.page;
+    }
 
     // 1. Open the page
     logger.log("Opening eProstor page");

@@ -1,13 +1,7 @@
 /**
  * Sort key prefixes for different record types in DynamoDB
  */
-export type AuctionRecordType =
-  | "MAIN"
-  | "PROPERTY"
-  | "PROPERTY_VALUATION"
-  | "PROPERTY_MAP"
-  | "DOCUMENT"
-  | "IMAGE";
+export type AuctionRecordType = "MAIN" | "PROPERTY" | "DOCUMENT" | "IMAGE";
 
 /**
  * Base record structure for all auction-related DynamoDB items

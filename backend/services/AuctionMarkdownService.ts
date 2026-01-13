@@ -140,7 +140,7 @@ function formatAuctionMarkdown(auction: Auction): string {
       // Map image
       if (prop.mapImageUrl) {
         lines.push("");
-        lines.push(`![Zemljevid](${prop.mapImageUrl})`);
+        lines.push(`- [Zemljevid](${prop.mapImageUrl})`);
       }
 
       // Valuation

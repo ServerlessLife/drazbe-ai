@@ -50,10 +50,10 @@ export const auctionBaseSchema = z.object({
     .number()
     .describe("Leto izgradnje stavbe, če je navedeno (samo za stavbe)")
     .nullable(),
-  property: z
+  properties: z
     .array(propertySchema)
     .describe(
-      "Seznam parcel, stavb ali del stavb navedenih v objavi. Formati v besedilu: '2242/9', '2242 9', '2242 536/6', '2242 536-6', '2242-536-6', 'k.o. 2242 parc. 9'. Ne vključi črk. Zamenjaj '-' in ' ' z '/'. Pazi, da ne podvojiš in vključiš celotno šifro."
+      "Seznam parcel, stavb ali del stavb navedenih v objavi. Formati v besedilu: '2242/9', '2242 9', '2242 536/6', '2242 536-6', '2242-536-6', 'k.o. 2242 parc. 9'. Ne vključi črk. Zamenjaj '-' in ' ' z '/'. Stavba ima številko sestavljeno iz dveh delov npr. 123/1. Če drugi del manjka, dodaj '/1'. Pazi, da ne podvojiš in vključiš celotno šifro."
     )
     .nullable(),
   documents: z
@@ -72,7 +72,9 @@ export const auctionBaseSchema = z.object({
     .nullable(),
   aiWarning: z
     .array(z.string())
-    .describe("Seznam opozoril o nenavadnih stvareh (npr. služnosti, hipoteke, spori, omejitve ...). Prazen seznam če ni ničesar nenavadnega."),
+    .describe(
+      "Seznam opozoril o nenavadnih stvareh (npr. služnosti, hipoteke, spori, omejitve ...). Prazen seznam če ni ničesar nenavadnega."
+    ),
 });
 
 export type AuctionBase = z.infer<typeof auctionBaseSchema>;

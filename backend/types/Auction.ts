@@ -38,7 +38,7 @@ export type PriceToValueRatio = {
 /**
  * Complete auction data - extends AuctionBase with additional processed fields
  */
-export type Auction = Omit<AuctionBase, "property" | "documents" | "images" | "isSale"> & {
+export type Auction = Omit<AuctionBase, "properties" | "documents" | "images" | "isSale"> & {
   /** Unique auction identifier (partition key in DynamoDB) */
   auctionId?: string;
   dataSourceCode: string;

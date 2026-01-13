@@ -843,40 +843,6 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
     const results: Auction[] = [];
 
     for (const auction of auctions) {
-      // Fetch valuations for each property
-      let propertiesWithValuations: AuctionProperty[] | null = null;
-      if (auction.property) {
-        propertiesWithValuations = [];
-        for (const property of auction.property) {
-          property.number = property.number.trim().replace(/[- ]/g, "/");
-
-          let valuation = undefined;
-          try {
-            const ownershipShare = property.ownershipShare ?? auction.ownershipShare;
-            valuation =
-              (await GursValuationService.getValuation(property, ownershipShare)) ?? undefined;
-            if (valuation) {
-              logger.log("Property valuation fetched", {
-                dataSourceCode: dataSource.code,
-                propertyType: property.type,
-                cadastralMunicipality: property.cadastralMunicipality,
-                number: property.number,
-                value: "value" in valuation ? valuation.value : undefined,
-              });
-            }
-          } catch (valuationErr) {
-            logger.warn("Failed to fetch valuation for property", {
-              dataSourceCode: dataSource.code,
-              propertyType: property.type,
-              cadastralMunicipality: property.cadastralMunicipality,
-              number: property.number,
-              error: valuationErr instanceof Error ? valuationErr.message : String(valuationErr),
-            });
-          }
-          propertiesWithValuations.push({ ...property, valuation });
-        }
-      }
-
       // Skip non-sale auctions (rentals, exchanges, etc.)
       if (!auction.isSale) {
         logger.log("Skipping non-sale auction", {
@@ -886,6 +852,9 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
         });
         continue;
       }
+
+      // Fetch valuations for each property
+      let properties: AuctionProperty[] | null = await processProperties(auction);
 
       // Calculate price to value ratio (Relativna cena) as discount percentage
       const price = auction.price ?? null;
@@ -901,8 +870,8 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
       let toPropertyValuations: number | null = null;
       let totalPropertyValuation: number | null = null;
       let valuationsReducedByOwnershipShare = false;
-      if (price !== null && propertiesWithValuations && propertiesWithValuations.length > 0) {
-        const totalValuation = propertiesWithValuations.reduce((sum, prop) => {
+      if (price !== null && properties && properties.length > 0) {
+        const totalValuation = properties.reduce((sum, prop) => {
           if (prop.valuation && "value" in prop.valuation) {
             return sum + prop.valuation.value;
           }
@@ -913,7 +882,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
           toPropertyValuations = Math.round(((totalValuation - price) / totalValuation) * 100);
         }
         // Check if any valuation was reduced by ownership share
-        valuationsReducedByOwnershipShare = propertiesWithValuations.some(
+        valuationsReducedByOwnershipShare = properties.some(
           (prop) => prop.valuation?.reducedByOwnershipShare === true
         );
       }
@@ -937,7 +906,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
         yearBuilt: auction.yearBuilt ?? null,
         dataSourceCode: dataSource.code,
         urlSources: [announcementUrl],
-        properties: propertiesWithValuations,
+        properties: properties,
         documents:
           auction.documents?.map((doc) => {
             const foundDoc = documents.find((d) => d.url === doc.sourceUrl);
@@ -998,6 +967,57 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
     //   }
     // );
     // return [];
+  }
+
+  async function processProperties(auction: AuctionBase) {
+    let properties: AuctionProperty[] | null = null;
+    if (auction.properties) {
+      properties = [];
+      const seen = new Set<string>();
+
+      for (const property of auction.properties) {
+        property.number = property.number.trim().replace(/[- ]/g, "/");
+
+        // Skip duplicates based on cadastralMunicipality and number
+        const key = `${property.cadastralMunicipality}-${property.number}`;
+        if (seen.has(key)) {
+          logger.log("Skipping duplicate property", {
+            dataSourceCode: dataSource.code,
+            propertyType: property.type,
+            cadastralMunicipality: property.cadastralMunicipality,
+            number: property.number,
+          });
+          continue;
+        }
+        seen.add(key);
+
+        let valuation = undefined;
+        try {
+          const ownershipShare = property.ownershipShare ?? auction.ownershipShare;
+          valuation =
+            (await GursValuationService.getValuation(property, ownershipShare)) ?? undefined;
+          if (valuation) {
+            logger.log("Property valuation fetched", {
+              dataSourceCode: dataSource.code,
+              propertyType: property.type,
+              cadastralMunicipality: property.cadastralMunicipality,
+              number: property.number,
+              value: "value" in valuation ? valuation.value : undefined,
+            });
+          }
+        } catch (valuationErr) {
+          logger.warn("Failed to fetch valuation for property", {
+            dataSourceCode: dataSource.code,
+            propertyType: property.type,
+            cadastralMunicipality: property.cadastralMunicipality,
+            number: property.number,
+            error: valuationErr instanceof Error ? valuationErr.message : String(valuationErr),
+          });
+        }
+        properties.push({ ...property, valuation });
+      }
+    }
+    return properties;
   }
 }
 

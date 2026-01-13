@@ -154,15 +154,18 @@ async function main() {
     }
   }
 
-  await AiExtractService.close();
-  await ParcelScreenshotService.closeBrowser();
-
   console.log(`\n========================================`);
   console.log(`Končano. Obdelanih ${allResults.length} virov.`);
   console.log(`========================================`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await AiExtractService.close();
+    await ParcelScreenshotService.closeBrowser();
+    process.exit();
+  });
