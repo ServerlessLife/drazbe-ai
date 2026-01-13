@@ -10,9 +10,9 @@ async function test() {
   // });
 
   const result = await ParcelScreenshotService.captureParcelScreenshot({
-    type: "building_part",
-    cadastralMunicipality: "2680",
-    number: "22/8",
+    type: "parcel",
+    cadastralMunicipality: "1959",
+    number: "670/20",
   });
 
   await ParcelScreenshotService.closeBrowser();

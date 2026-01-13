@@ -6,7 +6,10 @@ import { logger } from "../utils/logger.js";
 let browser: Browser | null = null;
 let page: Page | null = null;
 
-async function captureParcelScreenshot(query: PropertyKey): Promise<string | null> {
+async function captureParcelScreenshot(query: PropertyKey): Promise<{
+  outputPath?: string;
+  building: PropertyKey;
+} | null> {
   logger.log("Capturing parcel screenshot", {
     type: query.type,
     municipality: query.cadastralMunicipality,
@@ -90,7 +93,38 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
     //await browser.close(); // do not close browser after each screenshot to improve performance
     logger.log("Screenshot captured successfully", { path: outputPath });
 
-    return outputPath;
+    let building: PropertyKey | undefined;
+
+    if (query.type === "parcel") {
+      const sectionTitle = page.locator(".plot-title-group", { hasText: "Stavbe na parceli" });
+      //await expect(sectionTitle).toBeVisible();
+
+      // 2) The table is inside the next ".list-group-item" container
+      const sectionContainer = sectionTitle.locator(
+        "xpath=ancestor::ul[contains(@class,'list-group-item')][1]"
+      );
+
+      // 3) Find the table for this section and extract the number from the "Številka stavbe" column.
+      // In your HTML, the number is in: <td> <button class="link-button"> 5523 </button> </td>
+      const numberText = await sectionContainer
+        .locator("table")
+        .locator("tbody tr")
+        .first()
+        .locator("td")
+        .nth(1) // 2nd column == "Številka stavbe"
+        .locator("button.link-button")
+        .innerText();
+
+      const n = Number(numberText.trim().replace(/\s+/g, ""));
+      console.log("Extracted building number:", numberText.trim());
+      building = {
+        type: "building",
+        cadastralMunicipality: query.cadastralMunicipality,
+        number: n.toString() + "/1",
+      };
+    }
+
+    return { outputPath, building };
   } catch (error) {
     if (browser) {
       await browser.close();

@@ -76,18 +76,19 @@ async function main() {
         if (auction.properties) {
           for (const property of auction.properties) {
             try {
-              const screenshotPath = await ParcelScreenshotService.captureParcelScreenshot({
+              const screenshot = await ParcelScreenshotService.captureParcelScreenshot({
                 type: property.type,
                 cadastralMunicipality: property.cadastralMunicipality,
                 number: property.number,
               });
-              if (screenshotPath) {
+              if (screenshot?.outputPath) {
                 const s3Key = `images/${announcementId}-${property.cadastralMunicipality}-${property.number.replace("/", "-")}.png`;
-                await S3Service.uploadFile(screenshotPath, s3Key, "image/png");
+                await S3Service.uploadFile(screenshot.outputPath, s3Key, "image/png");
                 logger.log("Property screenshot captured", {
                   announcementId,
                   property: `${property.cadastralMunicipality}-${property.number}`,
                   s3Key,
+                  building: screenshot.building,
                 });
               }
             } catch (err) {

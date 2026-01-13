@@ -31,12 +31,15 @@ export async function handler(event: SQSEvent) {
       number: valuation?.number ?? number,
     };
 
-    logger.log("Using screenshot key", { original: { type, cadastralMunicipality, number }, screenshotKey });
+    logger.log("Using screenshot key", {
+      original: { type, cadastralMunicipality, number },
+      screenshotKey,
+    });
 
     // Capture screenshot using ParcelScreenshotService
-    const screenshotPath = await ParcelScreenshotService.captureParcelScreenshot(screenshotKey);
+    const screenshot = await ParcelScreenshotService.captureParcelScreenshot(screenshotKey);
 
-    if (!screenshotPath) {
+    if (!screenshot?.outputPath) {
       logger.warn("Failed to capture screenshot for property", {
         auctionId,
         screenshotKey,
@@ -44,9 +47,16 @@ export async function handler(event: SQSEvent) {
       continue;
     }
 
+    logger.log("Screenshot captured", {
+      auctionId,
+      screenshotPath: screenshot.outputPath,
+      ...screenshotKey,
+      building: screenshot.building,
+    });
+
     // Upload screenshot to S3
     const s3Key = `images/${auctionId}/${screenshotKey.cadastralMunicipality}-${screenshotKey.number}.png`;
-    const mapImageUrl = await S3Service.uploadFile(screenshotPath, s3Key, "image/png");
+    const mapImageUrl = await S3Service.uploadFile(screenshot.outputPath, s3Key, "image/png");
 
     // Update the property record with the map image URL
     await AuctionRepository.updatePropertyMap(
