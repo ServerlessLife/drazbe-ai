@@ -917,7 +917,6 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
         aiGursValuationMakesSense: null,
         aiSuitability: null,
         type: auction.type,
-        isRealEstateSale: auction.isRealEstateSale,
         isVacant: auction.isVacant,
         publicationDate: auction.publicationDate,
         dueDate: auction.dueDate,
