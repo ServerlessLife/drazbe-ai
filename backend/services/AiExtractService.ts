@@ -233,7 +233,7 @@ NE iščemo:
 ${contextNote}
 
 ## PRAVILA
-${activeOnly ? `- Izključi pretečene objave (rok veljavnosti potekel). Današnji datum: ${new Date().toISOString().split("T")[0]}` : ""}
+${activeOnly ? `- Izključi pretečene objave (rok veljavnosti potekel). Današnji datum: ${new Date().toISOString().split("T")[0]}. Če datum ni podadan, predpostavi, da objava ni pretečena.` : ""}.
 - Izključi duplikate - vsako objavo vrni samo enkrat
 - Pretvori relativne URL-je v absolutne z uporabo izvornega URL-ja: ${sourceUrl}
 

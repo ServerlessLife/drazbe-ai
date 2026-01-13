@@ -10,18 +10,26 @@ export async function launchBrowser(): Promise<{ browser: Browser; page: Page }>
 
   if (process.env.AWS_LAMBDA_FUNCTION_NAME) {
     const executablePath = await chromiumBinary.executablePath();
+
+    console.log("ARGS: ", chromiumBinary.args);
+
     browser = await chromium.launch({
       headless: true,
       executablePath,
-      args: [...chromiumBinary.args, "--disable-blink-features=AutomationControlled"],
+      args: [
+        //"--no-sandbox",
+        "--no-zygote",
+        //"--disable-setuid-sandbox",
+        "--disable-blink-features=AutomationControlled",
+      ],
     });
   } else {
     //try {
-      const playwright = await import("playwright");
-      browser = await playwright.chromium.launch({
-        headless,
-        args: ["--disable-blink-features=AutomationControlled"],
-      });
+    const playwright = await import("playwright");
+    browser = await playwright.chromium.launch({
+      headless,
+      args: ["--disable-blink-features=AutomationControlled"],
+    });
     // } catch {
     //   browser = await chromium.launch({
     //     headless,

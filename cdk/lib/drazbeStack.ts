@@ -161,8 +161,8 @@ export class CdkStack extends cdk.Stack {
     */
 
     // Source processor Lambda - processes items from queue
-    const processorLambda = new NodejsFunction(this, "SourceProcessor", {
-      entry: "../backend/events/processSource.ts",
+    const processorLambda = new NodejsFunction(this, "DataSourceProcessor", {
+      entry: "../backend/events/processDataSource.ts",
       timeout: cdk.Duration.minutes(15),
       memorySize: 2048,
       environment: {
