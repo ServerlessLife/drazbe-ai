@@ -857,8 +857,8 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
       let properties: AuctionProperty[] | null = await processProperties(auction);
 
       // Calculate price to value ratio (Relativna cena) as discount percentage
-      const price = auction.price ?? null;
-      const estimatedValue = auction.estimatedValue ?? null;
+      const price = auction.price;
+      const estimatedValue = auction.estimatedValue;
 
       // Calculate discount from estimated value (higher = better deal)
       let toEstimatedValue: number | null = null;
@@ -888,22 +888,22 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
       }
 
       const result: Auction = {
-        announcementId: auction.announcementId ?? null,
+        announcementId: auction.announcementId,
         title: auction.title,
-        aiTitle: null,
-        aiWarning: [],
+        aiTitle: auction.aiTitle,
+        aiWarning: auction.aiWarning,
         aiGursValuationMakesSense: null,
         aiSuitability: null,
         type: auction.type,
-        isVacant: auction.isVacant ?? null,
-        publicationDate: auction.publicationDate ?? null,
-        dueDate: auction.dueDate ?? null,
-        description: auction.description ?? null,
-        location: auction.location ?? null,
+        isVacant: auction.isVacant,
+        publicationDate: auction.publicationDate,
+        dueDate: auction.dueDate,
+        description: auction.description,
+        location: auction.location,
         price: price,
         estimatedValue: estimatedValue,
-        ownershipShare: auction.ownershipShare ?? null,
-        yearBuilt: auction.yearBuilt ?? null,
+        ownershipShare: auction.ownershipShare,
+        yearBuilt: auction.yearBuilt,
         dataSourceCode: dataSource.code,
         urlSources: [announcementUrl],
         properties: properties,
@@ -919,11 +919,10 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
               usedForExtraction: usedDocumentUrls.has(doc.sourceUrl),
             };
           }) ?? [],
-        images:
-          auction.images?.map((img) => ({
-            description: img.description,
-            sourceUrl: img.sourceUrl,
-          })) ?? null,
+        images: auction.images?.map((img) => ({
+          description: img.description,
+          sourceUrl: img.sourceUrl,
+        })),
         priceToValueRatio: {
           toEstimatedValue,
           toPropertyValuations,
