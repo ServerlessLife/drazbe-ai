@@ -844,7 +844,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
 
     for (const auction of auctions) {
       // Skip non-sale auctions (rentals, exchanges, etc.)
-      if (!auction.isSale) {
+      if (!auction.isRealEstateSale) {
         logger.log("Skipping non-sale auction", {
           dataSourceCode: dataSource.code,
           title: auction.title,

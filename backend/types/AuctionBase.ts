@@ -26,7 +26,11 @@ export const auctionBaseSchema = z.object({
     .describe(
       "Tip objave: 'javna-drazba' = Javna dražba, 'klasicna-prodaja' = Klasična prodaja, 'oddaja' = Oddaja, 'zavezujoce-javno-zbiranje-ponudb' = Zavezujoče javno zbiranje ponudb, 'nezavezujoce-javno-zbiranje-ponudb' = Nezavezujoče javno zbiranje ponudb, 'namera-o-prodaji' = Namera o prodaji, 'namera' = Namera, 'elektronska-drazba' = Elektronska dražba, 'elektronska-javna-drazba' = Elektronska javna dražba, 'drugo' = Drugo"
     ),
-  isSale: z.boolean().describe("Ali gre za prodajo (true) ali najem, oddaj, menjavo (false)"),
+  isRealEstateSale: z
+    .boolean()
+    .describe(
+      "Ali gre za prodajo (true) nepremičnince. Ne najem, oddaj, menjavo ali prodajo česa drugega"
+    ),
   isVacant: z
     .enum(["YES", "NO", "UNKNOWN"])
     .describe(
