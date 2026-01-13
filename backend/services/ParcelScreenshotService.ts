@@ -70,11 +70,11 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
       await buildingSection.click();
     }
 
-    // Wait a bit for the map to load
-    await page.waitForTimeout(1000);
+    // // Wait a bit for the map to load
+    // await page.waitForTimeout(1000);
 
-    // 5. Click zoom in icon once
-    await page.click(".icon-lupa-plus");
+    // // 5. Click zoom in icon once
+    // await page.click(".icon-lupa-plus");
 
     // Wait for zoom animation
     await page.waitForTimeout(2000);

@@ -104,6 +104,7 @@ export class CdkStack extends cdk.Stack {
 
     // S3 bucket for files (images, documents) - accessed via CloudFront
     const contentBucket = new s3.Bucket(this, "ContentBucket", {
+      bucketName: "drazbe-ai-content",
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
