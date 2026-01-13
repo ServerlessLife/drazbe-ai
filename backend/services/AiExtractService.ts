@@ -432,6 +432,12 @@ async function fetchPageMarkdown(
     });
   }
   const pageHtml = await page.evaluate(() => document.body.innerHTML);
+
+  // Throw an error if it contains message "you have been blocked"
+  if (pageHtml.toLowerCase().includes("you have been blocked")) {
+    throw new Error("Access blocked: The page indicates that you have been blocked.");
+  }
+
   return convertHtmlToMarkdown(pageHtml, sourceUrl, contentSelector, dataSourceCode);
 }
 
