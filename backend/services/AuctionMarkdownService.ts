@@ -54,6 +54,14 @@ function formatAuctionMarkdown(auction: Auction): string {
   if (auction.price) lines.push(`- **Cena:** ${auction.price.toLocaleString("sl-SI")} €`);
   if (auction.estimatedValue)
     lines.push(`- **Ocenjena vrednost:** ${auction.estimatedValue.toLocaleString("sl-SI")} €`);
+  if (auction.priceToValueRatio.totalPropertyValuation) {
+    const reducedNote = auction.priceToValueRatio.valuationsReducedByOwnershipShare
+      ? " (zmanjšano za lastniški delež)"
+      : "";
+    lines.push(
+      `- **GURS vrednotenje:** ${auction.priceToValueRatio.totalPropertyValuation.toLocaleString("sl-SI")} €${reducedNote}`
+    );
+  }
   if (auction.ownershipShare) lines.push(`- **Delež lastništva:** ${auction.ownershipShare}%`);
   if (auction.yearBuilt) lines.push(`- **Leto izgradnje:** ${auction.yearBuilt}`);
   if (auction.isVacant && auction.isVacant !== "UNKNOWN") {

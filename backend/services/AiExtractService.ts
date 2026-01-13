@@ -899,6 +899,8 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
 
       // Calculate discount from sum of property valuations
       let toPropertyValuations: number | null = null;
+      let totalPropertyValuation: number | null = null;
+      let valuationsReducedByOwnershipShare = false;
       if (price !== null && propertiesWithValuations && propertiesWithValuations.length > 0) {
         const totalValuation = propertiesWithValuations.reduce((sum, prop) => {
           if (prop.valuation && "value" in prop.valuation) {
@@ -907,8 +909,13 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
           return sum;
         }, 0);
         if (totalValuation > 0) {
+          totalPropertyValuation = totalValuation;
           toPropertyValuations = Math.round(((totalValuation - price) / totalValuation) * 100);
         }
+        // Check if any valuation was reduced by ownership share
+        valuationsReducedByOwnershipShare = propertiesWithValuations.some(
+          (prop) => prop.valuation?.reducedByOwnershipShare === true
+        );
       }
 
       const result: Auction = {
@@ -951,6 +958,8 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
         priceToValueRatio: {
           toEstimatedValue,
           toPropertyValuations,
+          totalPropertyValuation,
+          valuationsReducedByOwnershipShare,
         },
         drivingInfo: null,
         publishedAt: null,

@@ -29,6 +29,10 @@ export type PriceToValueRatio = {
   toEstimatedValue: number | null;
   /** Ratio % based on sum of all property valuations (if available) */
   toPropertyValuations: number | null;
+  /** Total sum of all property valuations in € */
+  totalPropertyValuation: number | null;
+  /** Whether property valuations were reduced by ownership share */
+  valuationsReducedByOwnershipShare: boolean;
 };
 
 /**
