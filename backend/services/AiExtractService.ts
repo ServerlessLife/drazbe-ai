@@ -215,28 +215,41 @@ async function extractLinks(
       messages: [
         {
           role: "system",
-          content: `Si pomočnik, ki analizira HTML in izvleče ustrezne povezave do objav.
-        Ustrezne so objave tipa:
-        - 'dražba' (javna dražba za prodajo)
-        - 'namera za sklenitev neposredne pogodbe' za PRODAJO (ne za najem/oddajo/menjavo)
-        - 'javno zbiranje ponudb' za PRODAJO (ne za najem/oddajo/menjavo)
+          content: `Si pomočnik za analizo HTML in ekstrakcijo povezav do objav o prodaji nepremičnin.
 
-        ${contextNote}
+## USTREZNE OBJAVE
+Iščemo objave tipa:
+- Javna dražba (za prodajo)
+- Namera za sklenitev neposredne pogodbe za PRODAJO
+- Javno zbiranje ponudb za PRODAJO
+- Elektronska dražba
 
-        POMEMBNO:
-        ${activeOnly ? `- Izključi pretečene objave (kjer je rok veljavnosti že potekel - danes je ${new Date().toISOString().split("T")[0]})` : ""}
-        - Izključi duplikate (če je ista objava navedena večkrat, vrni samo enkrat)
-        - Navedi polni URL. Če je povezava relativna, jo pretvori v polno z uporabo izvornega URL-ja: ${sourceUrl}. Morda moraš vzeti samo domeno in osnovno pot iz izvornega URL-ja.
+NE iščemo:
+- Najem, oddaja, zakup
+- Menjava
+- Služnostne pravice
 
-        Vrni JSON objekt z poljem "links", ki vsebuje VSE najdene povezave.
-        Vsaka povezava naj ima polja: title, link (polni URL), suitable (boolean), reason (zakaj je ustrezna ali neustrezna).
+## KONTEKST
+${contextNote}
 
-        Prepričaj se, da nisi spustil nobene povezave!!!
-        `,
+## PRAVILA
+${activeOnly ? `- Izključi pretečene objave (rok veljavnosti potekel). Današnji datum: ${new Date().toISOString().split("T")[0]}` : ""}
+- Izključi duplikate - vsako objavo vrni samo enkrat
+- Pretvori relativne URL-je v absolutne z uporabo izvornega URL-ja: ${sourceUrl}
+
+## IZHOD
+Vrni JSON z poljem "links". Vsaka povezava ima:
+- title: naslov objave
+- link: polni URL
+- suitable: boolean (ali ustreza kriterijem)
+- reason: kratek razlog za odločitev
+
+Prepričaj se, da zajameš VSE povezave do objav!
+`,
         },
         {
           role: "user",
-          content: `Analiziraj naslednji HTML in vrni vse povezave do objav o prodaji nepremičnin:\n\n${contentHtml}`,
+          content: `Analiziraj HTML in izvleci vse povezave do objav o prodaji nepremičnin:\n\n${contentHtml}`,
         },
       ],
       response_format: zodResponseFormat(linksSchema, "links"),
@@ -295,35 +308,38 @@ async function convertHtmlToMarkdown(
       messages: [
         {
           role: "system",
-          content: `Pretvori naslednji HTML v čist markdown format.
-            ${contextNote}
+          content: `Pretvori HTML v čist markdown format.
 
-            SLIKE:
-            Za slike uporabi format ![opis](url_slike).
-            Ne vključi slik, ki so del glave, navigacije, logotipov, dekorativnih elementov ali ikone.
-            Navedi polni URL. Če je povezava relativna, jo pretvori v polno z uporabo izvornega URL-ja: ${sourceUrl}. Morda moraš vzeti samo domeno in osnovno pot iz izvornega URL-ja.
-            Povezava naj se začne z https, ne z http.
-            Izloči podvojene slike.
-            Navedi jih ločenem razdelku z naslovom "## Slike:".
+## KONTEKST
+${contextNote}
 
-            DOKUMENTI:
-            Vključi vse povezave do dokumentov (PDF-jev).
-            Ne vključi dokumentov:
-             - Obrazec za prijavo
-             - Energetska izkaznica
-             - Pooblastilo
-             - Izjava (podatki solatnika, nepovezanosti, MSP)
-             - Lokacijski načrt
-             - Zazidalne površine
-             - Komunalni vodi
-             - Pogodba ali osnutek pogodbe
-             - GDPR
-            Navedi polni URL. Če je povezava relativna, jo pretvori v polno z uporabo izvornega URL-ja: ${sourceUrl}. Morda moraš vzeti samo domeno in osnovno pot iz izvornega URL-ja.
-            Dokumentov, ki jih izpustiš, ne omenjaj v besedilu.
-            Povezane dokumente navedi čisto na koncu v ločenem razdelku z naslovom "## Priloge:".
-            Dokumente navedi v formatu [opis](url_dokumenta).
-            Pazi, da za cenitveno poročilo vedno uporabiš besedilo "Cenitveno poročilo", tudi če je v izvoru drugače.
-            `,
+## SLIKE
+- Format: ![opis](url_slike)
+- Izključi: logotipe, ikone, navigacijske elemente, dekorativne slike
+- Pretvori relativne URL-je v absolutne (izvorni URL: ${sourceUrl})
+- Uporabi https (ne http)
+- Odstrani duplikate
+- Navedi v ločenem razdelku "## Slike:"
+
+## DOKUMENTI
+Vključi PDF dokumente, RAZEN:
+- Obrazec za prijavo
+- Energetska izkaznica
+- Pooblastilo
+- Izjave (podatki solastnika, nepovezanosti, MSP)
+- Lokacijski načrt
+- Zazidalne površine
+- Komunalni vodi
+- Pogodba ali osnutek pogodbe
+- GDPR dokumenti
+
+Pravila za dokumente:
+- Pretvori relativne URL-je v absolutne (izvorni URL: ${sourceUrl})
+- Izpuščenih dokumentov NE omenjaj v besedilu
+- Navedi v ločenem razdelku "## Priloge:" na koncu
+- Format: [opis](url_dokumenta)
+- Za cenilno poročilo vedno uporabi opis "Cenitveno poročilo", tudi če je v izvoru drugače.
+`,
         },
         {
           role: "user",
@@ -355,23 +371,29 @@ async function extractAuctionDetails(markdown: string): Promise<AuctionBase[]> {
     messages: [
       {
         role: "system",
-        content: `Izvleci podrobnosti iz objave o prodaji nepremičnin.
+        content: `Izvleci strukturirane podrobnosti iz objave o prodaji nepremičnin.
 
-            Kadar gre za stavbo poskusi izluščiti tudi leto izgradnje.
+## SPLOŠNA PRAVILA
+- Če je v besedilu več ločenih objav/sklopov, ustvari ločen zapis za vsako
+- Pri stavbah poskusi izluščiti leto izgradnje
+- Cena je lahko podana na m² ali kot skupna - če je na m², izračunaj skupno ceno iz površine
+- Pozorno preberi morebitni dokument "Odredba o prodaji" za ločene sklope
 
-            Cena je lahko podatna na m2 ali kot skupna cena. Če je cena podana na m2, izračunaj skupno ceno, če imaš podatek o površini.
+## NEPREMIČNINE (properties)
+Natančno izvleci vse parcele in dele stavb:
+- Vključi CELOTNO šifro (katastrska občina + številka)
+- Pri delu stavbe NE vključi še celotne stavbe
+- Pri hiši VEDNO poišči oznako stavbe/dela stavbe, ne le parcele
+- Ne omenjaj povezane zemljiške parcele, kadar to ni relevantno.
+- Ne podvajaj - vsako nepremičnino navedi enkrat
+- Podatke o nepremičninah pripiši ustrezni objavi, če jih je več
 
-            Lahko gre več objav v enem samem besedilu. V tem primeru naredi več zapisov in podvoji podatke, ki so enaki za vse.
-
-            Podi pozoren na morebitne ločene sklope v dokumentu "Odredba o prodaji", če je priložen!!!
-
-            **property**
-            Bodi natančen pri izvlačevanju parcel/stavb - poišči vse navedene v besedilu. Pazi, da ne podvojiš.
-            Vedno vključi celotno šifro!!! Kadar gre za del stavbe ne more biti vključen še celotna stavba.
-            Posebno pazi, če gre za hišo, da poiščeš oznako hiše!!! V primeru hiše bodi pozoren na delež. Če se parcela ne prodaja v celoti se zagotovo tudi hiša ne.
-            Ne omenjaj povezane zemljiške parcele, kadar to ni relevantno.
-            Podatke o parceli in stavbe loči in pripiši ustrezni objavi, če je teh več.
-            `,
+## DELEŽ LASTNIŠTVA
+- Pozorno preberi delež lastništva za vsako nepremičnino
+- Delež je lahko podan kot ulomek (1/2) ali odstotek (50%)
+- Če ni naveden, predpostavi 100%
+- Kadar se prodaja hiša bodi pozoren na delež. Če se parcela ne prodaja v celoti se zagotovo tudi hiša ne.
+`,
       },
       {
         role: "user",
@@ -895,6 +917,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
         aiGursValuationMakesSense: null,
         aiSuitability: null,
         type: auction.type,
+        isRealEstateSale: auction.isRealEstateSale,
         isVacant: auction.isVacant,
         publicationDate: auction.publicationDate,
         dueDate: auction.dueDate,
