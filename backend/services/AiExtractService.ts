@@ -357,19 +357,20 @@ async function extractAuctionDetails(markdown: string): Promise<AuctionBase[]> {
         role: "system",
         content: `Izvleci podrobnosti iz objave o prodaji nepremičnin.
 
-            Bodi natančen pri izvlačevanju parcel/stavb - poišči vse navedene v besedilu. Pazi, da ne podvojiš.
-            Vedno vključi celotno šifro!!! Kadar gre za del stavbe ne more biti vključen še celotna stavba.
-            Ne omenjaj povezane zemljiške parcele, kadar to ni relevantno.
-
             Kadar gre za stavbo poskusi izluščiti tudi leto izgradnje.
 
             Cena je lahko podatna na m2 ali kot skupna cena. Če je cena podana na m2, izračunaj skupno ceno, če imaš podatek o površini.
 
             Lahko gre več objav v enem samem besedilu. V tem primeru naredi več zapisov in podvoji podatke, ki so enaki za vse.
 
-            Podatke o parceli in stavbe loči in pripiši ustrezni objavi v polje "property". Posebno pazi, če gre za hišo, da poiščeš oznako hiše.
-
             Podi pozoren na morebitne ločene sklope v dokumentu "Odredba o prodaji", če je priložen!!!
+
+            **property**
+            Bodi natančen pri izvlačevanju parcel/stavb - poišči vse navedene v besedilu. Pazi, da ne podvojiš.
+            Vedno vključi celotno šifro!!! Kadar gre za del stavbe ne more biti vključen še celotna stavba.
+            Posebno pazi, če gre za hišo, da poiščeš oznako hiše!!!
+            Ne omenjaj povezane zemljiške parcele, kadar to ni relevantno.
+            Podatke o parceli in stavbe loči in pripiši ustrezni objavi, če je teh več.
             `,
       },
       {
@@ -759,14 +760,10 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
       try {
         markdown = await SodneDrazbeService.fetchMarkdown(announcementUrl);
       } catch (err) {
-        logger.warn(
-          `Failed to fetch auction data from sodnedrazbe.si for "${objava.title}"`,
-          err,
-          {
-            url: announcementUrl,
-            dataSourceCode: dataSource.code,
-          }
-        );
+        logger.warn(`Failed to fetch auction data from sodnedrazbe.si for "${objava.title}"`, err, {
+          url: announcementUrl,
+          dataSourceCode: dataSource.code,
+        });
       }
     } else {
       markdown = await fetchPageMarkdown(
@@ -974,7 +971,8 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
     return results;
   } catch (err: any) {
     throw new Error(
-      `Failed to process announcement for data source ${dataSource.code}, title "${objava.title}": ${err.message}`, { cause: err }
+      `Failed to process announcement for data source ${dataSource.code}, title "${objava.title}": ${err.message}`,
+      { cause: err }
     );
     // logger.error(
     //   `Failed to process announcement for data source ${dataSource.code}, title "${objava.title}"`,
