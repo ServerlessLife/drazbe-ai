@@ -367,7 +367,7 @@ async function extractAuctionDetails(markdown: string): Promise<AuctionBase[]> {
 
             Lahko gre več objav v enem samem besedilu. V tem primeru naredi več zapisov in podvoji podatke, ki so enaki za vse.
 
-            Podatke o parceli in stavbe loči in pripiši ustrezni objavi v polje "property".
+            Podatke o parceli in stavbe loči in pripiši ustrezni objavi v polje "property". Posebno pazi, če gre za hišo, da poiščeš oznako hiše.
 
             Podi pozoren na morebitne ločene sklope v dokumentu "Odredba o prodaji", če je priložen!!!
             `,
@@ -913,7 +913,7 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
         announcementId: auction.announcementId ?? null,
         title: auction.title,
         aiTitle: null,
-        aiWarning: null,
+        aiWarning: [],
         aiGursValuationMakesSense: null,
         aiSuitability: null,
         type: auction.type,

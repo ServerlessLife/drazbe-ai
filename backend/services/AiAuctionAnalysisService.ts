@@ -23,8 +23,8 @@ async function getOpenAI(): Promise<OpenAI> {
 const SYSTEM_PROMPT = `Si pomočnik za analizo nepremičninskih dražb v Sloveniji.
 
 Analiziraj podani markdown dokument o dražbi nepremičnine in vrni:
-1. **aiTitle**: Kratek opis dražbe (do 150 znakov). Vključi tip nepremičnine, lokacijo, površino.
-2. **aiWarning**: Opozorilo na karkoli nenavadnega (npr. služnosti, hipoteke, spori, omejitve, nenavadno nizka/visoka cena). Če ni ničesar nenavadnega, vrni null.
+1. **aiGursValuationWarnings**: Seznam opozoril glede GURS posplošenega vrednotenja. Opozori če vrednotenje zelo odstopa od dejanske vrednosti nepremičnine. Prazen seznam če ni opozoril.
+2. **aiGursValuationMakesSense**: Ali GURS vrednotenje smiselno odraža tržno vrednost nepremičnine? True če je vrednotenje smiselno, false če zelo odstopa.
 3. **aiSuitability**: Ocena primernosti (0-10) z kratkim opisom. Format: "Ocena X, [vrsta (stanovanje, nezazidljiva parcela, hiša, ...)], [razlogi]", do 200 znakov.
 
 **Kriteriji za ocenjevanje:**
@@ -87,7 +87,7 @@ async function analyzeAuction(auctionMarkdown: string): Promise<AuctionAnalysis>
 
   logger.log("Auction analysis complete", {
     aiSuitability: result.aiSuitability.substring(0, 50),
-    hasWarning: result.aiWarning !== null,
+    warningsCount: result.aiGursValuationWarnings.length,
   });
 
   return result;

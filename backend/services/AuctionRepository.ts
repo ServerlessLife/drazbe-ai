@@ -472,18 +472,19 @@ async function updatePropertyMap(
 
 /**
  * Update auction AI analysis fields by auctionId
+ * Appends aiGursValuationWarnings to existing aiWarning list
  * @param auctionId - The partition key
  * @param analysis - The AI analysis result
  */
 async function updateAuctionAnalysis(
   auctionId: string,
-  analysis: { aiWarning: string | null; aiGursValuationMakesSense: boolean }
+  analysis: { aiGursValuationWarnings: string[]; aiGursValuationMakesSense: boolean }
 ): Promise<void> {
   const now = new Date().toISOString();
 
   logger.log("Updating auction analysis", {
     auctionId,
-    hasWarning: analysis.aiWarning !== null,
+    warningsCount: analysis.aiGursValuationWarnings.length,
     aiGursValuationMakesSense: analysis.aiGursValuationMakesSense,
     localStorage: LOCAL_STORAGE,
   });
@@ -510,10 +511,11 @@ async function updateAuctionAnalysis(
         recordKey: "MAIN",
       },
       UpdateExpression:
-        "SET aiWarning = :aiWarning, aiGursValuationMakesSense = :aiGursValuationMakesSense, gsiPk = :gsiPk, #date = :date, publishedAt = :publishedAt, updatedAt = :updatedAt",
+        "SET aiWarning = list_append(if_not_exists(aiWarning, :emptyList), :newWarnings), aiGursValuationMakesSense = :aiGursValuationMakesSense, gsiPk = :gsiPk, #date = :date, publishedAt = :publishedAt, updatedAt = :updatedAt",
       ExpressionAttributeNames: { "#date": "date" },
       ExpressionAttributeValues: {
-        ":aiWarning": analysis.aiWarning,
+        ":newWarnings": analysis.aiGursValuationWarnings,
+        ":emptyList": [],
         ":aiGursValuationMakesSense": analysis.aiGursValuationMakesSense,
         ":gsiPk": "PUBLISHED",
         ":date": now,

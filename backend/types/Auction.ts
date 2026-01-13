@@ -41,8 +41,8 @@ export type Auction = Omit<AuctionBase, "property" | "documents" | "images" | "i
   urlSources: string[];
   /** AI-generated title for the auction */
   aiTitle: string | null;
-  /** AI-generated warning about unusual aspects */
-  aiWarning: string | null;
+  /** AI-generated warnings about unusual aspects */
+  aiWarning: string[];
   /** AI assessment: does GURS valuation reflect market value? */
   aiGursValuationMakesSense: boolean | null;
   /** AI-generated suitability assessment */

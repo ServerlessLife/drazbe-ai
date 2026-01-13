@@ -4,11 +4,10 @@ import { z } from "zod";
  * Analysis result schema for AI-generated auction analysis
  */
 export const auctionAnalysisSchema = z.object({
-  aiWarning: z
-    .string()
-    .nullable()
+  aiGursValuationWarnings: z
+    .array(z.string())
     .describe(
-      "Dodatna opozorila odkrita med analizo vrednotenja. Nikdar ne odstrani obstoječih opozoril, samo dodaj novo po potrebi in prilagodi besedilo."
+      "Seznam opozoril pri primerjavi z GURS podatki in vrednotenjem."
     ),
   aiGursValuationMakesSense: z
     .boolean()

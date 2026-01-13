@@ -13,8 +13,11 @@ function formatAuctionMarkdown(auction: Auction): string {
   lines.push("");
 
   // AI Warning (if present)
-  if (auction.aiWarning) {
-    lines.push(`> **Opozorilo:** ${auction.aiWarning}`);
+  if (auction.aiWarning && auction.aiWarning.length > 0) {
+    lines.push("> **Opozorila:**");
+    for (const warning of auction.aiWarning) {
+      lines.push(`> - ${warning}`);
+    }
     lines.push("");
   }
 

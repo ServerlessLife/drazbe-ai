@@ -71,9 +71,8 @@ export const auctionBaseSchema = z.object({
     )
     .nullable(),
   aiWarning: z
-    .string()
-    .nullable()
-    .describe("Karkoli je nenavadnega ali opozorilo. Null če ni ničesar nenavadnega."),
+    .array(z.string())
+    .describe("Seznam opozoril o nenavadnih stvareh (npr. služnosti, hipoteke, spori, omejitve ...). Prazen seznam če ni ničesar nenavadnega."),
 });
 
 export type AuctionBase = z.infer<typeof auctionBaseSchema>;

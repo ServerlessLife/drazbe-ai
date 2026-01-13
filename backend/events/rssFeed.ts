@@ -33,12 +33,12 @@ export async function handler() {
       let aiGursValuationMakesSense = auction.aiGursValuationMakesSense === false;
 
       //check if all properties have valuation, else set aiGursValuationMakesSense to false
-      const allPropertiesHaveValuation = auction.properties?.every((p) => p.valuation !== undefined && p.valuation !== null);
+      const allPropertiesHaveValuation = aiGursValuationMakesSense && auction.properties?.every((p) => p.valuation !== undefined && p.valuation !== null);
       if (!allPropertiesHaveValuation) {
         aiGursValuationMakesSense = false;
       }
 
-      const title = auction.dataSourceCode + ": " + (aiGursValuationMakesSense ? `⚠️ ${baseTitle}` : baseTitle);
+      const title = (aiGursValuationMakesSense ? `⚠️ ${baseTitle}` : baseTitle);
       const link = auction.urlSources[0] || "";
       const pubDate = auction.publishedAt ? new Date(auction.publishedAt) : new Date();
       const html = await marked(markdown);

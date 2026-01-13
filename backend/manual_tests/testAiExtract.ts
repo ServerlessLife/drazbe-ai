@@ -138,7 +138,7 @@ async function main() {
           logger.log("Auction analyzed", {
             announcementId,
             aiSuitability: analysis.aiSuitability,
-            hasWarning: analysis.aiWarning !== null,
+            warningsCount: analysis.aiGursValuationWarnings.length,
           });
         } catch (err) {
           logger.warn("Failed to analyze auction", {
