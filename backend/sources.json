@@ -3,97 +3,97 @@
     "name": "Gov.si javne objave",
     "code": "gov-si",
     "url": "https://www.gov.si/zbirke/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "FURS",
     "code": "furs",
     "url": "https://furs.edrazbe.si/list",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za delo, družino, socialne zadeve in enake možnosti",
     "code": "ministrstvo-za-delo-druzino-socialne-zadeve-in-enake-moznosti",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-delo-druzino-socialne-zadeve-in-enake-moznosti/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za finance",
     "code": "ministrstvo-za-finance",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-finance/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za infrastrukturo",
     "code": "ministrstvo-za-infrastrukturo",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-infrastrukturo/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za javno upravo",
     "code": "ministrstvo-za-javno-upravo",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-javno-upravo/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za kmetijstvo, gozdarstvo in prehrano",
     "code": "ministrstvo-za-kmetijstvo-gozdarstvo-in-prehrano",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-kmetijstvo-gozdarstvo-in-prehrano/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za kulturo",
     "code": "ministrstvo-za-kulturo",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-kulturo/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za naravne vire in prostor",
     "code": "ministrstvo-za-naravne-vire-in-prostor",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-naravne-vire-in-prostor/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za notranje zadeve",
     "code": "ministrstvo-za-notranje-zadeve",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-notranje-zadeve/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za obrambo",
     "code": "ministrstvo-za-obrambo",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-obrambo/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za pravosodje",
     "code": "ministrstvo-za-pravosodje",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-pravosodje/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za solidarno prihodnost",
     "code": "ministrstvo-za-solidarno-prihodnost",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-solidarno-prihodnost/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za visoko šolstvo, znanost in inovacije",
     "code": "ministrstvo-za-visoko-solstvo-znanost-in-inovacije",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-visoko-solstvo-znanost-in-inovacije/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za vzgojo in izobraževanje",
     "code": "ministrstvo-za-vzgojo-in-izobrazevanje",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-vzgojo-in-izobrazevanje/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Ministrstvo za zdravje",
     "code": "ministrstvo-za-zdravje",
     "url": "https://www.gov.si/drzavni-organi/ministrstva/ministrstvo-za-zdravje/javne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Finance",
@@ -105,19 +105,20 @@
     "name": "AJPES",
     "code": "ajpes",
     "url": "https://www.ajpes.si/eObjave/rezultati.asp?podrobno=0&id_skupina=51&TipDolznika=-1&TipPostopka=-1&id_SkupinaVrsta=51&id_skupinaPodVrsta=86&Dolznik=&Oblika=&MS=&DS=&StStevilka=&Sodisce=-1&DatumDejanja_od=&DatumDejanja_do=&sys_ZacetekObjave_od=&sys_ZacetekObjave_do=&MAXREC=10",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Sodne dražbe",
     "code": "sodnedrazbe",
-    "url": "https://sodnedrazbe.si/?subjectType=7d70c0dc-71f7-4b64-9854-444e84219a37",
+    "url": "https://sodnedrazbe.si/single/dd8025fe-ed7d-47df-b740-c5c428c8ea54/d8e62c7c-9598-4253-9df5-01144cce39eb?subjectType=7d70c0dc-71f7-4b64-9854-444e84219a37",
+    "skipSearchingForLinks": true,
     "enabled": true
   },
   {
     "name": "eDražbe",
     "code": "edrazbe",
     "url": "https://edrazbe.si/list?saleSubject=2ee072ab-7833-48e6-9e83-d9cf8d7b92f0",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Nepremičnine.net javne dražbe",
@@ -129,117 +130,117 @@
     "name": "Stanovanjski sklad Republike Slovenije",
     "code": "ssrs",
     "url": "https://ssrs.si/javne-drazbe/seznam-nepremicnin/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Javni stanovanjski sklad Mestne občine Ljubljana",
     "code": "jssmol",
     "url": "https://www.jssmol.si/javne-objave/razpolaganje-s-premozenjem",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Javni medobčinski stanovanjski sklad Maribor",
     "code": "jmssmb",
     "url": "https://www.jmss-mb.si/prodaja-nepremicnin/javna-drazba/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Javni stanovanjski sklad Mestne občine Koper",
     "code": "jssmok",
     "url": "https://www.jss-mok.si/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Javni stanovanjski sklad Mestne občine Murska Sobota",
     "code": "jssmoms",
     "url": "https://www.jss-moms.si/si/aktualno/novice",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Nepremičninski sklad pokojninskega in invalidskega zavarovanja",
     "code": "nspiz",
     "url": "https://www.ns-piz.si/si/odprodaja-stanovanj/",
     "skipSearchingForLinks": true,
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Spekter d.o.o.",
     "code": "spekter",
     "url": "https://www.spekter.info/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Stanovanjski sklad Mestne občine Nova Gorica",
     "code": "ssmong",
     "url": "https://ssmong.si/razpolaganje-s-premozenjem",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Nepremičnine Celje d.o.o.",
     "code": "nepremicnine-celje",
     "url": "https://www.nepremicnine-celje.si/prodaja-oglasi/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Celje",
     "code": "celje",
     "url": "https://moc.celje.si/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Koper",
     "code": "koper",
     "url": "https://www.koper.si/public_tender/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Kranj",
     "code": "kranj",
     "url": "https://www.kranj.si/mestna-obcina/javni-razpisi-narocila-razgrnitve",
     "skipSearchingForLinks": true,
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Krško",
     "code": "krsko",
     "url": "https://www.krsko.si/objave/58",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Ljubljana",
     "code": "ljubljana",
     "url": "https://www.ljubljana.si/sl/mestni-servis/razpisi-razgrnitve-in-javne-objave?cat=2&status=all&year=&nrOfItems=20#filter",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Maribor",
     "code": "maribor",
     "url": "https://maribor.si/nepremicnine/prodaja-nepremicnin/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Murska Sobota",
     "code": "murska-sobota",
     "url": "https://murska-sobota.si/javne-objave?search=",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Nova Gorica - Razpisi",
     "code": "nova-gorica-razpisi",
     "url": "https://www.nova-gorica.si/sl/javne-objave/?status=1&rubric=2025013008311235768",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Nova Gorica - Namere",
     "code": "nova-gorica-namere",
     "url": "https://www.nova-gorica.si/sl/javne-objave/?status=1&rubric=2025013010372254270",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Novo mesto",
     "code": "novo-mesto",
     "url": "https://www.novomesto.si/postopki/uradne-objave/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Ptuj",
@@ -247,7 +248,7 @@
     "url": "https://www.ptuj.si/objave/58",
     "linksSelector": ".tab-content",
     "contentSelector": ".osrednji_vsebina",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Slovenj Gradec",
@@ -255,25 +256,25 @@
     "url": "https://www.slovenjgradec.si/Naro%C4%8Dila-in-objave",
     "linksSelector": ".main-content-area",
     "contentSelector": ".main-content-area",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Mestna občina Velenje",
     "code": "velenje",
     "url": "https://www.velenje.si/za-obcane/javne-objave-in-razpisi/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Ajdovščina",
     "code": "ajdovscina",
     "url": "https://www.ajdovscina.si/javna_narocila_in_razpisi/obvestila_obcinske_nepremicnine/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Ankaran",
     "code": "ankaran",
     "url": "https://obcina-ankaran.si/sl/nasa-obcina/uradne-objave",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Apače",
@@ -281,19 +282,19 @@
     "url": "https://www.obcina-apace.si/razpisi",
     "linksSelector": "#aktualni",
     "contentSelector": ".tab-content",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Beltinci",
     "code": "beltinci",
     "url": "https://www.beltinci.si/objave/58",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Benedikt",
     "code": "benedikt",
     "url": "https://www.benedikt.si/objave/58",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Bistrica ob Sotli",
@@ -301,31 +302,31 @@
     "url": "https://www.bistricaobsotli.si/objave/58",
     "linksSelector": ".posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Bled",
     "code": "bled",
     "url": "https://www.e-bled.si/za-obcane/javni-razpisi/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Bloke",
     "code": "bloke",
     "url": "https://www.bloke.si/javni-razpisi",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Bohinj",
     "code": "bohinj",
     "url": "https://obcina.bohinj.si/razpisi",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Borovnica",
     "code": "borovnica",
     "url": "https://www.borovnica.si/razpisi",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Bovec",
@@ -333,25 +334,25 @@
     "url": "https://obcina.bovec.si/objave/58",
     "linksSelector": ".posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Braslovče",
     "code": "braslovce",
     "url": "https://www.braslovce.si/objave/58",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Brda",
     "code": "brda",
     "url": "https://www.obcina-brda.si/sl/objave-in-razpisi/nepremicnine-v-prodaji/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Brezovica",
     "code": "brezovica",
     "url": "https://www.brezovica.si/za-obcane/razpisi/",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Brežice",
@@ -359,7 +360,7 @@
     "url": "https://www.brezice.si/sl/novice/",
     "linksSelector": ".news-list-wrapper",
     "contentSelector": ".content-wrapper",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Občina Cankova",

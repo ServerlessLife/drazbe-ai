@@ -142,7 +142,12 @@ function formatAuctionMarkdown(auction: Auction): string {
         lines.push(
           `- **KO-številka:** ${prop.valuation.cadastralMunicipality}-${prop.valuation.number}`
         );
-        lines.push(`- **Vrednost:** ${prop.valuation.value.toLocaleString("sl-SI")} €`);
+        const reducedNote = prop.valuation.reducedByOwnershipShare
+          ? " (zmanjšano za lastniški delež)"
+          : "";
+        lines.push(
+          `- **Vrednost:** ${prop.valuation.value.toLocaleString("sl-SI")} €${reducedNote}`
+        );
         if ("surfaceArea" in prop.valuation && prop.valuation.surfaceArea) {
           lines.push(`- **Površina:** ${prop.valuation.surfaceArea} m²`);
         }

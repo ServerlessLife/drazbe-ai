@@ -231,7 +231,7 @@ async function getValuation(
       ownershipShare,
       adjustedValue,
     });
-    result = { ...result, value: adjustedValue };
+    result = { ...result, value: adjustedValue, reducedByOwnershipShare: true };
   }
 
   return result;

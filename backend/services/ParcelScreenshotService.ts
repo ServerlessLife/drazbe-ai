@@ -3,7 +3,7 @@ import { launchBrowser } from "../utils/browser.js";
 import { PropertyKey } from "../types/PropertyIdentifier.js";
 import { logger } from "../utils/logger.js";
 
-  let browser: Browser | null = null;
+let browser: Browser | null = null;
 
 async function captureParcelScreenshot(query: PropertyKey): Promise<string | null> {
   logger.log("Capturing parcel screenshot", {
@@ -11,8 +11,6 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
     municipality: query.cadastralMunicipality,
     number: query.number,
   });
-
-
 
   try {
     const result = await launchBrowser();
@@ -76,7 +74,7 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<string | nul
     await page.click(".icon-lupa-plus");
 
     // Wait for zoom animation
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
     // 6. Take screenshot and crop to map area
     logger.log("Capturing screenshot");

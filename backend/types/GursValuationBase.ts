@@ -23,6 +23,11 @@ export const gursValuationBaseSchema = z.object({
   number: z.string().describe("Številka parcele/stavbe"),
   value: z.number().describe("Posplošena vrednost v €"),
   centroid: centroidSchema.optional(),
+  /** Whether the value was reduced by ownership share */
+  reducedByOwnershipShare: z
+    .boolean()
+    .optional()
+    .describe("Ali je vrednost zmanjšana glede na lastniški delež"),
 });
 
 export type GursValuationBase = z.infer<typeof gursValuationBaseSchema>;

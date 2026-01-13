@@ -368,7 +368,7 @@ async function extractAuctionDetails(markdown: string): Promise<AuctionBase[]> {
             **property**
             Bodi natančen pri izvlačevanju parcel/stavb - poišči vse navedene v besedilu. Pazi, da ne podvojiš.
             Vedno vključi celotno šifro!!! Kadar gre za del stavbe ne more biti vključen še celotna stavba.
-            Posebno pazi, če gre za hišo, da poiščeš oznako hiše!!!
+            Posebno pazi, če gre za hišo, da poiščeš oznako hiše!!! V primeru hiše bodi pozoren na delež. Če se parcela ne prodaja v celoti se zagotovo tudi hiša ne.
             Ne omenjaj povezane zemljiške parcele, kadar to ni relevantno.
             Podatke o parceli in stavbe loči in pripiši ustrezni objavi, če je teh več.
             `,
@@ -814,7 +814,12 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
       if (!doc.markdown) continue;
 
       // Skip OCR documents unless content is short AND there are no other documents with content
-      if (doc.ocrUsed && (!isShortContent || hasOtherDocumentsWithContent)) {
+      // do not skip if "Cenitveno poročilo"
+      if (
+        doc.ocrUsed &&
+        (!isShortContent || hasOtherDocumentsWithContent) &&
+        !doc.description.toLowerCase().includes("cenitveno poročilo")
+      ) {
         logger.log("Skipping OCR document (sufficient content from other sources)", {
           document: doc.description,
         });
