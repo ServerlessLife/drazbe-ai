@@ -415,7 +415,6 @@ Natančno izvleci vse parcele in dele stavb:
  * Waits for network idle before extracting HTML
  */
 async function fetchPageMarkdown(
-  page: Page,
   announcementUrl: string,
   sourceUrl: string,
   contentSelector?: string,
@@ -758,7 +757,7 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
  * Fetches valuations, saves to DynamoDB, and returns structured auction data
  * Returns empty array if processing fails
  */
-async function processAuction(page: Page, objava: Link, dataSource: Source): Promise<Auction[]> {
+async function processAuction(objava: Link, dataSource: Source): Promise<Auction[]> {
   try {
     const announcementUrl = buildFullUrl(objava.url, dataSource.url);
 
@@ -799,7 +798,6 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
       }
     } else {
       markdown = await fetchPageMarkdown(
-        page,
         announcementUrl,
         dataSource.url,
         dataSource.contentSelector,
@@ -1235,7 +1233,7 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
   const rezultati: Auction[] = [];
 
   for (const objava of suitableLinks) {
-    const auctionResults = await processAuction(page, objava, dataSource);
+    const auctionResults = await processAuction(objava, dataSource);
     rezultati.push(...auctionResults);
   }
 
