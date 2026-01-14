@@ -10,7 +10,7 @@ async function testFetchDocument() {
   console.log(`Document URL: ${doc.url}`);
   console.log("");
 
-  const result = await AiExtractService.fetchAndAppendDocument(
+  const result = await AiExtractService.fetchDocument(
     doc,
     "https://www.ajpes.si/test-announcement",
     "test"
@@ -29,7 +29,7 @@ async function testFetchDocument() {
     console.log("Failed to fetch document");
   }
 
-  await AiExtractService.close();
+  await AiExtractService.closeBrowser();
 }
 
 testFetchDocument().catch(console.error);

@@ -165,7 +165,7 @@ function formatAuctionMarkdown(auction: Auction): string {
       // Map image
       if (prop.mapImageUrl) {
         lines.push("");
-        lines.push(`- [Zemljevid](${prop.mapImageUrl})`);
+        lines.push(`- [Zemljevid](https://d2wwwmeai0nw0z.cloudfront.net/${prop.mapImageUrl})`);
       }
 
       // Valuation

@@ -10,6 +10,9 @@ import { Source } from "../types/Source.js";
 export async function handler(event: SQSEvent) {
   logger.log("Processing sources from queue", { count: event.Records.length });
 
+  // close browser if it is open from previous runs
+  await AiExtractService.closeBrowser();
+
   for (const record of event.Records) {
     try {
       const source: Partial<Source> = JSON.parse(record.body);

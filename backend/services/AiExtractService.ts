@@ -1261,6 +1261,6 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
 
 export const AiExtractService = {
   processSource,
-  close: closeBrowser,
-  fetchAndAppendDocument: fetchDocument,
+  closeBrowser,
+  fetchDocument,
 };

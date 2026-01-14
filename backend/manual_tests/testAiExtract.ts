@@ -135,6 +135,6 @@ main()
     process.exitCode = 1;
   })
   .finally(async () => {
-    await AiExtractService.close();
+    await AiExtractService.closeBrowser();
     process.exit();
   });

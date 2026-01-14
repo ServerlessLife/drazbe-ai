@@ -44,7 +44,7 @@ async function main() {
     }
   }
 
-  await AiExtractService.close();
+  await AiExtractService.closeBrowser();
 
   console.log(`\n========================================`);
   console.log(`Končano. Obdelanih ${allResults.length} virov.`);
