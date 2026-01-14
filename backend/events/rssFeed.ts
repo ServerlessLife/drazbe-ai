@@ -33,15 +33,26 @@ export async function handler() {
       let aiGursValuationMakesSense = auction.aiGursValuationMakesSense === false;
 
       //check if all properties have valuation, else set aiGursValuationMakesSense to false
-      const allPropertiesHaveValuation = aiGursValuationMakesSense && auction.properties?.every((p) => p.valuation !== undefined && p.valuation !== null);
+      const allPropertiesHaveValuation =
+        aiGursValuationMakesSense &&
+        auction.properties?.every((p) => p.valuation !== undefined && p.valuation !== null);
       if (!allPropertiesHaveValuation) {
         aiGursValuationMakesSense = false;
       }
 
-      const title = (aiGursValuationMakesSense ? `⚠️ ${baseTitle}` : baseTitle);
+      const title = aiGursValuationMakesSense ? `⚠️ ${baseTitle}` : baseTitle;
       const link = auction.urlSources[0] || "";
       const pubDate = auction.publishedAt ? new Date(auction.publishedAt) : new Date();
       const html = await marked(markdown);
+
+      // Find image: first auction image (localUrl or sourceUrl), else first property mapImageUrl
+      let imageUrl: string | undefined;
+      if (auction.images && auction.images.length > 0) {
+        imageUrl = auction.images[0].localUrl || auction.images[0].sourceUrl;
+      } else if (auction.properties && auction.properties.length > 0) {
+        const propertyWithImage = auction.properties.find((p) => p.mapImageUrl);
+        imageUrl = `https://d2wwwmeai0nw0z.cloudfront.net/${propertyWithImage?.mapImageUrl}`;
+      }
 
       feed.addItem({
         title,
@@ -49,6 +60,7 @@ export async function handler() {
         link,
         description: html,
         date: pubDate,
+        image: imageUrl,
       });
     }
 
