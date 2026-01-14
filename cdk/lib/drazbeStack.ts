@@ -150,7 +150,6 @@ export class CdkStack extends cdk.Stack {
       snsTopicAlarm: alarmTopic,
     });
 
-    /*
     // EventBridge Scheduler to trigger processing
     new scheduler.Schedule(this, "SchedulerSchedule", {
       //  schedule: scheduler.ScheduleExpression.cron({
@@ -158,10 +157,9 @@ export class CdkStack extends cdk.Stack {
       //   hour: "18",
       //   timeZone: cdk.TimeZone.of("Europe/Ljubljana"),
       // }),
-      schedule: scheduler.ScheduleExpression.rate(cdk.Duration.minutes(30)),
+      schedule: scheduler.ScheduleExpression.rate(cdk.Duration.minutes(15)),
       target: new targets.LambdaInvoke(schedulerLambda, {}),
     });
-    */
 
     // Source processor Lambda - processes items from queue
     const processorLambda = new NodejsFunction(this, "DataSourceProcessor", {
@@ -327,7 +325,7 @@ export class CdkStack extends cdk.Stack {
       new lambdaEventSources.DynamoEventSource(auctionTable, {
         startingPosition: lambda.StartingPosition.LATEST,
         batchSize: 10,
-        retryAttempts: 3,
+        retryAttempts: 2,
         filters: [
           // Process INSERT events for MAIN record types
           lambda.FilterCriteria.filter({
