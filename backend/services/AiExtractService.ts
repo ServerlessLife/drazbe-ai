@@ -388,7 +388,7 @@ async function extractAuctionDetails(markdown: string): Promise<AuctionBase[]> {
 - Pri stavbah poskusi izluščiti leto izgradnje
 - Cena je lahko podana na m² ali kot skupna - če je na m², izračunaj skupno ceno iz površine
 - Pozorno preberi morebitni dokument "Odredba o prodaji" za ločene sklope
-- "Stanovanje v enostanovanjski stavbi" pomeni hišo
+- "Stanovanje v enostanovanjski stavbi" pomeni hišo. Ne upodabljaj termina "Stanovanje v enostanovanjski stavbi".
 
 ## NEPREMIČNINE (properties)
 Natančno izvleci vse parcele in dele stavb:
