@@ -514,7 +514,7 @@ async function updateAuctionAnalysis(
         "SET aiWarning = list_append(if_not_exists(aiWarning, :emptyList), :newWarnings), aiGursValuationMakesSense = :aiGursValuationMakesSense, gsiPk = :gsiPk, #date = :date, publishedAt = :publishedAt, updatedAt = :updatedAt",
       ExpressionAttributeNames: { "#date": "date" },
       ExpressionAttributeValues: {
-        ":newWarnings": analysis.aiGursValuationWarnings.map((warning) => `💸${warning}`),
+        ":newWarnings": analysis.aiGursValuationWarnings.map((warning) => `💸 ${warning}`),
         ":emptyList": [],
         ":aiGursValuationMakesSense": analysis.aiGursValuationMakesSense,
         ":gsiPk": "PUBLISHED",

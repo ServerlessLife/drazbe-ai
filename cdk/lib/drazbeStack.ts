@@ -242,6 +242,7 @@ export class CdkStack extends cdk.Stack {
       memorySize: 2048,
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
+        VISITED_URL_TABLE_NAME: visitedUrlTable.tableName,
         PUBLIC_BUCKET_NAME: contentBucket.bucketName,
         NODE_OPTIONS: "--enable-source-maps",
       },
@@ -269,6 +270,7 @@ export class CdkStack extends cdk.Stack {
 
     // Grant auction processor Lambda access to tables
     auctionTable.grantReadWriteData(auctionProcessorLambda);
+    visitedUrlTable.grantReadWriteData(auctionProcessorLambda);
 
     // Grant auction processor Lambda access to S3 bucket for documents
     contentBucket.grantReadWrite(auctionProcessorLambda);
@@ -286,14 +288,15 @@ export class CdkStack extends cdk.Stack {
     auctionProcessorLambda.addEventSource(
       new lambdaEventSources.SqsEventSource(auctionQueueWithDlq.queue, {
         batchSize: 1, // Process one auction at a time
-        maxConcurrency: 2, // Process only 2 auctions concurrently
+        //maxConcurrency: 2, // Process only 2 auctions concurrently
+        maxConcurrency: 10, // Process only 10 auctions concurrently
       })
     );
 
     // SQS queue for auction AI analysis (triggered by DynamoDB stream)
     const auctionAnalysisQueueWithDlq = new QueueWithDlq(this, "AuctionAnalysisQueue", {
       visibilityTimeoutSeconds: 2 * 60, // 2 minutes
-      maxReceiveCount: 3,
+      maxReceiveCount: 1,
       createAlarms: true,
       snsTopicAlarm: alarmTopic,
     });

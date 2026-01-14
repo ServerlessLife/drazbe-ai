@@ -388,6 +388,7 @@ async function extractAuctionDetails(markdown: string): Promise<AuctionBase[]> {
 - Pri stavbah poskusi izluščiti leto izgradnje
 - Cena je lahko podana na m² ali kot skupna - če je na m², izračunaj skupno ceno iz površine
 - Pozorno preberi morebitni dokument "Odredba o prodaji" za ločene sklope
+- "Stanovanje v enostanovanjski stavbi" pomeni hišo
 
 ## NEPREMIČNINE (properties)
 Natančno izvleci vse parcele in dele stavb:
@@ -765,6 +766,12 @@ async function docxToMarkdown(buffer: Buffer): Promise<string> {
  */
 async function processAuction(objava: Link, dataSource: Source): Promise<Auction[]> {
   try {
+    logger.log(`Starting processing for announcement: ${objava.title}`, {
+      title: objava.title,
+      url: objava.url,
+      dataSourceCode: dataSource.code,
+    });
+
     const announcementUrl = buildFullUrl(objava.url, dataSource.url);
 
     // Check if this URL was already visited
@@ -778,6 +785,14 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
         }
       );
       return [];
+    }
+
+    await ensurePage();
+
+    if (dataSource.code === "ajpes") {
+      // In case of AJPES, this is used to set cookies before processing auctions,
+      // else individual auctions links do not work
+      await openAjpesPage();
     }
 
     logger.log(
@@ -1158,6 +1173,21 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
   }
 }
 
+/** Navigate to data source page
+ * In case of AJPES, this is used to set cookies before processing auctions,
+ * else individual auctions links do not work
+ */
+async function openAjpesPage() {
+  await ensurePage();
+
+  logger.log("Opening AJPES main page to set cookies");
+
+  await page.goto(
+    "https://www.ajpes.si/eObjave/rezultati.asp?podrobno=0&id_skupina=51&TipDolznika=-1&TipPostopka=-1&id_SkupinaVrsta=51&id_skupinaPodVrsta=86&Dolznik=&Oblika=&MS=&DS=&StStevilka=&Sodisce=-1&DatumDejanja_od=&DatumDejanja_do=&sys_ZacetekObjave_od=&sys_ZacetekObjave_do=&MAXREC=50"
+  );
+  await page.waitForLoadState("networkidle");
+}
+
 /**
  * Main entry point: process a source to extract property sale auctions
  * Steps: navigate to source → extract links → process each auction → save results
@@ -1170,7 +1200,7 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
     skipSearching: dataSource.skipSearchingForLinks,
   });
 
-  const page = await ensurePage();
+  await ensurePage();
   let allLinks: Link[];
 
   // Use url directly if skipSearchingForLinks is true, otherwise extract from page

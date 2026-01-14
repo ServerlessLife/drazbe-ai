@@ -1,5 +1,6 @@
 import { chromium, Browser, Page } from "playwright-core";
 import chromiumBinary from "@sparticuz/chromium";
+import { logger } from "./logger";
 
 /**
  * Launch a browser and return a page. Uses @sparticuz/chromium in Lambda, regular playwright locally.
@@ -45,6 +46,8 @@ export async function launchBrowser(): Promise<{ browser: Browser; page: Page }>
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
   });
   const page = await context.newPage();
+
+  logger.log("Browser launched");
 
   return { browser, page };
 }
