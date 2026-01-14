@@ -82,8 +82,15 @@ function formatAuctionMarkdown(auction: Auction): string {
   }
   if (auction.ownershipShare) lines.push(`- **Delež lastništva:** ${auction.ownershipShare}%`);
   if (auction.yearBuilt) lines.push(`- **Leto izgradnje:** ${auction.yearBuilt}`);
-  if (auction.isVacant && auction.isVacant !== "UNKNOWN") {
-    lines.push(`- **Prazno:** ${auction.isVacant === "YES" ? "Da" : "Ne"}`);
+
+  // Show vacancy only for buildings/building parts
+  const hasBuilding = auction.properties?.some(
+    (p) => p.type === "building" || p.type === "building_part"
+  );
+  if (hasBuilding && auction.isVacant) {
+    const vacantLabel =
+      auction.isVacant === "YES" ? "Da" : auction.isVacant === "NO" ? "Ne" : "Neznano";
+    lines.push(`- **Prazno:** ${vacantLabel}`);
   }
 
   // Price to value ratio section (Relativna cena)
