@@ -111,7 +111,7 @@ export class CdkStack extends cdk.Stack {
 
     // SQS queue for source processing
     const sourceQueueWithDlq = new QueueWithDlq(this, "SourceQueue", {
-      visibilityTimeoutSeconds: 15 * 60, // 15 minutes
+      visibilityTimeoutSeconds: 5 * 60, // 5 minutes
       maxReceiveCount: 1,
       createAlarms: true,
       snsTopicAlarm: alarmTopic,
@@ -218,6 +218,75 @@ export class CdkStack extends cdk.Stack {
     processorLambda.addEventSource(
       new lambdaEventSources.SqsEventSource(sourceQueueWithDlq.queue, {
         batchSize: 1, // Process one source at a time
+      })
+    );
+
+    // SQS queue for individual auction processing
+    const auctionQueueWithDlq = new QueueWithDlq(this, "AuctionQueue", {
+      visibilityTimeoutSeconds: 5 * 60, // 5 minutes per auction
+      maxReceiveCount: 1,
+      createAlarms: true,
+      snsTopicAlarm: alarmTopic,
+    });
+
+    // Add AUCTION_QUEUE_URL environment variable to processor Lambda
+    processorLambda.addEnvironment("AUCTION_QUEUE_URL", auctionQueueWithDlq.queue.queueUrl);
+
+    // Grant processor Lambda permission to send messages to auction queue
+    auctionQueueWithDlq.queue.grantSendMessages(processorLambda);
+
+    // Auction processor Lambda - processes individual auctions from queue
+    const auctionProcessorLambda = new NodejsFunction(this, "AuctionProcessor", {
+      entry: "../backend/events/processAuction.ts",
+      timeout: cdk.Duration.minutes(5),
+      memorySize: 2048,
+      environment: {
+        AUCTION_TABLE_NAME: auctionTable.tableName,
+        PUBLIC_BUCKET_NAME: contentBucket.bucketName,
+        NODE_OPTIONS: "--enable-source-maps",
+      },
+      bundling: {
+        sourceMap: true,
+        sourcesContent: false,
+        externalModules: [
+          "playwright",
+          "playwright-core",
+          "@sparticuz/chromium",
+          "canvas",
+          "chromium-bidi",
+          "tesseract.js",
+        ],
+        nodeModules: [
+          "playwright",
+          "playwright-core",
+          "@sparticuz/chromium",
+          "canvas",
+          "chromium-bidi",
+          "tesseract.js",
+        ],
+      },
+    });
+
+    // Grant auction processor Lambda access to tables
+    auctionTable.grantReadWriteData(auctionProcessorLambda);
+
+    // Grant auction processor Lambda access to S3 bucket for documents
+    contentBucket.grantReadWrite(auctionProcessorLambda);
+
+    // Grant auction processor Lambda access to SSM parameters
+    openaiApiKeyParam.grantRead(auctionProcessorLambda);
+
+    // Lambda alarms for auction processor
+    new LambdaAlarms(this, "AuctionProcessorAlarms", {
+      function: auctionProcessorLambda as any,
+      snsTopicAlarm: alarmTopic,
+    });
+
+    // Add SQS trigger to auction processor Lambda with concurrency limit of 2
+    auctionProcessorLambda.addEventSource(
+      new lambdaEventSources.SqsEventSource(auctionQueueWithDlq.queue, {
+        batchSize: 1, // Process one auction at a time
+        maxConcurrency: 2, // Process only 2 auctions concurrently
       })
     );
 

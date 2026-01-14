@@ -10,6 +10,7 @@ import * as cheerio from "cheerio";
 import { minify } from "html-minifier-terser";
 import { createWorker } from "tesseract.js";
 import { createCanvas } from "canvas";
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 // @ts-ignore
 import * as pdfjsLib from "pdfjs-dist";
 import { SodneDrazbeService } from "./SodneDrazbeService.js";
@@ -24,9 +25,14 @@ import { Auction, AuctionProperty } from "../types/Auction.js";
 import { AuctionDocument } from "../types/AuctionDocument.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
+import { AuctionQueueMessage } from "../types/QueueMessages.js";
 import { logger } from "../utils/logger.js";
 import { config } from "../utils/config.js";
 import { PropertyKey } from "../types/PropertyIdentifier.js";
+
+const sqsClient = new SQSClient({});
+const AUCTION_QUEUE_URL = process.env.AUCTION_QUEUE_URL;
+const isLambda = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
 
 let browser: Browser | null = null;
 let page: Page | null = null;
@@ -1226,10 +1232,50 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
   // }
 
   // Step 2: Process each announcement
-  logger.log(`Processing ${suitableLinks.length} actions from ${dataSource.name}`, {
+  logger.log(`Processing ${suitableLinks.length} auctions from ${dataSource.name}`, {
     dataSourceCode: dataSource.code,
     count: suitableLinks.length,
   });
+
+  // On Lambda with queue configured: send messages to SQS for parallel processing
+  // Locally: process directly for easier debugging
+  if (isLambda && AUCTION_QUEUE_URL) {
+    logger.log("Sending auctions to queue for processing", {
+      dataSourceCode: dataSource.code,
+      count: suitableLinks.length,
+      queueUrl: AUCTION_QUEUE_URL,
+    });
+
+    for (const objava of suitableLinks) {
+      const message: AuctionQueueMessage = {
+        link: objava,
+        source: dataSource,
+      };
+
+      await sqsClient.send(
+        new SendMessageCommand({
+          QueueUrl: AUCTION_QUEUE_URL,
+          MessageBody: JSON.stringify(message),
+        })
+      );
+
+      logger.log("Sent auction to queue", {
+        title: objava.title,
+        url: objava.url,
+        dataSourceCode: dataSource.code,
+      });
+    }
+
+    logger.log(`All ${suitableLinks.length} auctions sent to queue for ${dataSource.name}`, {
+      dataSourceCode: dataSource.code,
+      count: suitableLinks.length,
+    });
+
+    // Return empty array - results will be saved by the auction processor Lambda
+    return [];
+  }
+
+  // Local processing: process auctions directly
   const rezultati: Auction[] = [];
 
   for (const objava of suitableLinks) {
@@ -1259,6 +1305,7 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
 
 export const AiExtractService = {
   processSource,
+  processAuction,
   closeBrowser,
   fetchDocument,
 };
