@@ -17,7 +17,7 @@ const TABLE_NAME = process.env.SOURCE_TRIGGER_TABLE_NAME!;
 
 // Batching configuration - set to false to process all eligible sources at once
 const ENABLE_BATCHING = true;
-const MAX_SOURCES_PER_RUN = 2;
+const MAX_SOURCES_PER_RUN = 1;
 
 interface SourceWithLastTrigger {
   source: Source;
