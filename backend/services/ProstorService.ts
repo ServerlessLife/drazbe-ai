@@ -6,7 +6,7 @@ import { logger } from "../utils/logger.js";
 let browser: Browser | null = null;
 let page: Page | null = null;
 
-async function captureParcelScreenshot(query: PropertyKey): Promise<{
+async function processProperty(query: PropertyKey): Promise<{
   outputPath?: string;
   building: PropertyKey;
 } | null> {
@@ -80,7 +80,7 @@ async function captureParcelScreenshot(query: PropertyKey): Promise<{
     // await page.click(".icon-lupa-plus");
 
     // Wait for zoom animation
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
 
     // 6. Take screenshot and crop to map area
     logger.log("Capturing screenshot");
@@ -148,4 +148,4 @@ async function closeBrowser() {
   }
 }
 
-export const ParcelScreenshotService = { captureParcelScreenshot, closeBrowser };
+export const ProstorService = { processProperty, closeBrowser };

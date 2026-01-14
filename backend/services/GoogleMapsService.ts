@@ -110,6 +110,20 @@ async function getDrivingInfo(
   }
 }
 
+/**
+ * Generate a Google Maps URL for a location
+ * @param location - Centroid coordinates or address string
+ * @returns Google Maps URL
+ */
+function getGoogleMapsUrl(location: Location): string {
+  if (typeof location === "string") {
+    return `https://www.google.com/maps/search/${encodeURIComponent(location)}`;
+  }
+  const { lat, lng } = convertD96ToWGS84(location);
+  return `https://www.google.com/maps?q=${lat},${lng}`;
+}
+
 export const GoogleMapsService = {
   getDrivingInfo,
+  getGoogleMapsUrl,
 };

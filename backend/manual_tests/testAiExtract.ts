@@ -4,8 +4,6 @@ import { AuctionRepository } from "../services/AuctionRepository.js";
 import { AuctionMarkdownService } from "../services/AuctionMarkdownService.js";
 import { GoogleMapsService } from "../services/GoogleMapsService.js";
 import { AiAuctionAnalysisService } from "../services/AiAuctionAnalysisService.js";
-import { ParcelScreenshotService } from "../services/ParcelScreenshotService.js";
-import { S3Service } from "../services/S3Service.js";
 import { Source } from "../types/Source.js";
 import { Auction } from "../types/Auction.js";
 import { logger } from "../utils/logger.js";
@@ -70,35 +68,6 @@ async function main() {
             announcementId,
             error: err instanceof Error ? err.message : String(err),
           });
-        }
-
-        // Capture parcel screenshots for each property
-        if (auction.properties) {
-          for (const property of auction.properties) {
-            try {
-              const screenshot = await ParcelScreenshotService.captureParcelScreenshot({
-                type: property.type,
-                cadastralMunicipality: property.cadastralMunicipality,
-                number: property.number,
-              });
-              if (screenshot?.outputPath) {
-                const s3Key = `images/${announcementId}-${property.cadastralMunicipality}-${property.number.replace("/", "-")}.png`;
-                await S3Service.uploadFile(screenshot.outputPath, s3Key, "image/png");
-                logger.log("Property screenshot captured", {
-                  announcementId,
-                  property: `${property.cadastralMunicipality}-${property.number}`,
-                  s3Key,
-                  building: screenshot.building,
-                });
-              }
-            } catch (err) {
-              logger.warn("Failed to capture property screenshot", {
-                announcementId,
-                property: `${property.cadastralMunicipality}-${property.number}`,
-                error: err instanceof Error ? err.message : String(err),
-              });
-            }
-          }
         }
 
         const markdown = AuctionMarkdownService.formatAuctionMarkdown(auction);
@@ -167,6 +136,5 @@ main()
   })
   .finally(async () => {
     await AiExtractService.close();
-    await ParcelScreenshotService.closeBrowser();
     process.exit();
   });

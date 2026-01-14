@@ -1,4 +1,4 @@
-import { ParcelScreenshotService } from "../services/ParcelScreenshotService.js";
+import { ProstorService } from "../services/ProstorService.js";
 
 async function test() {
   console.log("Capturing parcel screenshot...\n");
@@ -9,13 +9,13 @@ async function test() {
   //   number: "90/6",
   // });
 
-  const result = await ParcelScreenshotService.captureParcelScreenshot({
+  const result = await ProstorService.processProperty({
     type: "parcel",
     cadastralMunicipality: "1959",
     number: "670/20",
   });
 
-  await ParcelScreenshotService.closeBrowser();
+  await ProstorService.closeBrowser();
 
   if (result) {
     console.log(`Screenshot saved to: ${result}`);

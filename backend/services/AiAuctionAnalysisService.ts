@@ -57,8 +57,6 @@ Podaj ocena 10 (zelo primerno) kadar:
 - "Ocena 0, stanovanje pri Murski Soboti, zelo daleč"
 - "Ocena 0, zelo majhna nezazidljiva parcela"
 - "Ocena 3, hiša pri Jesenicah, letnik 1900, srednja razdalja"
-
-Podaj formalen odgovor brez šal.
 `;
 
 /**

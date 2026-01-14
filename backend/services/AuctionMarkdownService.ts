@@ -1,4 +1,5 @@
 import { Auction } from "../types/dynamoDb/index.js";
+import { GoogleMapsService } from "./GoogleMapsService.js";
 
 /**
  * Format auction data as nicely formatted markdown
@@ -51,6 +52,23 @@ function formatAuctionMarkdown(auction: Auction): string {
     const timeStr = hours > 0 ? `${hours} h ${mins} min` : `${mins} min`;
     lines.push(`- **Vožnja od doma:** ${timeStr} (${drivingInfo.drivingDistanceKm} km)`);
   }
+
+  // Google Maps link using centroid from property with valuation (prefer building over parcel)
+  const buildingCentroid = auction.properties?.find(
+    (p) => (p.type === "building" || p.type === "building_part") && p.valuation?.centroid
+  )?.valuation?.centroid;
+  const parcelCentroid = auction.properties?.find(
+    (p) => p.type === "parcel" && p.valuation?.centroid
+  )?.valuation?.centroid;
+  const centroid = buildingCentroid || parcelCentroid;
+  if (centroid) {
+    const mapsUrl = GoogleMapsService.getGoogleMapsUrl(centroid);
+    lines.push(`- **Lokacija na zemljevidu:** [Google Maps](${mapsUrl})`);
+  } else if (auction.location) {
+    const mapsUrl = GoogleMapsService.getGoogleMapsUrl(auction.location);
+    lines.push(`- **Lokacija na zemljevidu:** [Google Maps](${mapsUrl})`);
+  }
+
   if (auction.price) lines.push(`- **Cena:** ${auction.price.toLocaleString("sl-SI")} €`);
   if (auction.estimatedValue)
     lines.push(`- **Ocenjena vrednost:** ${auction.estimatedValue.toLocaleString("sl-SI")} €`);

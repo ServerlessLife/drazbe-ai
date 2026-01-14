@@ -117,7 +117,7 @@
     "name": "Nepremičnine.net javne dražbe",
     "code": "nepremicnine-net",
     "url": "https://www.nepremicnine.net/javne-drazbe/oglasi-prodaja/?s=16",
-    "enabled": true
+    "enabled": false
   },
   {
     "name": "Stanovanjski sklad Republike Slovenije",

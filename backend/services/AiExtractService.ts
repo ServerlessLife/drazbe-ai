@@ -16,6 +16,7 @@ import { SodneDrazbeService } from "./SodneDrazbeService.js";
 import { AuctionRepository } from "./AuctionRepository.js";
 import { VisitedUrlRepository } from "./VisitedUrlRepository.js";
 import { GursValuationService } from "./GursValuationService.js";
+import { ProstorService } from "./ProstorService.js";
 import { S3Service } from "./S3Service.js";
 import { Source } from "../types/Source.js";
 import { AuctionBase, auctionsBaseSchema } from "../types/AuctionBase.js";
@@ -25,6 +26,7 @@ import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
 import { logger } from "../utils/logger.js";
 import { config } from "../utils/config.js";
+import { PropertyKey } from "../types/PropertyIdentifier.js";
 
 let browser: Browser | null = null;
 let page: Page | null = null;
@@ -98,6 +100,8 @@ async function closeBrowser(): Promise<void> {
   }
   browser = null;
   page = null;
+  // Also close ParcelScreenshotService browser
+  await ProstorService.closeBrowser();
 }
 
 /**
@@ -996,55 +1000,157 @@ async function processAuction(page: Page, objava: Link, dataSource: Source): Pro
     // return [];
   }
 
-  async function processProperties(auction: AuctionBase) {
-    let properties: AuctionProperty[] | null = null;
-    if (auction.properties) {
-      properties = [];
-      const seen = new Set<string>();
+  async function processProperties(auction: AuctionBase): Promise<AuctionProperty[] | null> {
+    if (!auction.properties) {
+      return null;
+    }
 
-      for (const property of auction.properties) {
-        property.number = property.number.trim().replace(/[- ]/g, "/");
+    const properties: AuctionProperty[] = [];
+    const seen = new Set<string>();
+    const buildings: PropertyKey[] = [];
 
-        // Skip duplicates based on cadastralMunicipality and number
-        const key = `${property.cadastralMunicipality}-${property.number}`;
-        if (seen.has(key)) {
-          logger.log("Skipping duplicate property", {
-            dataSourceCode: dataSource.code,
-            propertyType: property.type,
-            cadastralMunicipality: property.cadastralMunicipality,
-            number: property.number,
+    for (const property of auction.properties) {
+      property.number = property.number.trim().replace(/[- ]/g, "/");
+
+      // Skip duplicates based on cadastralMunicipality and number
+      const key = `${property.cadastralMunicipality}-${property.number}`;
+      if (seen.has(key)) {
+        logger.log("Skipping duplicate property", {
+          dataSourceCode: dataSource.code,
+          propertyType: property.type,
+          cadastralMunicipality: property.cadastralMunicipality,
+          number: property.number,
+        });
+        continue;
+      }
+      seen.add(key);
+
+      const ownershipShare = property.ownershipShare ?? auction.ownershipShare;
+      const valuation = await fetchPropertyValuation(property, ownershipShare);
+      const prostorData = await processPropertyProstor(property, valuation);
+
+      if (prostorData?.building) {
+        buildings.push(prostorData.building);
+      }
+
+      properties.push({ ...property, valuation, mapImageUrl: prostorData?.mapImageUrl });
+    }
+
+    // če gre za hišo na poralu sodnedrazbe.si pogoste ne vključujejo oznako stavbe, zato poskusimo zajeti še stavbo iz prostor.si
+    if (auction.isHouse) {
+      // find buiding or building_part properties
+      const hasBuilding = properties.some(
+        (p) => p.type === "building" || p.type === "building_part"
+      );
+      if (!hasBuilding && buildings.length > 0) {
+        const buildingKey = buildings[0];
+        // take ownership from auction or first property
+        const ownershipShare =
+          auction.ownershipShare ?? auction.properties[0].ownershipShare ?? null;
+
+        // check if seen
+        const key = `${buildingKey.cadastralMunicipality}-${buildingKey.number}`;
+        if (!seen.has(key)) {
+          const valuation = await fetchPropertyValuation(buildingKey, ownershipShare);
+          const prostorData = await processPropertyProstor(buildingKey, valuation);
+
+          properties.push({
+            ...buildingKey,
+            valuation,
+            mapImageUrl: prostorData?.mapImageUrl,
           });
-          continue;
         }
-        seen.add(key);
-
-        let valuation = undefined;
-        try {
-          const ownershipShare = property.ownershipShare ?? auction.ownershipShare;
-          valuation =
-            (await GursValuationService.getValuation(property, ownershipShare)) ?? undefined;
-          if (valuation) {
-            logger.log("Property valuation fetched", {
-              dataSourceCode: dataSource.code,
-              propertyType: property.type,
-              cadastralMunicipality: property.cadastralMunicipality,
-              number: property.number,
-              value: "value" in valuation ? valuation.value : undefined,
-            });
-          }
-        } catch (valuationErr) {
-          logger.warn("Failed to fetch valuation for property", {
-            dataSourceCode: dataSource.code,
-            propertyType: property.type,
-            cadastralMunicipality: property.cadastralMunicipality,
-            number: property.number,
-            error: valuationErr instanceof Error ? valuationErr.message : String(valuationErr),
-          });
-        }
-        properties.push({ ...property, valuation });
       }
     }
+
     return properties;
+  }
+
+  async function processPropertyProstor(
+    property: PropertyKey,
+    valuation?: PropertyKey
+  ): Promise<{
+    mapImageUrl?: string;
+    building: PropertyKey;
+  } | null> {
+    // Use valuation data if available (GURS may have corrected values)
+    const key: PropertyKey = {
+      type: valuation?.type ?? property.type,
+      cadastralMunicipality: valuation?.cadastralMunicipality,
+      number: valuation?.number,
+    };
+
+    try {
+      const screenshot = await ProstorService.processProperty(key);
+
+      if (!screenshot?.outputPath) {
+        logger.warn("Failed to capture screenshot for property", {
+          dataSourceCode: dataSource.code,
+          ...key,
+        });
+        return undefined;
+      }
+
+      logger.log("Screenshot captured", {
+        dataSourceCode: dataSource.code,
+        screenshotPath: screenshot.outputPath,
+        ...key,
+      });
+
+      // Upload screenshot to S3 (replace / with - in number to avoid path issues)
+      const safeNumber = key.number.replace(/\//g, "-");
+      const s3Key = `images/${key.cadastralMunicipality}-${safeNumber}.png`;
+      const mapImageUrl = await S3Service.uploadFile(screenshot.outputPath, s3Key, "image/png");
+
+      logger.log("Property screenshot uploaded", {
+        dataSourceCode: dataSource.code,
+        mapImageUrl,
+      });
+
+      return { mapImageUrl, building: screenshot.building };
+    } catch (error) {
+      logger.warn("Failed to capture property screenshot", {
+        dataSourceCode: dataSource.code,
+        propertyType: property.type,
+        cadastralMunicipality: property.cadastralMunicipality,
+        number: property.number,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return undefined;
+    }
+  }
+
+  async function fetchPropertyValuation(
+    property: {
+      type: "parcel" | "building" | "building_part";
+      cadastralMunicipality: string;
+      number: string;
+    },
+    ownershipShare: number | null
+  ) {
+    try {
+      const valuation =
+        (await GursValuationService.getValuation(property, ownershipShare)) ?? undefined;
+      if (valuation) {
+        logger.log("Property valuation fetched", {
+          dataSourceCode: dataSource.code,
+          propertyType: property.type,
+          cadastralMunicipality: property.cadastralMunicipality,
+          number: property.number,
+          value: "value" in valuation ? valuation.value : undefined,
+        });
+      }
+      return valuation;
+    } catch (valuationErr) {
+      logger.warn("Failed to fetch valuation for property", {
+        dataSourceCode: dataSource.code,
+        propertyType: property.type,
+        cadastralMunicipality: property.cadastralMunicipality,
+        number: property.number,
+        error: valuationErr instanceof Error ? valuationErr.message : String(valuationErr),
+      });
+      return undefined;
+    }
   }
 }
 

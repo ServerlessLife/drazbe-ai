@@ -215,14 +215,6 @@ export class CdkStack extends cdk.Stack {
       })
     );
 
-    // SQS queue for property screenshot processing (triggered by DynamoDB stream)
-    const propertyQueueWithDlq = new QueueWithDlq(this, "PropertyQueue", {
-      visibilityTimeoutSeconds: 5 * 60, // 5 minutes
-      maxReceiveCount: 3,
-      createAlarms: true,
-      snsTopicAlarm: alarmTopic,
-    });
-
     // SQS queue for auction AI analysis (triggered by DynamoDB stream)
     const auctionAnalysisQueueWithDlq = new QueueWithDlq(this, "AuctionAnalysisQueue", {
       visibilityTimeoutSeconds: 2 * 60, // 2 minutes
@@ -237,14 +229,12 @@ export class CdkStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
       environment: {
-        PROPERTY_QUEUE_URL: propertyQueueWithDlq.queue.queueUrl,
         AUCTION_ANALYSIS_QUEUE_URL: auctionAnalysisQueueWithDlq.queue.queueUrl,
         CONTENT_BUCKET_NAME: contentBucket.bucketName,
       },
     });
 
     // Grant stream processor Lambda permissions to send messages to queues
-    propertyQueueWithDlq.queue.grantSendMessages(streamProcessorLambda);
     auctionAnalysisQueueWithDlq.queue.grantSendMessages(streamProcessorLambda);
 
     // Grant stream processor Lambda permissions to delete from S3 bucket
@@ -257,13 +247,13 @@ export class CdkStack extends cdk.Stack {
         batchSize: 10,
         retryAttempts: 3,
         filters: [
-          // Process INSERT events for PROPERTY or MAIN record types
+          // Process INSERT events for MAIN record types
           lambda.FilterCriteria.filter({
             eventName: lambda.FilterRule.isEqual("INSERT"),
             dynamodb: {
               NewImage: {
                 recordType: {
-                  S: lambda.FilterRule.or("PROPERTY", "MAIN"),
+                  S: lambda.FilterRule.isEqual("MAIN"),
                 },
               },
             },
@@ -286,52 +276,6 @@ export class CdkStack extends cdk.Stack {
     // Lambda alarms for stream processor
     new LambdaAlarms(this, "StreamProcessorAlarms", {
       function: streamProcessorLambda as any,
-      snsTopicAlarm: alarmTopic,
-    });
-
-    // Property screenshot processor Lambda
-    const propertyProcessorLambda = new NodejsFunction(this, "PropertyProcessor", {
-      entry: "../backend/events/processProperty.ts",
-      timeout: cdk.Duration.minutes(5),
-      memorySize: 2048,
-      environment: {
-        AUCTION_TABLE_NAME: auctionTable.tableName,
-        PUBLIC_BUCKET_NAME: contentBucket.bucketName,
-      },
-      bundling: {
-        externalModules: [
-          "playwright",
-          "playwright-core",
-          "@sparticuz/chromium",
-          "canvas",
-          "chromium-bidi",
-        ],
-        nodeModules: [
-          "playwright",
-          "playwright-core",
-          "@sparticuz/chromium",
-          "canvas",
-          "chromium-bidi",
-        ],
-      },
-    });
-
-    // Grant property processor Lambda access to S3 bucket
-    contentBucket.grantReadWrite(propertyProcessorLambda);
-
-    // Grant property processor Lambda access to auction table
-    auctionTable.grantReadWriteData(propertyProcessorLambda);
-
-    // Add SQS trigger to property processor Lambda
-    propertyProcessorLambda.addEventSource(
-      new lambdaEventSources.SqsEventSource(propertyQueueWithDlq.queue, {
-        batchSize: 1,
-      })
-    );
-
-    // Lambda alarms for property processor
-    new LambdaAlarms(this, "PropertyProcessorAlarms", {
-      function: propertyProcessorLambda as any,
       snsTopicAlarm: alarmTopic,
     });
 
