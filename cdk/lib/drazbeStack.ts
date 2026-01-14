@@ -124,9 +124,12 @@ export class CdkStack extends cdk.Stack {
       environment: {
         SOURCE_QUEUE_URL: sourceQueueWithDlq.queue.queueUrl,
         SOURCE_TRIGGER_TABLE_NAME: sourceTriggerTable.tableName,
+        NODE_OPTIONS: "--enable-source-maps",
       },
       memorySize: 512,
       bundling: {
+        sourceMap: true,
+        sourcesContent: false,
         commandHooks: {
           beforeBundling: () => [],
           beforeInstall: () => [],
@@ -169,8 +172,11 @@ export class CdkStack extends cdk.Stack {
         AUCTION_TABLE_NAME: auctionTable.tableName,
         VISITED_URL_TABLE_NAME: visitedUrlTable.tableName,
         PUBLIC_BUCKET_NAME: contentBucket.bucketName,
+        NODE_OPTIONS: "--enable-source-maps",
       },
       bundling: {
+        sourceMap: true,
+        sourcesContent: false,
         externalModules: [
           "playwright",
           "playwright-core",
@@ -232,6 +238,10 @@ export class CdkStack extends cdk.Stack {
         AUCTION_ANALYSIS_QUEUE_URL: auctionAnalysisQueueWithDlq.queue.queueUrl,
         CONTENT_BUCKET_NAME: contentBucket.bucketName,
       },
+      bundling: {
+        sourceMap: true,
+        sourcesContent: false,
+      },
     });
 
     // Grant stream processor Lambda permissions to send messages to queues
@@ -286,6 +296,11 @@ export class CdkStack extends cdk.Stack {
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
         USER_SUITABILITY_TABLE_NAME: userSuitabilityTable.tableName,
+        NODE_OPTIONS: "--enable-source-maps",
+      },
+      bundling: {
+        sourceMap: true,
+        sourcesContent: false,
       },
     });
 
@@ -321,6 +336,11 @@ export class CdkStack extends cdk.Stack {
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
         USER_SUITABILITY_TABLE_NAME: userSuitabilityTable.tableName,
+        NODE_OPTIONS: "--enable-source-maps",
+      },
+      bundling: {
+        sourceMap: true,
+        sourcesContent: false,
       },
     });
 

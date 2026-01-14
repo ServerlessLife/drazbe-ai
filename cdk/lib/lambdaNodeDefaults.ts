@@ -1,10 +1,7 @@
 import { IPropertyInjector, InjectionContext, RemovalPolicy } from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as logs from "aws-cdk-lib/aws-logs";
-import {
-  NodejsFunction,
-  NodejsFunctionProps,
-} from "aws-cdk-lib/aws-lambda-nodejs";
+import { NodejsFunction, NodejsFunctionProps } from "aws-cdk-lib/aws-lambda-nodejs";
 
 export class LambdaNodeDefaults implements IPropertyInjector {
   public readonly constructUniqueId: string;
@@ -15,7 +12,7 @@ export class LambdaNodeDefaults implements IPropertyInjector {
 
   public inject(
     originalProps: NodejsFunctionProps,
-    context: InjectionContext,
+    context: InjectionContext
   ): NodejsFunctionProps {
     return {
       runtime: lambda.Runtime.NODEJS_22_X,
@@ -23,17 +20,7 @@ export class LambdaNodeDefaults implements IPropertyInjector {
         retention: logs.RetentionDays.TWO_WEEKS,
         removalPolicy: RemovalPolicy.DESTROY,
       }),
-      environment: {
-        "NODE_OPTIONS": "--enable-source-maps",
-        ...originalProps.environment,
-      },
       memorySize: 1024,
-      bundling: {
-        sourceMap: true,
-        sourcesContent: false,
-        ...originalProps.bundling,
-      },
-
       // Include original props to allow overrides
       ...originalProps,
     };

@@ -83,8 +83,10 @@ async function processProperty(query: PropertyKey): Promise<{
     await page.waitForTimeout(3000);
 
     // 6. Take screenshot and crop to map area
+    // Use /tmp for Lambda (read-only filesystem except /tmp)
     logger.log("Capturing screenshot");
-    const outputPath = "parcel-screenshot.png";
+    const isLambda = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+    const outputPath = isLambda ? "/tmp/parcel-screenshot.png" : "parcel-screenshot.png";
     await page.screenshot({
       path: outputPath,
       clip: { x: 119, y: 173, width: 785, height: 466 },
