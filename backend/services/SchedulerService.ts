@@ -60,21 +60,57 @@ async function updateLastTrigger(sourceCode: string, timestamp: number): Promise
 }
 
 /**
- * Check if a source should be triggered based on its schedule
+ * Get the timestamp of the start of the most recent scheduled day for a source.
+ * This ensures sources are still processed if missed on their scheduled day.
  */
-function shouldTriggerBySchedule(schedule: string, dayOfWeek: number): boolean {
+function getLastScheduledDayStart(schedule: string, now: Date): number {
+  const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
+  const todayMs = todayStart.getTime();
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
   switch (schedule) {
     case "daily":
-      return true;
+      return todayMs;
     case "workdays":
       // Monday (1) to Friday (5)
-      return dayOfWeek >= 1 && dayOfWeek <= 5;
+      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        return todayMs; // Today is a workday
+      } else if (dayOfWeek === 6) {
+        return todayMs - DAY_MS; // Saturday -> last was Friday
+      } else {
+        return todayMs - 2 * DAY_MS; // Sunday -> last was Friday
+      }
     case "tuesday_friday":
       // Tuesday (2) and Friday (5)
-      return dayOfWeek === 2 || dayOfWeek === 5;
+      if (dayOfWeek === 2 || dayOfWeek === 5) {
+        return todayMs; // Today is Tuesday or Friday
+      }
+      // Find days since last Tuesday or Friday
+      const daysSinceTuesday = (dayOfWeek - 2 + 7) % 7;
+      const daysSinceFriday = (dayOfWeek - 5 + 7) % 7;
+      const daysSinceLastScheduled = Math.min(daysSinceTuesday, daysSinceFriday);
+      return todayMs - daysSinceLastScheduled * DAY_MS;
     default:
-      return true;
+      return todayMs;
   }
+}
+
+/**
+ * Check if a source should be processed based on schedule and last trigger time.
+ * Returns true if not processed since the last scheduled day.
+ */
+function shouldProcessSource(schedule: string, lastTrigger: number | null, now: Date): boolean {
+  // Never triggered = definitely process
+  if (lastTrigger === null) {
+    return true;
+  }
+
+  const lastScheduledDayStart = getLastScheduledDayStart(schedule, now);
+
+  // Process if last trigger was before the last scheduled day started
+  return lastTrigger < lastScheduledDayStart;
 }
 
 /**
@@ -92,7 +128,6 @@ async function processScheduledSources(): Promise<{ processed: number; total: nu
   logger.log(`Found enabled sources`, { count: enabledSources.length });
 
   const today = new Date();
-  const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   const now = Date.now();
 
   // Collect eligible sources with their last trigger times
@@ -101,23 +136,15 @@ async function processScheduledSources(): Promise<{ processed: number; total: nu
   for (const source of enabledSources) {
     const schedule = source.schedule || "daily";
 
-    if (!shouldTriggerBySchedule(schedule, dayOfWeek)) {
-      logger.log(`Skipping source - schedule not met`, {
-        source: source.code,
-        schedule,
-        dayOfWeek,
-      });
-      continue;
-    }
-
     // Check last trigger time
     const lastTrigger = await getLastTrigger(source.code);
 
-    // Only trigger if more than 23 hours have passed since last trigger
-    if (lastTrigger && now - lastTrigger < 23 * 60 * 60 * 1000) {
-      logger.log(`Skipping source - triggered recently`, {
+    // Check if source should be processed based on schedule and last trigger
+    if (!shouldProcessSource(schedule, lastTrigger, today)) {
+      logger.log(`Skipping source - already processed since last scheduled day`, {
         source: source.code,
-        lastTrigger: new Date(lastTrigger).toISOString(),
+        schedule,
+        lastTrigger: lastTrigger ? new Date(lastTrigger).toISOString() : "never",
       });
       continue;
     }

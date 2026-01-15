@@ -34,7 +34,7 @@ export const auctionBaseSchema = z.object({
   isVacant: z
     .enum(["YES", "NO", "UNKNOWN"])
     .describe(
-      "Ali je nepremičnina prazna: 'YES' = da, 'NO' = ne/zasedena, 'UNKNOWN' = ni podatka. Podatek izpolni samo za hiše in stanovanja. Pusti prazno za parcele, poslovne prostore..."
+      "Ali je nepremičnina prazna: 'YES' = da, 'NO' = ne/zasedena, 'UNKNOWN' = ni podatka. Podatek izpolni samo za hiše in stanovanja. Če je dražba občine ali ministrstva, prevzami, da je prazno razen, če ni drugače navedeno. Pusti prazno za parcele, poslovne prostore..."
     )
     .nullable(),
   publicationDate: z.string().describe("Datum objave").nullable(),

@@ -22,7 +22,6 @@ import { S3Service } from "./S3Service.js";
 import { Source } from "../types/Source.js";
 import { AuctionBase, auctionsBaseSchema } from "../types/AuctionBase.js";
 import { Auction, AuctionProperty } from "../types/Auction.js";
-import { AuctionDocument } from "../types/AuctionDocument.js";
 import { linksSchema, Link } from "../types/Link.js";
 import { DocumentResult } from "../types/DocumentResult.js";
 import { AuctionQueueMessage } from "../types/QueueMessages.js";

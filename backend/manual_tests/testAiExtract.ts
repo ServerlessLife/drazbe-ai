@@ -11,6 +11,9 @@ import { logger } from "../utils/logger.js";
 // Home address for driving time calculation
 const HOME_ADDRESS = process.env.HOME_ADDRESS;
 
+// Optional: Process only a specific source by code (set to null to process all enabled sources)
+const ONLY_SOURCE_CODE: string | null = "bovec";
+
 // Load sources from JSON
 const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));
 
@@ -41,15 +44,27 @@ async function getDrivingInfoFromHome(auction: Auction): Promise<DrivingResult |
 }
 
 async function main() {
-  const enabledSources = sources.filter((s) => s.enabled);
-  console.log(`Obdelujem ${enabledSources.length} omogočenih virov...`);
+  let sourcesToProcess = sources.filter((s) => s.enabled);
+
+  // If ONLY_SOURCE_CODE is set, filter to just that source
+  if (ONLY_SOURCE_CODE) {
+    const specificSource = sources.find((s) => s.code === ONLY_SOURCE_CODE);
+    if (!specificSource) {
+      console.error(`Source with code "${ONLY_SOURCE_CODE}" not found`);
+      process.exit(1);
+    }
+    sourcesToProcess = [specificSource];
+    console.log(`Processing single source: ${specificSource.name} (${specificSource.code})`);
+  } else {
+    console.log(`Obdelujem ${sourcesToProcess.length} omogočenih virov...`);
+  }
 
   const allResults: Array<{
     source: string;
     auctions: Auction[];
   }> = [];
 
-  for (const source of enabledSources) {
+  for (const source of sourcesToProcess) {
     try {
       const auctions = await AiExtractService.processSource(source);
 
