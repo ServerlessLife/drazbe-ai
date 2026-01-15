@@ -197,7 +197,9 @@
     "name": "Mestna občina Krško",
     "code": "krsko",
     "url": "https://www.krsko.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Mestna občina Ljubljana",
@@ -281,13 +283,17 @@
     "name": "Občina Beltinci",
     "code": "beltinci",
     "url": "https://www.beltinci.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Benedikt",
     "code": "benedikt",
     "url": "https://www.benedikt.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Bistrica ob Sotli",
@@ -333,7 +339,9 @@
     "name": "Občina Braslovče",
     "code": "braslovce",
     "url": "https://www.braslovce.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Brda",
@@ -533,7 +541,9 @@
     "name": "Občina Grosuplje",
     "code": "grosuplje",
     "url": "https://www.grosuplje.si/objave/58",
-    "enabled": false
+    "enabled": false,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Hajdina",
@@ -641,19 +651,25 @@
     "name": "Občina Kobarid",
     "code": "kobarid",
     "url": "https://www.kobarid.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Kobilje",
     "code": "kobilje",
     "url": "https://www.kobilje.si/objave/58",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
     "name": "Občina Kočevje",
     "code": "kocevje",
     "url": "https://www.kocevje.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Komen",
@@ -665,31 +681,41 @@
     "name": "Občina Komenda",
     "code": "komenda",
     "url": "https://www.komenda.si/objave/8",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
     "name": "Občina Kostanjevica na Krki",
     "code": "kostanjevica-na-krki",
     "url": "https://www.kostanjevica.si/objave/8",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
     "name": "Občina Kostel",
     "code": "kostel",
     "url": "https://www.kostel.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Kozje",
     "code": "kozje",
     "url": "https://www.kozje.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Kranjska Gora",
     "code": "kranjska-gora",
     "url": "https://obcina.kranjska-gora.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Križevci",
@@ -707,7 +733,9 @@
     "name": "Občina Kuzma",
     "code": "kuzma",
     "url": "https://www.obcina-kuzma.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Laško",
@@ -719,37 +747,49 @@
     "name": "Občina Lenart",
     "code": "lenart",
     "url": "https://www.lenart.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Lendava",
     "code": "lendava",
     "url": "https://www.lendava.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Litija",
     "code": "litija",
     "url": "https://www.litija.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Ljubno",
     "code": "ljubno",
     "url": "https://www.ljubno.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Ljutomer",
     "code": "ljutomer",
     "url": "https://www.ljutomer.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Log - Dragomer",
     "code": "log-dragomer",
     "url": "https://www.log-dragomer.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Logatec",
@@ -767,25 +807,33 @@
     "name": "Občina Loški Potok",
     "code": "loski-potok",
     "url": "https://www.loski-potok.si/objave/8",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
     "name": "Občina Lovrenc na Pohorju",
     "code": "lovrenc-na-pohorju",
     "url": "https://www.lovrenc.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Luče",
     "code": "luce",
     "url": "https://www.luce.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Lukovica",
     "code": "lukovica",
     "url": "https://www.lukovica.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Majšperk",
@@ -797,19 +845,25 @@
     "name": "Občina Makole",
     "code": "makole",
     "url": "https://www.obcina-makole.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Markovci",
     "code": "markovci",
     "url": "https://www.markovci.si/objave/8",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
     "name": "Občina Medvode",
     "code": "medvode",
     "url": "https://www.medvode.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Mengeš",
@@ -821,19 +875,25 @@
     "name": "Občina Metlika",
     "code": "metlika",
     "url": "https://www.metlika.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Mežica",
     "code": "mezica",
     "url": "https://www.mezica.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Miklavž na Dravskem Polju",
     "code": "miklavz-na-dravskem-polju",
     "url": "https://www.miklavz.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Miren - Kostanjevica",
@@ -845,13 +905,17 @@
     "name": "Občina Mirna",
     "code": "mirna",
     "url": "https://www.mirna.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Mirna Peč",
     "code": "mirna-pec",
     "url": "https://www.mirnapec.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Mislinja",
@@ -869,7 +933,9 @@
     "name": "Občina Moravče",
     "code": "moravce",
     "url": "https://www.moravce.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Moravske Toplice",
@@ -887,25 +953,33 @@
     "name": "Občina Muta",
     "code": "muta",
     "url": "https://www.muta.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Naklo",
     "code": "naklo",
     "url": "https://www.naklo.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Nazarje",
     "code": "nazarje",
     "url": "https://www.nazarje.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Odranci",
     "code": "odranci",
     "url": "https://www.odranci.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Oplotnica",
@@ -917,7 +991,9 @@
     "name": "Občina Ormož",
     "code": "ormoz",
     "url": "https://www.ormoz.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Osilnica",
@@ -929,7 +1005,9 @@
     "name": "Občina Pesnica",
     "code": "pesnica",
     "url": "https://www.pesnica.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Piran",
@@ -941,13 +1019,17 @@
     "name": "Občina Pivka",
     "code": "pivka",
     "url": "https://www.pivka.si/objave/8",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
     "name": "Občina Podčetrtek",
     "code": "podcetrtek",
     "url": "https://www.podcetrtek.eu/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Podlehnik",
@@ -959,13 +1041,17 @@
     "name": "Občina Podvelka",
     "code": "podvelka",
     "url": "https://www.podvelka.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Poljčane",
     "code": "poljcane",
     "url": "https://www.poljcane.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Polzela",
@@ -977,7 +1063,9 @@
     "name": "Občina Postojna",
     "code": "postojna",
     "url": "https://www.postojna.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Prebold",
@@ -989,7 +1077,9 @@
     "name": "Občina Preddvor",
     "code": "preddvor",
     "url": "https://www.preddvor.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Prevalje",
@@ -1007,6 +1097,8 @@
     "name": "Občina Rače - Fram",
     "code": "race-fram",
     "url": "https://www.race-fram.si/objave/8",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
@@ -1037,19 +1129,25 @@
     "name": "Občina Ravne na Koroškem",
     "code": "ravne-na-koroskem",
     "url": "https://www.ravne.si/objave/8",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
     "name": "Občina Razkrižje",
     "code": "razkrizje",
     "url": "https://www.razkrizje.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Rečica ob Savinji",
     "code": "recica-ob-savinji",
     "url": "https://www.obcina-recica.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Renče - Vogrsko",
@@ -1061,13 +1159,17 @@
     "name": "Občina Ribnica",
     "code": "ribnica",
     "url": "https://www.ribnica.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Ribnica na Pohorju",
     "code": "ribnica-na-pohorju",
     "url": "https://www.ribnicanapohorju.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Rogaška Slatina",
@@ -1091,7 +1193,9 @@
     "name": "Občina Ruše",
     "code": "ruse",
     "url": "https://www.ruse.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Selnica ob Dravi",
@@ -1115,13 +1219,17 @@
     "name": "Občina Sežana",
     "code": "sezana",
     "url": "https://www.sezana.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Slovenska Bistrica",
     "code": "slovenska-bistrica",
     "url": "https://www.slovenska-bistrica.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Slovenske Konjice",
@@ -1139,25 +1247,33 @@
     "name": "Občina Solčava",
     "code": "solcava",
     "url": "https://www.solcava.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Središče ob Dravi",
     "code": "sredisce-ob-dravi",
     "url": "https://www.sredisce-ob-dravi.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Starše",
     "code": "starse",
     "url": "https://www.starse.si/objave/8",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
     "name": "Občina Straža",
     "code": "straza",
     "url": "https://www.obcina-straza.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Sveta Ana",
@@ -1169,19 +1285,25 @@
     "name": "Občina Sveta Trojica v Slovenskih Goricah",
     "code": "sveta-trojica",
     "url": "https://www.svetatrojica.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Sveti Andraž v Slovenskih Goricah",
     "code": "sveti-andraz",
     "url": "https://www.sv-andraz.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Sveti Jurij ob Ščavnici",
     "code": "sveti-jurij-ob-scavnici",
     "url": "https://www.sveti-jurij.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Sveti Jurij v Slovenskih Goricah",
@@ -1199,7 +1321,9 @@
     "name": "Občina Šalovci",
     "code": "salovci",
     "url": "https://www.salovci.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Šempeter - Vrtojba",
@@ -1217,25 +1341,33 @@
     "name": "Občina Šentilj",
     "code": "sentilj",
     "url": "https://www.sentilj.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Šentjernej",
     "code": "sentjernej",
     "url": "https://www.sentjernej.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Šentjur",
     "code": "sentjur",
     "url": "https://www.sentjur.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Šentrupert",
     "code": "sentrupert",
     "url": "https://www.sentrupert.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Škocjan",
@@ -1247,19 +1379,25 @@
     "name": "Občina Škofja Loka",
     "code": "skofja-loka",
     "url": "https://www.skofjaloka.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Škofljica",
     "code": "skofljica",
     "url": "https://www.skofljica.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Šmarje pri Jelšah",
     "code": "smarje-pri-jelsah",
     "url": "https://www.smarje.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Šmarješke Toplice",
@@ -1271,7 +1409,9 @@
     "name": "Občina Šmartno ob Paki",
     "code": "smartno-ob-paki",
     "url": "https://www.smartnoobpaki.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Šmartno pri Litiji",
@@ -1289,6 +1429,8 @@
     "name": "Občina Štore",
     "code": "store",
     "url": "https://www.store.si/objave/8",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
   {
@@ -1301,19 +1443,25 @@
     "name": "Občina Tišina",
     "code": "tisina",
     "url": "https://www.tisina.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Tolmin",
     "code": "tolmin",
     "url": "https://www.tolmin.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Trbovlje",
     "code": "trbovlje",
     "url": "https://www.trbovlje.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Trebnje",
@@ -1325,7 +1473,9 @@
     "name": "Občina Trnovska vas",
     "code": "trnovska-vas",
     "url": "https://www.trnovska-vas.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Trzin",
@@ -1343,7 +1493,9 @@
     "name": "Občina Turnišče",
     "code": "turnisce",
     "url": "https://www.obcinaturnisce.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Velika Polana",
@@ -1427,13 +1579,17 @@
     "name": "Občina Zagorje ob Savi",
     "code": "zagorje-ob-savi",
     "url": "https://www.zagorje.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Zavrč",
     "code": "zavrc",
     "url": "https://www.zavrc.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Zreče",
@@ -1463,7 +1619,9 @@
     "name": "Občina Žiri",
     "code": "ziri",
     "url": "https://www.ziri.si/objave/58",
-    "enabled": true
+    "enabled": true,
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina"
   },
   {
     "name": "Občina Žirovnica",

@@ -1074,22 +1074,25 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
         (p) => p.type === "building" || p.type === "building_part"
       );
       if (!hasBuilding && buildings.length > 0) {
-        const buildingKey = buildings[0];
         // take ownership from auction or first property
         const ownershipShare =
           auction.ownershipShare ?? auction.properties[0].ownershipShare ?? null;
 
-        // check if seen
-        const key = `${buildingKey.cadastralMunicipality}-${buildingKey.number}`;
-        if (!seen.has(key)) {
-          const valuation = await fetchPropertyValuation(buildingKey, ownershipShare);
-          const prostorData = await processPropertyProstor(buildingKey, valuation);
+        // Process all buildings found on parcels
+        for (const buildingKey of buildings) {
+          // check if seen
+          const key = `${buildingKey.cadastralMunicipality}-${buildingKey.number}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            const valuation = await fetchPropertyValuation(buildingKey, ownershipShare);
+            const prostorData = await processPropertyProstor(buildingKey, valuation);
 
-          properties.push({
-            ...buildingKey,
-            valuation,
-            mapImageUrl: prostorData?.mapImageUrl,
-          });
+            properties.push({
+              ...buildingKey,
+              valuation,
+              mapImageUrl: prostorData?.mapImageUrl,
+            });
+          }
         }
       }
     }

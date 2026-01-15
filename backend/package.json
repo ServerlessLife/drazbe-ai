@@ -3,6 +3,7 @@
   "type": "module",
   "scripts": {
     "test:ai-extract": "tsx manual_tests/testAiExtract.ts",
+    "test:single-auction": "tsx manual_tests/testSingleAuction.ts",
     "test:google-maps": "tsx manual_tests/testGoogleMaps.ts",
     "test:parcel-valuation": "tsx manual_tests/testParcelValuation.ts",
     "test:building-valuation": "tsx manual_tests/testBuildingPartValuation.ts",
