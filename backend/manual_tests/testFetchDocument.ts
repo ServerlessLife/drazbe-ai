@@ -18,13 +18,21 @@ async function testFetchDocument() {
 
   if (result) {
     console.log("\n=== Result ===");
-    console.log(`Description: ${result.description}`);
-    console.log(`URL: ${result.url}`);
-    console.log(`Type: ${result.type}`);
-    console.log(`OCR Used: ${result.ocrUsed}`);
-    console.log(`Content Length: ${result.markdown?.length || 0} characters`);
+    console.log(`Description: ${result.document.description}`);
+    console.log(`URL: ${result.document.url}`);
+    console.log(`Type: ${result.document.type}`);
+    console.log(`OCR Used: ${result.document.ocrUsed}`);
+    console.log(`Content Length: ${result.document.markdown?.length || 0} characters`);
+    console.log(`Photos Extracted: ${result.photos.length}`);
     console.log("\n=== Content Preview (first 500 chars) ===");
-    console.log(result.markdown?.substring(0, 500) || "No content");
+    console.log(result.document.markdown?.substring(0, 500) || "No content");
+
+    if (result.photos.length > 0) {
+      console.log("\n=== Extracted Photos ===");
+      for (const photo of result.photos) {
+        console.log(`  - ${photo.s3Key} (${photo.width}x${photo.height})`);
+      }
+    }
   } else {
     console.log("Failed to fetch document");
   }

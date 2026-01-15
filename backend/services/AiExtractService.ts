@@ -19,11 +19,12 @@ import { VisitedUrlRepository } from "./VisitedUrlRepository.js";
 import { GursValuationService } from "./GursValuationService.js";
 import { ProstorService } from "./ProstorService.js";
 import { S3Service } from "./S3Service.js";
+import { PdfImageService } from "./PdfImageService.js";
 import { Source } from "../types/Source.js";
 import { AuctionBase, auctionsBaseSchema } from "../types/AuctionBase.js";
 import { Auction, AuctionProperty } from "../types/Auction.js";
 import { linksSchema, Link } from "../types/Link.js";
-import { DocumentResult } from "../types/DocumentResult.js";
+import { DocumentResult, ExtractedPhoto } from "../types/DocumentResult.js";
 import { AuctionQueueMessage } from "../types/QueueMessages.js";
 import { logger } from "../utils/logger.js";
 import { config } from "../utils/config.js";
@@ -463,6 +464,11 @@ async function fetchPageMarkdown(
   return convertHtmlToMarkdown(pageHtml, sourceUrl, contentSelector, dataSourceCode);
 }
 
+interface FetchDocumentResult {
+  document: DocumentResult;
+  photos: ExtractedPhoto[];
+}
+
 /**
  * Download a document (PDF/DOCX) and convert to markdown
  * Uses OCR for scanned PDFs if needed
@@ -476,7 +482,7 @@ async function fetchDocument(
   announcementUrl: string,
   dataSourceCode: string,
   cookies?: string
-): Promise<DocumentResult | null> {
+): Promise<FetchDocumentResult | null> {
   try {
     /*
     if (doc.description.toLowerCase().includes("cenitveno poročilo")) {
@@ -592,13 +598,40 @@ async function fetchDocument(
       dataSourceCode,
     });
 
+    // Extract photos from PDF documents
+    let photos: ExtractedPhoto[] = [];
+    if (docType === "pdf") {
+      try {
+        photos = await PdfImageService.extractPhotosFromPdf(buffer, uuid);
+        // Add source document info to each photo
+        photos = photos.map((p) => ({ ...p, sourceDocument: doc.description }));
+        if (photos.length > 0) {
+          logger.log("Extracted photos from PDF", {
+            document: doc.description,
+            photoCount: photos.length,
+            announcementUrl,
+            dataSourceCode,
+          });
+        }
+      } catch (photoErr) {
+        logger.warn("Failed to extract photos from PDF", photoErr, {
+          document: doc.description,
+          announcementUrl,
+          dataSourceCode,
+        });
+      }
+    }
+
     return {
-      description: doc.description,
-      url: doc.url,
-      localUrl,
-      type: docType,
-      ocrUsed,
-      markdown: content,
+      document: {
+        description: doc.description,
+        url: doc.url,
+        localUrl,
+        type: docType,
+        ocrUsed,
+        markdown: content,
+      },
+      photos,
     };
   } catch (docErr: any) {
     logger.warn("Document processing error", docErr, {
@@ -611,16 +644,22 @@ async function fetchDocument(
   }
 }
 
+interface FetchDocumentsResult {
+  documents: DocumentResult[];
+  photos: ExtractedPhoto[];
+}
+
 /**
  * Process multiple documents in parallel
  * Continues processing even if individual documents fail
+ * Returns documents and extracted photos separately
  */
 async function fetchDocuments(
   linksToDocuments: Array<{ description: string; url: string }>,
   announcementUrl: string,
   dataSourceCode: string,
   cookies?: string
-): Promise<DocumentResult[]> {
+): Promise<FetchDocumentsResult> {
   logger.log(`Processing ${linksToDocuments.length} documents in parallel`, {
     count: linksToDocuments.length,
     documents: linksToDocuments.map((d) => d.description),
@@ -634,8 +673,9 @@ async function fetchDocuments(
       if (result) {
         logger.log("Document processed", {
           document: doc.description,
-          contentLength: result.markdown?.length || 0,
-          ocrUsed: result.ocrUsed,
+          contentLength: result.document.markdown?.length || 0,
+          ocrUsed: result.document.ocrUsed,
+          photosExtracted: result.photos.length,
           announcementUrl,
           dataSourceCode,
         });
@@ -652,17 +692,21 @@ async function fetchDocuments(
   });
 
   const settledResults = await Promise.all(promises);
-  const results = settledResults.filter((r): r is DocumentResult => r !== null);
+  const validResults = settledResults.filter((r): r is FetchDocumentResult => r !== null);
+
+  const documents = validResults.map((r) => r.document);
+  const photos = validResults.flatMap((r) => r.photos);
 
   logger.log("All documents processed", {
     total: linksToDocuments.length,
-    successful: results.length,
-    failed: linksToDocuments.length - results.length,
+    successful: documents.length,
+    failed: linksToDocuments.length - documents.length,
+    totalPhotos: photos.length,
     announcementUrl,
     dataSourceCode,
   });
 
-  return results;
+  return { documents, photos };
 }
 
 /**
@@ -861,11 +905,13 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
       cookieHeader
     );
 
+    // Extract photos from documents are in documents.photos
+
     // Check if initial content is short
     const isShortContent = markdown.length < 3000;
 
     // Check if there are non-OCR documents with sufficient content
-    const hasOtherDocumentsWithContent = documents.some(
+    const hasOtherDocumentsWithContent = documents.documents.some(
       (doc) => !doc.ocrUsed && doc.markdown && doc.markdown.replace(/\s+/g, "").length > 100
     );
 
@@ -873,7 +919,7 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
     const usedDocumentUrls = new Set<string>();
 
     // Append documents to markdown
-    for (const doc of documents) {
+    for (const doc of documents.documents) {
       if (!doc.markdown) continue;
 
       // Skip OCR documents unless content is short AND there are no other documents with content
@@ -978,7 +1024,7 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
         properties: properties,
         documents:
           auction.documents?.map((doc) => {
-            const foundDoc = documents.find((d) => d.url === doc.sourceUrl);
+            const foundDoc = documents.documents.find((d) => d.url === doc.sourceUrl);
             return {
               description: doc.description,
               sourceUrl: doc.sourceUrl,
@@ -988,10 +1034,20 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
               usedForExtraction: usedDocumentUrls.has(doc.sourceUrl),
             };
           }) ?? [],
-        images: auction.images?.map((img) => ({
-          description: img.description,
-          sourceUrl: img.sourceUrl,
-        })),
+        images: [
+          // Original images from the announcement
+          ...(auction.images?.map((img) => ({
+            description: img.description,
+            sourceUrl: img.sourceUrl,
+          })) ?? []),
+          // Photos extracted from PDF documents
+          ...documents.photos.map((photo) => ({
+            description: photo.sourceDocument
+              ? `Foto iz ${photo.sourceDocument}`
+              : "Foto iz dokumenta",
+            localUrl: photo.s3Key,
+          })),
+        ],
         priceToValueRatio: {
           toEstimatedValue,
           toPropertyValuations,

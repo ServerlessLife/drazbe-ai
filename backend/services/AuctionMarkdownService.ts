@@ -213,7 +213,9 @@ function formatAuctionMarkdown(auction: Auction): string {
     lines.push("");
     for (const doc of auction.documents) {
       const desc = doc.description || "Dokument";
-      lines.push(`- [${desc}](${doc.sourceUrl})`);
+      lines.push(
+        `- [${desc}](${doc.localUrl ? `https://d2wwwmeai0nw0z.cloudfront.net/${doc.localUrl}` : doc.sourceUrl})`
+      );
     }
     lines.push("");
   }
@@ -224,7 +226,9 @@ function formatAuctionMarkdown(auction: Auction): string {
     lines.push("");
     for (const img of auction.images) {
       const desc = img.description || "Slika";
-      lines.push(`- [${desc}](${img.sourceUrl})`);
+      lines.push(
+        `- [${desc}](${img.localUrl ? `https://d2wwwmeai0nw0z.cloudfront.net/${img.localUrl}` : img.sourceUrl})`
+      );
     }
     lines.push("");
   }

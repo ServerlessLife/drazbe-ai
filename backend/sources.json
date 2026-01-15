@@ -163,6 +163,8 @@
     "name": "Javni stanovanjski sklad Mestne občine Koper",
     "code": "jssmok",
     "url": "https://www.jss-mok.si/",
+    "linksSelector": ".notice-wrapper",
+    "contentSelector": ".page-content",
     "enabled": true,
     "schedule": "workdays"
   },
@@ -1634,8 +1636,8 @@
   },
   {
     "name": "Občina Šmarješke Toplice",
-    "code": "https://www.smarjeske-toplice.si/objave/58",
-    "url": "",
+    "code": "smarjeske-toplice",
+    "url": "https://www.smarjeske-toplice.si/objave/58",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1748,8 +1750,8 @@
   },
   {
     "name": "Občina Velika Polana",
-    "code": "https://www.velika-polana.si/razpisi",
-    "url": "https://www.velika-polana.si/",
+    "code": "velika-polana",
+    "url": "https://www.velika-polana.si/razpisi",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1871,6 +1873,8 @@
     "name": "Občina Zreče",
     "code": "zrece",
     "url": "https://www.zrece.si/razpisi",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true,
     "schedule": "tuesday_friday"
   },

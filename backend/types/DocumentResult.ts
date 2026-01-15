@@ -1,3 +1,12 @@
+export type ExtractedPhoto = {
+  s3Key: string;
+  width: number;
+  height: number;
+  index: number;
+  /** Source document description */
+  sourceDocument?: string;
+};
+
 export type DocumentResult = {
   description: string;
   url: string;

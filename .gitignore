@@ -4,3 +4,4 @@ backend/slv.traineddata
 .env
 parcel-screenshot.png
 .envrc
+*.pdf

@@ -12,13 +12,14 @@ import { logger } from "../utils/logger.js";
 const HOME_ADDRESS = process.env.HOME_ADDRESS;
 
 // Configure the auction URL to test
-const AUCTION_URL = "https://www.piran.si/objava/1214134";
+const AUCTION_URL =
+  "https://sodnedrazbe.si/single/ed0936a5-f1d9-4a8d-8b9c-8e6d52ee6b57/87f65910-3790-4a0c-bcd7-f108a12d177e?subjectType=7d70c0dc-71f7-4b64-9854-444e84219a37";
 
 // Mock source for the auction
 const mockSource: Source = {
-  name: "Test Source",
-  code: "test",
-  url: new URL(AUCTION_URL).origin,
+  name: "Sodne Dražbe",
+  code: "sodnedrazbe",
+  url: "https://sodnedrazbe.si",
   enabled: true,
 };
 

@@ -16,6 +16,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "pdfjs-dist": "^5.4.530",
     "prettier": "^3.7.4"
   }
 }
