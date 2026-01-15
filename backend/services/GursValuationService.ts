@@ -8,6 +8,19 @@ import { logger } from "../utils/logger.js";
 
 const BASE_URL = "https://vrednotenje.gov.si/EV_Javni_Server/podatki";
 
+// Helper to find land use data in faktorji podatki
+function findLandUseValue(faktorji: any[]): string | undefined {
+  for (const f of faktorji) {
+    const podatki = f.podatki || [];
+    // Look for any field containing "raba" in the description (handles both "Namenska raba" and "Dejanska raba")
+    const found = podatki.find((p: any) => p.key?.opis?.toLowerCase().includes("namenska raba"));
+    if (found?.vrednost) {
+      return found.vrednost;
+    }
+  }
+  return undefined;
+}
+
 async function getParcelValuation(query: PropertyKey): Promise<GursParcelValuation | null> {
   logger.log("Fetching parcel valuation", {
     municipality: query.cadastralMunicipality,
@@ -49,6 +62,37 @@ async function getParcelValuation(query: PropertyKey): Promise<GursParcelValuati
     0
   );
 
+  // Extract intended use (namenska raba) with percentages from all valuation entries
+  // Uses delezPov (share percentage) field from each entry
+  const intendedUseEntries = (valueArr || [])
+    .map((v: any) => {
+      const faktorji = v?.izracun?.faktorji || [];
+      const namenskaRaba = findLandUseValue(faktorji);
+
+      const delezPov = v?.delezPov;
+      if (namenskaRaba && delezPov > 0) {
+        return { use: namenskaRaba, percentage: delezPov };
+      }
+      return null;
+    })
+    .filter(Boolean) as { use: string; percentage: number }[];
+
+  // Normalize percentages to 100% (only count entries with namenska raba)
+  const totalPercentage = intendedUseEntries.reduce((sum, e) => sum + e.percentage, 0);
+
+  // Sort by percentage descending and format with normalized percentages
+  intendedUseEntries.sort((a, b) => b.percentage - a.percentage);
+  const intendedUse =
+    intendedUseEntries.length > 0
+      ? intendedUseEntries
+          .map((e) => {
+            const normalized =
+              totalPercentage > 0 ? (e.percentage / totalPercentage) * 100 : e.percentage;
+            return `${e.use} ${normalized.toFixed(1).replace(".", ",")} %`;
+          })
+          .join(", ")
+      : undefined;
+
   const result: GursParcelValuation = {
     type: "parcel",
     cadastralMunicipality: validated.data.cadastralMunicipality,
@@ -56,9 +100,7 @@ async function getParcelValuation(query: PropertyKey): Promise<GursParcelValuati
     surfaceArea: basic?.povrsina || 0,
     value: totalValue,
     centroid: basic?.cenx && basic?.ceny ? { e: basic.ceny, n: basic.cenx } : undefined,
-    intendedUse: valueArr?.[0]?.izracun?.faktorji?.[0]?.podatki?.find(
-      (p: any) => p.key?.opis === "Namenska raba zemljišča"
-    )?.vrednost,
+    intendedUse,
   };
 
   logger.log("Parcel valuation retrieved", {
