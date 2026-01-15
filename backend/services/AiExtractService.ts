@@ -161,12 +161,20 @@ async function extractContent(
     if (selector) {
       const selectedContent = $(selector).html();
       if (!selectedContent) {
-        logger.warn(`Selector "${selector}" not found, using full HTML`, {
-          selector,
-          htmlLength: html.length,
-          dataSourceCode,
-          sourceUrl,
-        });
+        logger.logContent(
+          `Selector "${selector}" not found, using full HTML`,
+          {
+            selector,
+            dataSourceCode,
+            sourceUrl,
+          },
+          {
+            content: html,
+            prefix: dataSourceCode,
+            suffix: "links-source-fails",
+            extension: "html",
+          }
+        );
         content = $.html();
       } else {
         content = selectedContent;
@@ -1229,6 +1237,7 @@ async function processSource(dataSource: Source): Promise<Auction[]> {
     });
     await page.goto(dataSource.url);
     await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(2000);
 
     const pageHtml = await page.evaluate(() => document.body.innerHTML);
     allLinks = await extractLinks(

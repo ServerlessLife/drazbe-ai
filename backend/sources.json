@@ -293,7 +293,7 @@
     "name": "Občina Bistrica ob Sotli",
     "code": "bistrica-ob-sotli",
     "url": "https://www.bistricaobsotli.si/objave/58",
-    "linksSelector": ".posts_list",
+    "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
@@ -325,7 +325,7 @@
     "name": "Občina Bovec",
     "code": "bovec",
     "url": "https://obcina.bovec.si/objave/58",
-    "linksSelector": ".posts_list",
+    "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true
   },
