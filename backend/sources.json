@@ -1755,8 +1755,8 @@
   },
   {
     "name": "Občina Velike Lašče",
-    "code": "https://obcina.velike-lasce.si/?s=neposredne+pogodbe",
-    "url": "",
+    "code": "velike-lasce",
+    "url": "https://obcina.velike-lasce.si/?s=neposredne+pogodbe",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
