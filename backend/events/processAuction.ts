@@ -19,6 +19,7 @@ export async function handler(event: SQSEvent) {
       const { link, source } = message;
 
       logger.log("Processing auction from queue", {
+        body: record.body,
         title: link.title,
         url: link.url,
         sourceCode: source.code,

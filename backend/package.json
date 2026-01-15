@@ -8,7 +8,8 @@
     "test:parcel-valuation": "tsx manual_tests/testParcelValuation.ts",
     "test:building-valuation": "tsx manual_tests/testBuildingPartValuation.ts",
     "test:screenshot": "tsx manual_tests/testParcelScreenshot.ts",
-    "test:fetch-document": "tsx manual_tests/testFetchDocument.ts"
+    "test:fetch-document": "tsx manual_tests/testFetchDocument.ts",
+    "test:pdf-images": "tsx manual_tests/testPdfImageExtraction.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.709.0",

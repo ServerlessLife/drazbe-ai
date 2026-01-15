@@ -1,9 +1,8 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as os from "os";
-import { createCanvas, loadImage, type Canvas } from "canvas";
-import { execSync } from "child_process";
-import crypto from "crypto";
+import { createCanvas, type Canvas, loadImage } from "canvas";
+// @ts-ignore
+import * as pdfjsLib from "pdfjs-dist";
+// @ts-ignore
+import { OPS } from "pdfjs-dist/lib/core/primitives.js";
 import { S3Service } from "./S3Service.js";
 import { logger } from "../utils/logger.js";
 import { ExtractedPhoto } from "../types/DocumentResult.js";
@@ -18,26 +17,28 @@ const SPLIT_LINE_BRIGHTNESS = 240;
 const MIN_SEPARATOR_HEIGHT = 5;
 const MIN_PHOTO_HEIGHT = 50;
 
+// Thresholds for image size/shape filtering
+const MIN_IMAGE_WIDTH = 200;
+const MIN_IMAGE_HEIGHT = 200;
+const MAX_ASPECT_RATIO = 4; // Reject images with aspect ratio > 4:1 (strips)
+const MIN_IMAGE_PIXELS = 100000; // Minimum 100k pixels (e.g., ~316x316)
+
 interface PhotoRegion {
   y: number;
   height: number;
 }
 
 /**
- * Analyze image to determine if it's a color photo
+ * Analyze canvas to determine if it's a color photo
  */
-async function analyzeImageFile(imagePath: string): Promise<{
+function analyzeCanvas(canvas: Canvas): {
   isPhoto: boolean;
   hasColor: boolean;
   avgBrightness: number;
   variance: number;
   avgSaturation: number;
-}> {
-  const img = await loadImage(imagePath);
-  const canvas = createCanvas(img.width, img.height);
+} {
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0);
-
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const data = imageData.data;
 
@@ -270,30 +271,25 @@ function trimWhiteBorders(canvas: Canvas): Canvas {
 }
 
 /**
- * Split an image into multiple photos if separators are detected
+ * Split a canvas into multiple photos if separators are detected
  */
-async function splitIntoPhotos(imagePath: string): Promise<Canvas[]> {
-  const img = await loadImage(imagePath);
-  const canvas = createCanvas(img.width, img.height);
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0);
-
+function splitIntoPhotos(canvas: Canvas): Canvas[] {
   const hRegions = detectPhotoRegions(canvas);
   const allPhotos: Canvas[] = [];
-  const regionsToProcess = hRegions.length > 0 ? hRegions : [{ y: 0, height: img.height }];
+  const regionsToProcess = hRegions.length > 0 ? hRegions : [{ y: 0, height: canvas.height }];
 
   for (const hRegion of regionsToProcess) {
-    const stripCanvas = createCanvas(img.width, hRegion.height);
+    const stripCanvas = createCanvas(canvas.width, hRegion.height);
     const stripCtx = stripCanvas.getContext("2d");
     stripCtx.drawImage(
-      img,
+      canvas,
       0,
       hRegion.y,
-      img.width,
+      canvas.width,
       hRegion.height,
       0,
       0,
-      img.width,
+      canvas.width,
       hRegion.height
     );
 
@@ -331,8 +327,51 @@ async function splitIntoPhotos(imagePath: string): Promise<Canvas[]> {
 }
 
 /**
+ * Convert raw image data to a canvas
+ */
+function imageDataToCanvas(imgData: any): Canvas | null {
+  try {
+    const { width, height, data } = imgData;
+    if (!width || !height || !data) return null;
+
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+    const imageData = ctx.createImageData(width, height);
+
+    // Handle different data formats
+    if (data.length === width * height * 4) {
+      // RGBA format
+      imageData.data.set(data);
+    } else if (data.length === width * height * 3) {
+      // RGB format - convert to RGBA
+      for (let i = 0, j = 0; i < data.length; i += 3, j += 4) {
+        imageData.data[j] = data[i]; // R
+        imageData.data[j + 1] = data[i + 1]; // G
+        imageData.data[j + 2] = data[i + 2]; // B
+        imageData.data[j + 3] = 255; // A
+      }
+    } else if (data.length === width * height) {
+      // Grayscale - convert to RGBA
+      for (let i = 0, j = 0; i < data.length; i++, j += 4) {
+        imageData.data[j] = data[i]; // R
+        imageData.data[j + 1] = data[i]; // G
+        imageData.data[j + 2] = data[i]; // B
+        imageData.data[j + 3] = 255; // A
+      }
+    } else {
+      return null;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    return canvas;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Extract color photos from a PDF buffer
- * Uses pdfimages tool, filters for color photos, splits composite images, trims borders
+ * Extracts embedded images directly from the PDF (preserving native orientation)
  * @param pdfBuffer - PDF file as Buffer
  * @param documentId - Unique identifier for this document (used in S3 keys)
  * @returns Array of extracted photos with S3 keys
@@ -341,88 +380,131 @@ async function extractPhotosFromPdf(
   pdfBuffer: Buffer,
   documentId: string
 ): Promise<ExtractedPhoto[]> {
-  const tempDir = path.join(os.tmpdir(), `pdfimages-${crypto.randomUUID()}`);
+  logger.log("Extracting images from PDF with pdfjs", { documentId });
 
   try {
-    fs.mkdirSync(tempDir, { recursive: true });
+    // Load PDF with pdfjs-dist
+    const pdfDoc = await pdfjsLib.getDocument({
+      data: new Uint8Array(pdfBuffer),
+    }).promise;
 
-    // Write PDF to temp file
-    const pdfPath = path.join(tempDir, "document.pdf");
-    fs.writeFileSync(pdfPath, pdfBuffer);
-
-    // Use pdfimages tool to extract raw JPEG images
-    logger.log("Extracting images from PDF with pdfimages", { documentId });
-    try {
-      execSync(`pdfimages -j "${pdfPath}" "${tempDir}/img"`, { stdio: "pipe" });
-    } catch (error) {
-      logger.warn("pdfimages command failed", error, { documentId });
-      return [];
-    }
-
-    // Get all extracted JPEG files
-    const jpegFiles = fs
-      .readdirSync(tempDir)
-      .filter((f) => f.endsWith(".jpg"))
-      .sort();
-
-    logger.log("Found raw images in PDF", { documentId, count: jpegFiles.length });
+    logger.log("PDF loaded for image extraction", { documentId, numPages: pdfDoc.numPages });
 
     const extractedPhotos: ExtractedPhoto[] = [];
     let photoIndex = 0;
+    const processedImages = new Set<string>();
 
-    for (const file of jpegFiles) {
-      const srcPath = path.join(tempDir, file);
-
+    for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
       try {
-        const analysis = await analyzeImageFile(srcPath);
+        const page = await pdfDoc.getPage(pageNum);
+        const operatorList = await page.getOperatorList();
 
-        if (analysis.isPhoto && analysis.hasColor) {
-          const photos = await splitIntoPhotos(srcPath);
+        // Find all image paint operations
+        for (let i = 0; i < operatorList.fnArray.length; i++) {
+          const fn = operatorList.fnArray[i];
 
-          logger.log("Found color photo in PDF", {
-            documentId,
-            file,
-            variance: Math.round(analysis.variance),
-            brightness: Math.round(analysis.avgBrightness),
-            saturation: Math.round(analysis.avgSaturation),
-            splitCount: photos.length,
-          });
+          // Check for paintImageXObject operation (value 85 in pdfjs)
+          if (fn === 85) {
+            const imgName = operatorList.argsArray[i][0];
 
-          for (const photoCanvas of photos) {
-            const buffer = photoCanvas.toBuffer("image/jpeg", { quality: 0.9 });
-            const s3Key = `images/${documentId}-photo-${photoIndex}.jpg`;
+            // Skip if we've already processed this image
+            if (processedImages.has(imgName)) continue;
+            processedImages.add(imgName);
 
-            await S3Service.uploadFile(buffer, s3Key, "image/jpeg");
+            try {
+              // Get the image object
+              const imgObj = await new Promise<any>((resolve, reject) => {
+                page.objs.get(imgName, (obj: any) => {
+                  if (obj) resolve(obj);
+                  else reject(new Error("Image not found"));
+                });
+              });
 
-            extractedPhotos.push({
-              s3Key,
-              width: photoCanvas.width,
-              height: photoCanvas.height,
-              index: photoIndex,
-            });
+              if (!imgObj || !imgObj.width || !imgObj.height) continue;
 
-            photoIndex++;
+              // Skip images that don't meet size/shape requirements
+              const width = imgObj.width;
+              const height = imgObj.height;
+              const aspectRatio = Math.max(width, height) / Math.min(width, height);
+              const totalPixels = width * height;
+
+              // Skip small images
+              if (width < MIN_IMAGE_WIDTH || height < MIN_IMAGE_HEIGHT) continue;
+
+              // Skip strip-like images (very narrow or very wide)
+              if (aspectRatio > MAX_ASPECT_RATIO) continue;
+
+              // Skip images with too few pixels
+              if (totalPixels < MIN_IMAGE_PIXELS) continue;
+
+              // Convert image data to canvas
+              const canvas = imageDataToCanvas(imgObj);
+              if (!canvas) continue;
+
+              // Analyze if it's a color photo
+              const analysis = analyzeCanvas(canvas);
+
+              if (analysis.isPhoto && analysis.hasColor) {
+                // Split into individual photos if needed
+                const photos = splitIntoPhotos(canvas);
+
+                logger.log("Found color photo in PDF", {
+                  documentId,
+                  pageNum,
+                  imageName: imgName,
+                  variance: Math.round(analysis.variance),
+                  brightness: Math.round(analysis.avgBrightness),
+                  saturation: Math.round(analysis.avgSaturation),
+                  splitCount: photos.length,
+                });
+
+                for (const photoCanvas of photos) {
+                  // Apply size/shape filters to split photos too
+                  const pWidth = photoCanvas.width;
+                  const pHeight = photoCanvas.height;
+                  const pAspectRatio = Math.max(pWidth, pHeight) / Math.min(pWidth, pHeight);
+                  const pTotalPixels = pWidth * pHeight;
+
+                  // Skip split photos that are too small or strip-like
+                  if (pWidth < MIN_IMAGE_WIDTH || pHeight < MIN_IMAGE_HEIGHT) continue;
+                  if (pAspectRatio > MAX_ASPECT_RATIO) continue;
+                  if (pTotalPixels < MIN_IMAGE_PIXELS) continue;
+
+                  const buffer = photoCanvas.toBuffer("image/jpeg", { quality: 0.9 });
+                  const s3Key = `images/${documentId}-photo-${photoIndex}.jpg`;
+
+                  await S3Service.uploadFile(buffer, s3Key, "image/jpeg");
+
+                  extractedPhotos.push({
+                    s3Key,
+                    width: photoCanvas.width,
+                    height: photoCanvas.height,
+                    index: photoIndex,
+                  });
+
+                  photoIndex++;
+                }
+              }
+            } catch (imgErr) {
+              // Skip images that can't be processed
+            }
           }
         }
-      } catch (err) {
-        logger.warn("Error analyzing image from PDF", err, { documentId, file });
+      } catch (pageErr) {
+        logger.warn("Error processing PDF page for images", pageErr, { documentId, pageNum });
       }
     }
 
     logger.log("PDF photo extraction complete", {
       documentId,
-      totalRawImages: jpegFiles.length,
+      totalPages: pdfDoc.numPages,
       extractedPhotos: extractedPhotos.length,
     });
 
     return extractedPhotos;
-  } finally {
-    // Cleanup temp directory
-    try {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-    } catch {
-      // Ignore cleanup errors
-    }
+  } catch (err) {
+    logger.warn("Failed to extract photos from PDF", err, { documentId });
+    return [];
   }
 }
 
