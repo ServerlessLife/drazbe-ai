@@ -163,13 +163,15 @@ async function save(auction: Auction): Promise<void> {
 
   // Create IMAGE records
   if (auction.images) {
+    let imageIndex = 0;
     for (const image of auction.images) {
       if (!image.sourceUrl && !image.localUrl) {
         logger.warn("Skipping image without any URL", { auctionId, image });
         continue; // Skip images without any URL
       }
 
-      const imageId = hash(image.sourceUrl || image.localUrl);
+      // paded index for consistent image IDs
+      const imageId = imageIndex.toString().padStart(4, "0");
       const recordKey = `IMAGE#${imageId}` as const;
       if (!records.has(recordKey)) {
         const imageRecord: AuctionImageRecord = {
@@ -183,6 +185,7 @@ async function save(auction: Auction): Promise<void> {
         };
         records.set(recordKey, imageRecord);
       }
+      imageIndex++;
     }
   }
 
