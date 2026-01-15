@@ -412,6 +412,10 @@ Natančno izvleci vse parcele in dele stavb:
 - Delež je lahko podan kot ulomek (1/2) ali odstotek (50%)
 - Če ni naveden, predpostavi 100%
 - Kadar se prodaja hiša bodi pozoren na delež. Če se parcela ne prodaja v celoti se zagotovo tudi hiša ne.
+
+## NEUSTREZNE OBJAVE!!!
+- Če objava ni za prodajo/dražbo nepremičnine, označi isRealEstateSale=false
+- Če gre za najem, oddajo, menjavo, označi isRealEstateSale=false
 `,
       },
       {
@@ -903,6 +907,12 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
 
     for (const auction of auctions) {
       // Skip non-sale auctions (rentals, exchanges, etc.)
+      logger.log(`Value of isRealEstateSale: ${auction.isRealEstateSale}`, {
+        dataSourceCode: dataSource.code,
+        title: auction.title,
+        type: auction.type,
+      });
+
       if (!auction.isRealEstateSale) {
         logger.log("Skipping non-sale auction", {
           dataSourceCode: dataSource.code,

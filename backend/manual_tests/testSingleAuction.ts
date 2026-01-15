@@ -12,8 +12,7 @@ import { logger } from "../utils/logger.js";
 const HOME_ADDRESS = process.env.HOME_ADDRESS;
 
 // Configure the auction URL to test
-const AUCTION_URL =
-  "https://obcina.rogatec.si/javna-drazba-za-prodajo-nepremicnin-v-lasti-obcine-rogatec/";
+const AUCTION_URL = "https://www.piran.si/objava/1214134";
 
 // Mock source for the auction
 const mockSource: Source = {

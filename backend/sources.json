@@ -414,7 +414,7 @@
     "name": "Občina Brežice",
     "code": "brezice",
     "url": "https://www.brezice.si/sl/novice/",
-    "linksSelector": ".news-list-wrapper",
+    "linksSelector": ".news-list-wrapper #ContainerSection",
     "contentSelector": ".content-wrapper",
     "enabled": true,
     "schedule": "tuesday_friday"
@@ -1257,6 +1257,8 @@
     "name": "Občina Prevalje",
     "code": "prevalje",
     "url": "https://www.prevalje.si/Za-obcane/Razpisi",
+    "linksSelector": ".news-list-wrapper #ContainerSection",
+    "contentSelector": ".cs-pad",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1437,6 +1439,8 @@
     "name": "Občina Slovenske Konjice",
     "code": "slovenske-konjice",
     "url": "https://www.slovenskekonjice.si/razpisi",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1773,7 +1777,9 @@
   {
     "name": "Občina Vipava",
     "code": "vipava",
-    "url": "https://obcina.vipava.si/objave/58#",
+    "url": "https://obcina.vipava.si/objave/58",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1788,6 +1794,8 @@
     "name": "Občina Vodice",
     "code": "vodice",
     "url": "https://www.vodice.si/razpisi",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1795,6 +1803,8 @@
     "name": "Občina Vojnik - razpisi",
     "code": "vojnik-razpisi",
     "url": "https://www.mojaobcina.si/vojnik/razpisi/javne-objave-in-razpisi/",
+    "linksSelector": ".glavna-vsebina-clean",
+    "contentSelector": ".glavna-vsebina-clean",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1802,6 +1812,8 @@
     "name": "Občina Vojnik - poziv",
     "code": "vojnik-poziv",
     "url": "https://www.mojaobcina.si/vojnik/razpisi/poziv-za-javno-zbiranje-ponudb/",
+    "linksSelector": ".glavna-vsebina-clean",
+    "contentSelector": ".glavna-vsebina-clean",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1809,6 +1821,8 @@
     "name": "Občina Vransko - poziv",
     "code": "vransko-poziv",
     "url": "https://www.mojaobcina.si/vransko/razpisi/poziv-za-javno-zbiranje-ponudb/",
+    "linksSelector": ".glavna-vsebina-clean",
+    "contentSelector": ".glavna-vsebina-clean",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1816,6 +1830,8 @@
     "name": "Občina Vransko - razpisi",
     "code": "vransko-razpisi",
     "url": "https://www.mojaobcina.si/vransko/razpisi/javne-objave-in-razpisi/",
+    "linksSelector": ".glavna-vsebina-clean",
+    "contentSelector": ".glavna-vsebina-clean",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
