@@ -634,835 +634,847 @@
   {
     "name": "Občina Kidričevo",
     "code": "kidricevo",
-    "url": "https://www.kidricevo.si/",
-    "enabled": false
+    "url": "https://www.kidricevo.si/za-obcane/javna-narocila-in-razpisi/",
+    "enabled": true
   },
   {
     "name": "Občina Kobarid",
     "code": "kobarid",
-    "url": "https://www.kobarid.si/",
-    "enabled": false
+    "url": "https://www.kobarid.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Kobilje",
     "code": "kobilje",
-    "url": "https://www.kobilje.si/",
-    "enabled": false
+    "url": "https://www.kobilje.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Kočevje",
     "code": "kocevje",
-    "url": "https://www.kocevje.si/",
-    "enabled": false
+    "url": "https://www.kocevje.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Komen",
     "code": "komen",
-    "url": "https://www.komen.si/",
-    "enabled": false
+    "url": "https://www.komen.si/novice/objave/",
+    "enabled": true
   },
   {
     "name": "Občina Komenda",
     "code": "komenda",
-    "url": "https://www.komenda.si/",
-    "enabled": false
+    "url": "https://www.komenda.si/objave/8",
+    "enabled": true
   },
   {
     "name": "Občina Kostanjevica na Krki",
     "code": "kostanjevica-na-krki",
-    "url": "https://www.kostanjevica.si/",
-    "enabled": false
+    "url": "https://www.kostanjevica.si/objave/8",
+    "enabled": true
   },
   {
     "name": "Občina Kostel",
     "code": "kostel",
-    "url": "https://www.kostel.si/",
-    "enabled": false
+    "url": "https://www.kostel.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Kozje",
     "code": "kozje",
-    "url": "https://www.kozje.si/",
-    "enabled": false
+    "url": "https://www.kozje.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Kranjska Gora",
     "code": "kranjska-gora",
-    "url": "https://obcina.kranjska-gora.si/",
-    "enabled": false
+    "url": "https://obcina.kranjska-gora.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Križevci",
     "code": "krizevci",
-    "url": "https://obcina-krizevci.si/",
-    "enabled": false
+    "url": "https://www.obcina-krizevci.si/za-obcane/obcina-krizevci-prodaja-zemljisc/",
+    "enabled": true
   },
   {
     "name": "Občina Kungota",
     "code": "kungota",
-    "url": "https://www.kungota.si/",
-    "enabled": false
+    "url": "https://www.kungota.si/razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Kuzma",
     "code": "kuzma",
-    "url": "https://www.obcina-kuzma.si/",
-    "enabled": false
+    "url": "https://www.obcina-kuzma.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Laško",
     "code": "lasko",
-    "url": "https://www.lasko.si/",
-    "enabled": false
+    "url": "https://www.lasko.si/objave/58/",
+    "enabled": true
   },
   {
     "name": "Občina Lenart",
     "code": "lenart",
-    "url": "https://www.lenart.si/",
-    "enabled": false
+    "url": "https://www.lenart.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Lendava",
     "code": "lendava",
-    "url": "https://www.lendava.si/",
-    "enabled": false
+    "url": "https://www.lendava.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Litija",
     "code": "litija",
-    "url": "https://www.litija.si/",
-    "enabled": false
+    "url": "https://www.litija.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Ljubno",
     "code": "ljubno",
-    "url": "https://www.ljubno.si/",
-    "enabled": false
+    "url": "https://www.ljubno.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Ljutomer",
     "code": "ljutomer",
-    "url": "https://www.ljutomer.si/",
-    "enabled": false
+    "url": "https://www.ljutomer.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Log - Dragomer",
     "code": "log-dragomer",
-    "url": "https://www.log-dragomer.si/",
-    "enabled": false
+    "url": "https://www.log-dragomer.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Logatec",
     "code": "logatec",
-    "url": "https://www.logatec.si/",
-    "enabled": false
+    "url": "https://logatec.si/razpisi/",
+    "enabled": true
   },
   {
     "name": "Občina Loška Dolina",
     "code": "loska-dolina",
-    "url": "https://www.loska-dolina.si/",
-    "enabled": false
+    "url": "https://www.loska-dolina.si/razpisi-2/",
+    "enabled": true
   },
   {
     "name": "Občina Loški Potok",
     "code": "loski-potok",
-    "url": "https://www.loski-potok.si/",
-    "enabled": false
+    "url": "https://www.loski-potok.si/objave/8",
+    "enabled": true
   },
   {
     "name": "Občina Lovrenc na Pohorju",
     "code": "lovrenc-na-pohorju",
-    "url": "https://www.lovrenc.si/",
-    "enabled": false
+    "url": "https://www.lovrenc.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Luče",
     "code": "luce",
-    "url": "https://www.luce.si/",
-    "enabled": false
+    "url": "https://www.luce.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Lukovica",
     "code": "lukovica",
-    "url": "https://www.lukovica.si/",
-    "enabled": false
+    "url": "https://www.lukovica.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Majšperk",
     "code": "majsperk",
-    "url": "https://www.majsperk.si/",
-    "enabled": false
+    "url": "https://www.majsperk.si/objave/58/",
+    "enabled": true
   },
   {
     "name": "Občina Makole",
     "code": "makole",
-    "url": "https://www.obcina-makole.si/",
-    "enabled": false
+    "url": "https://www.obcina-makole.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Markovci",
     "code": "markovci",
-    "url": "https://www.markovci.si/",
-    "enabled": false
+    "url": "https://www.markovci.si/objave/8",
+    "enabled": true
   },
   {
     "name": "Občina Medvode",
     "code": "medvode",
-    "url": "https://www.medvode.si/",
-    "enabled": false
+    "url": "https://www.medvode.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Mengeš",
     "code": "menges",
-    "url": "https://www.menges.si/",
-    "enabled": false
+    "url": "https://www.menges.si/za-obcane/razpisi/",
+    "enabled": true
   },
   {
     "name": "Občina Metlika",
     "code": "metlika",
-    "url": "https://www.metlika.si/",
-    "enabled": false
+    "url": "https://www.metlika.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Mežica",
     "code": "mezica",
-    "url": "https://www.mezica.si/",
-    "enabled": false
+    "url": "https://www.mezica.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Miklavž na Dravskem Polju",
     "code": "miklavz-na-dravskem-polju",
-    "url": "https://www.miklavz.si/",
-    "enabled": false
+    "url": "https://www.miklavz.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Miren - Kostanjevica",
     "code": "miren-kostanjevica",
-    "url": "https://www.miren-kostanjevica.si/",
-    "enabled": false
+    "url": "https://www.miren-kostanjevica.si/za-obcane-in-obcanke/razpisi-povabila-in-javne-razgrnitve/",
+    "enabled": true
   },
   {
     "name": "Občina Mirna",
     "code": "mirna",
-    "url": "https://www.mirna.si/",
-    "enabled": false
+    "url": "https://www.mirna.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Mirna Peč",
     "code": "mirna-pec",
-    "url": "https://www.mirnapec.si/",
-    "enabled": false
+    "url": "https://www.mirnapec.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Mislinja",
     "code": "mislinja",
-    "url": "https://www.mislinja.si/",
-    "enabled": false
+    "url": "https://www.mislinja.si/razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Mokronog - Trebelno",
     "code": "mokronog-trebelno",
-    "url": "https://www.mokronog-trebelno.si/",
-    "enabled": false
+    "url": "https://www.mokronog-trebelno.si/Razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Moravče",
     "code": "moravce",
-    "url": "https://www.moravce.si/",
-    "enabled": false
+    "url": "https://www.moravce.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Moravske Toplice",
     "code": "moravske-toplice",
-    "url": "https://www.moravske-toplice.si/",
-    "enabled": false
+    "url": "https://www.moravske-toplice.si/za-obcane/razpisi-in-objave/",
+    "enabled": true
   },
   {
     "name": "Občina Mozirje",
     "code": "mozirje",
-    "url": "https://mozirje.si/",
-    "enabled": false
+    "url": "https://mozirje.si/category/javni-razpisi/",
+    "enabled": true
   },
   {
     "name": "Občina Muta",
     "code": "muta",
-    "url": "https://www.muta.si/",
-    "enabled": false
+    "url": "https://www.muta.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Naklo",
     "code": "naklo",
-    "url": "https://www.naklo.si/",
-    "enabled": false
+    "url": "https://www.naklo.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Nazarje",
     "code": "nazarje",
-    "url": "https://www.nazarje.si/",
-    "enabled": false
+    "url": "https://www.nazarje.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Odranci",
     "code": "odranci",
-    "url": "https://www.odranci.si/",
-    "enabled": false
+    "url": "https://www.odranci.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Oplotnica",
     "code": "oplotnica",
-    "url": "https://www.oplotnica.si/",
-    "enabled": false
+    "url": "https://oplotnica.si/za-obcane/razpisi/",
+    "enabled": true
   },
   {
     "name": "Občina Ormož",
     "code": "ormoz",
-    "url": "https://www.ormoz.si/",
-    "enabled": false
+    "url": "https://www.ormoz.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Osilnica",
     "code": "osilnica",
-    "url": "https://www.osilnica.si/",
-    "enabled": false
+    "url": "https://osilnica.si/2021/09/20/javni-razpisi-in-objave/",
+    "enabled": true
   },
   {
     "name": "Občina Pesnica",
     "code": "pesnica",
-    "url": "https://www.pesnica.si/",
-    "enabled": false
+    "url": "https://www.pesnica.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Piran",
     "code": "piran",
-    "url": "https://www.piran.si/",
-    "enabled": false
+    "url": "https://www.piran.si/objave/58/",
+    "enabled": true
   },
   {
     "name": "Občina Pivka",
     "code": "pivka",
-    "url": "https://www.pivka.si/",
-    "enabled": false
+    "url": "https://www.pivka.si/objave/8",
+    "enabled": true
   },
   {
     "name": "Občina Podčetrtek",
     "code": "podcetrtek",
-    "url": "https://www.podcetrtek.si/",
-    "enabled": false
+    "url": "https://www.podcetrtek.eu/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Podlehnik",
     "code": "podlehnik",
-    "url": "https://www.podlehnik.si/",
-    "enabled": false
+    "url": "https://www.podlehnik.si/objave/58/",
+    "enabled": true
   },
   {
     "name": "Občina Podvelka",
     "code": "podvelka",
-    "url": "https://www.podvelka.si/",
-    "enabled": false
+    "url": "https://www.podvelka.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Poljčane",
     "code": "poljcane",
-    "url": "https://www.poljcane.si/",
-    "enabled": false
+    "url": "https://www.poljcane.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Polzela",
     "code": "polzela",
-    "url": "https://www.polzela.si/",
-    "enabled": false
+    "url": "https://www.polzela.si/za-obcane/razpisi/",
+    "enabled": true
   },
   {
     "name": "Občina Postojna",
     "code": "postojna",
-    "url": "https://www.postojna.si/",
-    "enabled": false
+    "url": "https://www.postojna.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Prebold",
     "code": "prebold",
-    "url": "https://prebold.si/",
-    "enabled": false
+    "url": "https://www.mojaobcina.si/prebold/razpisi/javne-objave-in-razpisi//",
+    "enabled": true
   },
   {
     "name": "Občina Preddvor",
     "code": "preddvor",
-    "url": "https://www.preddvor.si/",
-    "enabled": false
+    "url": "https://www.preddvor.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Prevalje",
     "code": "prevalje",
-    "url": "https://www.prevalje.si/",
-    "enabled": false
+    "url": "https://www.prevalje.si/Za-obcane/Razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Puconci",
     "code": "puconci",
-    "url": "https://www.puconci.si/",
-    "enabled": false
+    "url": "https://www.puconci.si/objave/58/",
+    "enabled": true
   },
   {
     "name": "Občina Rače - Fram",
     "code": "race-fram",
-    "url": "https://www.race-fram.si/",
-    "enabled": false
+    "url": "https://www.race-fram.si/objave/8",
+    "enabled": true
   },
   {
     "name": "Občina Radeče",
     "code": "radece",
     "url": "https://radece.si/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Radenci",
     "code": "radenci",
-    "url": "https://www.radenci.si/",
-    "enabled": false
+    "url": "https://radenci.si/javne-drazbe/",
+    "enabled": true
   },
   {
     "name": "Občina Radlje ob Dravi",
     "code": "radlje-ob-dravi",
-    "url": "https://www.obcina-radlje.si/",
-    "enabled": false
+    "url": "https://www.radlje.si/javni-razpisi-in-druge-objave",
+    "enabled": true
   },
   {
     "name": "Občina Radovljica",
     "code": "radovljica",
-    "url": "https://www.radovljica.si/",
-    "enabled": false
+    "url": "https://www.radovljica.si/objave/58/",
+    "enabled": true
   },
   {
     "name": "Občina Ravne na Koroškem",
     "code": "ravne-na-koroskem",
-    "url": "https://www.ravne.si/",
-    "enabled": false
+    "url": "https://www.ravne.si/objave/8",
+    "enabled": true
   },
   {
     "name": "Občina Razkrižje",
     "code": "razkrizje",
-    "url": "https://www.razkrizje.si/",
-    "enabled": false
+    "url": "https://www.razkrizje.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Rečica ob Savinji",
     "code": "recica-ob-savinji",
-    "url": "https://www.obcina-recica.si/",
-    "enabled": false
+    "url": "https://www.obcina-recica.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Renče - Vogrsko",
     "code": "rence-vogrsko",
-    "url": "https://www.rence-vogrsko.si/",
-    "enabled": false
+    "url": "https://www.rence-vogrsko.si/razpisi/ravnanje-z-nepremicnim-premozenjem-obcine/",
+    "enabled": true
   },
   {
     "name": "Občina Ribnica",
     "code": "ribnica",
-    "url": "https://www.ribnica.si/",
-    "enabled": false
+    "url": "https://www.ribnica.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Ribnica na Pohorju",
     "code": "ribnica-na-pohorju",
-    "url": "https://www.ribnicanapohorju.si/",
-    "enabled": false
+    "url": "https://www.ribnicanapohorju.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Rogaška Slatina",
     "code": "rogaska-slatina",
-    "url": "https://www.rogaska-slatina.si/",
-    "enabled": false
+    "url": "https://www.rogaska-slatina.si/si/objave-in-napovedi/uradne-objave/",
+    "enabled": true
   },
   {
     "name": "Občina Rogašovci",
     "code": "rogasovci",
-    "url": "https://www.obcina-rogasovci.si/",
-    "enabled": false
+    "url": "https://www.obcina-rogasovci.si/razpisi/",
+    "enabled": true
   },
   {
     "name": "Občina Rogatec",
     "code": "rogatec",
-    "url": "https://obcina.rogatec.si/",
-    "enabled": false
+    "url": "https://obcina.rogatec.si/kategorija/javni-razpisi/javne-drazbe/",
+    "enabled": true
   },
   {
     "name": "Občina Ruše",
     "code": "ruse",
-    "url": "https://www.ruse.si/",
-    "enabled": false
+    "url": "https://www.ruse.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Selnica ob Dravi",
     "code": "selnica-ob-dravi",
-    "url": "https://www.selnica.si/obcina",
-    "enabled": false
+    "url": "https://www.selnica.si/razpisi/odprti-razpisi-2/",
+    "enabled": true
   },
   {
     "name": "Občina Semič",
     "code": "semic",
-    "url": "https://www.semic.si/",
-    "enabled": false
+    "url": "https://www.semic.si/objave/58/",
+    "enabled": true
   },
   {
     "name": "Občina Sevnica",
     "code": "sevnica",
-    "url": "https://www.obcina-sevnica.si/",
-    "enabled": false
+    "url": "https://www.obcina-sevnica.si/sl/uradne-objave/ravnanje-s-stvarnim-premozenjem/",
+    "enabled": true
   },
   {
     "name": "Občina Sežana",
     "code": "sezana",
-    "url": "https://www.sezana.si/",
-    "enabled": false
+    "url": "https://www.sezana.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Slovenska Bistrica",
     "code": "slovenska-bistrica",
-    "url": "https://www.slovenska-bistrica.si/",
-    "enabled": false
+    "url": "https://www.slovenska-bistrica.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Slovenske Konjice",
     "code": "slovenske-konjice",
-    "url": "https://www.slovenskekonjice.si/",
-    "enabled": false
+    "url": "https://www.slovenskekonjice.si/razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Sodražica",
     "code": "sodrazica",
-    "url": "https://www.sodrazica.si/",
-    "enabled": false
+    "url": "https://sodrazica.si/za-obcane/razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Solčava",
     "code": "solcava",
-    "url": "https://www.solcava.si/",
-    "enabled": false
+    "url": "https://www.solcava.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Središče ob Dravi",
     "code": "sredisce-ob-dravi",
-    "url": "https://www.sredisce-ob-dravi.si/",
-    "enabled": false
+    "url": "https://www.sredisce-ob-dravi.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Starše",
     "code": "starse",
-    "url": "https://www.starse.si/",
-    "enabled": false
+    "url": "https://www.starse.si/objave/8",
+    "enabled": true
   },
   {
     "name": "Občina Straža",
     "code": "straza",
-    "url": "https://www.obcina-straza.si/",
-    "enabled": false
+    "url": "https://www.obcina-straza.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Sveta Ana",
     "code": "sveta-ana",
-    "url": "https://www.sv-ana.si/",
-    "enabled": false
+    "url": "https://www.sv-ana.si/za-obcane/razpisi-obcine-sveta-ana/",
+    "enabled": true
   },
   {
     "name": "Občina Sveta Trojica v Slovenskih Goricah",
     "code": "sveta-trojica",
-    "url": "https://www.svetatrojica.si/",
-    "enabled": false
+    "url": "https://www.svetatrojica.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Sveti Andraž v Slovenskih Goricah",
     "code": "sveti-andraz",
-    "url": "https://www.sv-andraz.si/",
-    "enabled": false
+    "url": "https://www.sv-andraz.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Sveti Jurij ob Ščavnici",
     "code": "sveti-jurij-ob-scavnici",
-    "url": "https://www.sveti-jurij.si/",
-    "enabled": false
+    "url": "https://www.sveti-jurij.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Sveti Jurij v Slovenskih Goricah",
     "code": "sveti-jurij-v-slov-goricah",
-    "url": "https://www.obcinajurij.si/",
-    "enabled": false
+    "url": "https://www.obcinajurij.si/nepremicnine-sp-800/namere-o-sklenitvi-neposrednih-pogodb",
+    "enabled": true
   },
   {
     "name": "Občina Sveti Tomaž",
     "code": "sveti-tomaz",
-    "url": "https://sv-tomaz.si/",
-    "enabled": false
+    "url": "https://sv-tomaz.si/obvestila/",
+    "enabled": true
   },
   {
     "name": "Občina Šalovci",
     "code": "salovci",
-    "url": "https://www.salovci.si/obcina/index.php",
-    "enabled": false
+    "url": "https://www.salovci.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Šempeter - Vrtojba",
     "code": "sempeter-vrtojba",
-    "url": "https://www.sempeter-vrtojba.si/",
-    "enabled": false
+    "url": "https://www.mojaobcina.si/sempeter-vrtojba/razpisi/poziv-za-javno-zbiranje-ponudb/",
+    "enabled": true
   },
   {
     "name": "Občina Šenčur",
     "code": "sencur",
-    "url": "https://www.sencur.si/",
-    "enabled": false
+    "url": "https://www.sencur.si/razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Šentilj",
     "code": "sentilj",
-    "url": "https://www.sentilj.si/",
-    "enabled": false
+    "url": "https://www.sentilj.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Šentjernej",
     "code": "sentjernej",
-    "url": "https://www.sentjernej.si/",
-    "enabled": false
+    "url": "https://www.sentjernej.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Šentjur",
     "code": "sentjur",
-    "url": "https://www.sentjur.si/",
-    "enabled": false
+    "url": "https://www.sentjur.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Šentrupert",
     "code": "sentrupert",
-    "url": "https://www.sentrupert.si/",
-    "enabled": false
+    "url": "https://www.sentrupert.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Škocjan",
     "code": "skocjan",
-    "url": "https://www.obcina-skocjan.si/",
-    "enabled": false
+    "url": "https://www.obcina-skocjan.si/objave/58/",
+    "enabled": true
   },
   {
     "name": "Občina Škofja Loka",
     "code": "skofja-loka",
-    "url": "https://www.skofjaloka.si/",
-    "enabled": false
+    "url": "https://www.skofjaloka.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Škofljica",
     "code": "skofljica",
-    "url": "https://www.skofljica.si/",
-    "enabled": false
+    "url": "https://www.skofljica.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Šmarje pri Jelšah",
     "code": "smarje-pri-jelsah",
-    "url": "https://www.smarje.si/",
-    "enabled": false
+    "url": "https://www.smarje.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Šmarješke Toplice",
-    "code": "smarjeske-toplice",
-    "url": "https://www.smarjeske-toplice.si/",
-    "enabled": false
+    "code": "https://www.smarjeske-toplice.si/objave/58",
+    "url": "",
+    "enabled": true
   },
   {
     "name": "Občina Šmartno ob Paki",
     "code": "smartno-ob-paki",
-    "url": "https://www.smartnoobpaki.si/",
-    "enabled": false
+    "url": "https://www.smartnoobpaki.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Šmartno pri Litiji",
     "code": "smartno-pri-litiji",
-    "url": "https://obcina.smartno.si/",
-    "enabled": false
+    "url": "https://obcina.smartno.si/za-obcane/javni-razpisi-natecaji-narocila-drazbe-pozivi-in-namere/javne-drazbe/",
+    "enabled": true
   },
   {
     "name": "Občina Šoštanj",
     "code": "sostanj",
-    "url": "https://www.sostanj.si/",
-    "enabled": false
+    "url": "https://www.sostanj.si/objave/58/",
+    "enabled": true
   },
   {
     "name": "Občina Štore",
     "code": "store",
-    "url": "https://www.store.si/",
-    "enabled": false
+    "url": "https://www.store.si/objave/8",
+    "enabled": true
   },
   {
     "name": "Občina Tabor",
     "code": "tabor",
-    "url": "https://www.obcina-tabor.si/",
-    "enabled": false
+    "url": "https://www.obcina-tabor.si/javni-razpisi-narocila-in-objave",
+    "enabled": true
   },
   {
     "name": "Občina Tišina",
     "code": "tisina",
-    "url": "https://www.tisina.si/",
-    "enabled": false
+    "url": "https://www.tisina.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Tolmin",
     "code": "tolmin",
-    "url": "https://www.tolmin.si/",
-    "enabled": false
+    "url": "https://www.tolmin.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Trbovlje",
     "code": "trbovlje",
-    "url": "https://www.trbovlje.si/",
-    "enabled": false
+    "url": "https://www.trbovlje.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Trebnje",
     "code": "trebnje",
-    "url": "https://www.trebnje.si/",
-    "enabled": false
+    "url": "https://trebnje.si/Javne-objave-in-razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Trnovska vas",
     "code": "trnovska-vas",
-    "url": "https://www.trnovska-vas.si/",
-    "enabled": false
+    "url": "https://www.trnovska-vas.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Trzin",
     "code": "trzin",
-    "url": "https://www.trzin.si/",
-    "enabled": false
+    "url": "https://www.trzin.si/sl/publications/",
+    "enabled": true
   },
   {
     "name": "Občina Tržič",
     "code": "trzic",
-    "url": "https://www.trzic.si/",
-    "enabled": false
+    "url": "https://www.trzic.si/obcina/javni-razpisi-in-objave/",
+    "enabled": true
   },
   {
     "name": "Občina Turnišče",
     "code": "turnisce",
-    "url": "https://www.obcinaturnisce.si/",
-    "enabled": false
+    "url": "https://www.obcinaturnisce.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Velika Polana",
-    "code": "velika-polana",
+    "code": "https://www.velika-polana.si/razpisi",
     "url": "https://www.velika-polana.si/",
-    "enabled": false
+    "enabled": true
   },
   {
     "name": "Občina Velike Lašče",
-    "code": "velike-lasce",
-    "url": "https://www.velike-lasce.si/",
-    "enabled": false
+    "code": "https://obcina.velike-lasce.si/?s=neposredne+pogodbe",
+    "url": "",
+    "enabled": true
   },
   {
     "name": "Občina Veržej",
     "code": "verzej",
-    "url": "https://www.verzej.si/",
-    "enabled": false
+    "url": "https://verzej.si/?s=neposredne+pogodbe",
+    "enabled": true
   },
   {
     "name": "Občina Videm",
     "code": "videm",
-    "url": "https://www.videm.si/",
-    "enabled": false
+    "url": "https://videm.si/category/objave/",
+    "enabled": true
   },
   {
     "name": "Občina Vipava",
     "code": "vipava",
-    "url": "https://obcina.vipava.si/",
-    "enabled": false
+    "url": "https://obcina.vipava.si/objave/58#",
+    "enabled": true
   },
   {
     "name": "Občina Vitanje",
     "code": "vitanje",
-    "url": "https://www.vitanje.si/",
-    "enabled": false
+    "url": "https://www.vitanje.si/razpisi#",
+    "enabled": true
   },
   {
     "name": "Občina Vodice",
     "code": "vodice",
-    "url": "https://www.vodice.si/",
-    "enabled": false
+    "url": "https://www.vodice.si/razpisi",
+    "enabled": true
   },
   {
-    "name": "Občina Vojnik",
-    "code": "vojnik",
-    "url": "https://www.vojnik.si/",
-    "enabled": false
+    "name": "Občina Vojnik - razpisi",
+    "code": "vojnik-razpisi",
+    "url": "https://www.mojaobcina.si/vojnik/razpisi/javne-objave-in-razpisi/",
+    "enabled": true
   },
   {
-    "name": "Občina Vransko",
-    "code": "vransko",
-    "url": "https://www.vransko.si/",
-    "enabled": false
+    "name": "Občina Vojnik - poziv",
+    "code": "vojnik-poziv",
+    "url": "https://www.mojaobcina.si/vojnik/razpisi/poziv-za-javno-zbiranje-ponudb/",
+    "enabled": true
+  },
+  {
+    "name": "Občina Vransko - poziv",
+    "code": "vransko-poziv",
+    "url": "https://www.mojaobcina.si/vransko/razpisi/poziv-za-javno-zbiranje-ponudb/",
+    "enabled": true
+  },
+  {
+    "name": "Občina Vransko - razpisi",
+    "code": "vransko-razpisi",
+    "url": "https://www.mojaobcina.si/vransko/razpisi/javne-objave-in-razpisi/",
+    "enabled": true
   },
   {
     "name": "Občina Vrhnika",
     "code": "vrhnika",
-    "url": "https://www.vrhnika.si/",
-    "enabled": false
+    "url": "https://vrhnika.si/za-obcane/razpisi/javne-drazbe/",
+    "enabled": true
   },
   {
     "name": "Občina Vuzenica",
     "code": "vuzenica",
-    "url": "https://www.vuzenica.si/",
-    "enabled": false
+    "url": "https://www.vuzenica.si/Naro%C4%8Dila-in-objave/Javne-dra%C5%BEbe",
+    "enabled": true
   },
   {
     "name": "Občina Zagorje ob Savi",
     "code": "zagorje-ob-savi",
-    "url": "https://www.zagorje.si/",
-    "enabled": false
+    "url": "https://www.zagorje.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Zavrč",
     "code": "zavrc",
-    "url": "https://www.zavrc.si/",
-    "enabled": false
+    "url": "https://www.zavrc.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Zreče",
     "code": "zrece",
-    "url": "https://www.zrece.si/",
-    "enabled": false
+    "url": "https://www.zrece.si/razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Žalec",
     "code": "zalec",
-    "url": "https://www.zalec.si/",
-    "enabled": false
+    "url": "https://www.mojaobcina.si/zalec/razpisi/javne-drazbe/",
+    "enabled": true
   },
   {
     "name": "Občina Železniki",
     "code": "zelezniki",
-    "url": "https://www.zelezniki.si/",
-    "enabled": false
+    "url": "https://www.zelezniki.si/razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Žetale",
     "code": "zetale",
-    "url": "https://www.zetale.si/",
-    "enabled": false
+    "url": "https://www.zetale.si/razpisi",
+    "enabled": true
   },
   {
     "name": "Občina Žiri",
     "code": "ziri",
-    "url": "https://www.ziri.si/",
-    "enabled": false
+    "url": "https://www.ziri.si/objave/58",
+    "enabled": true
   },
   {
     "name": "Občina Žirovnica",
     "code": "zirovnica",
-    "url": "https://www.zirovnica.si/",
-    "enabled": false
+    "url": "https://zirovnica.si/category/novice-in-obvestila/",
+    "enabled": true
   },
   {
     "name": "Občina Žužemberk",
     "code": "zuzemberk",
-    "url": "https://www.zuzemberk.si/",
-    "enabled": false
+    "url": "https://www.zuzemberk.si/javne-objave/",
+    "enabled": true
   }
 ]

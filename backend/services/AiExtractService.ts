@@ -1060,8 +1060,8 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
       const valuation = await fetchPropertyValuation(property, ownershipShare);
       const prostorData = await processPropertyProstor(property, valuation);
 
-      if (prostorData?.building) {
-        buildings.push(prostorData.building);
+      if (prostorData?.buildings?.length > 0) {
+        buildings.push(...prostorData.buildings);
       }
 
       properties.push({ ...property, valuation, mapImageUrl: prostorData?.mapImageUrl });
@@ -1102,7 +1102,7 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
     valuation?: PropertyKey
   ): Promise<{
     mapImageUrl?: string;
-    building: PropertyKey;
+    buildings: PropertyKey[];
   } | null> {
     // Use valuation data if available (GURS may have corrected values)
     const key: PropertyKey = {
@@ -1138,7 +1138,7 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
         mapImageUrl,
       });
 
-      return { mapImageUrl, building: screenshot.building };
+      return { mapImageUrl, buildings: screenshot.buildings };
     } catch (error) {
       logger.warn("Failed to capture property screenshot", {
         dataSourceCode: dataSource.code,

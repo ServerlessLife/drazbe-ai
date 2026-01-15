@@ -8,7 +8,7 @@ let page: Page | null = null;
 
 async function processProperty(query: PropertyKey): Promise<{
   outputPath?: string;
-  building: PropertyKey;
+  buildings: PropertyKey[];
 } | null> {
   logger.log("Capturing parcel screenshot", {
     type: query.type,
@@ -95,7 +95,7 @@ async function processProperty(query: PropertyKey): Promise<{
     //await browser.close(); // do not close browser after each screenshot to improve performance
     logger.log("Screenshot captured successfully", { path: outputPath });
 
-    let building: PropertyKey | undefined;
+    const buildings: PropertyKey[] = [];
 
     if (query.type === "parcel") {
       const sectionTitle = page.locator(".plot-title-group", { hasText: "Stavbe na parceli" });
@@ -106,27 +106,29 @@ async function processProperty(query: PropertyKey): Promise<{
         "xpath=ancestor::ul[contains(@class,'list-group-item')][1]"
       );
 
-      // 3) Find the table for this section and extract the number from the "Številka stavbe" column.
-      // In your HTML, the number is in: <td> <button class="link-button"> 5523 </button> </td>
-      const numberText = await sectionContainer
-        .locator("table")
-        .locator("tbody tr")
-        .first()
-        .locator("td")
-        .nth(1) // 2nd column == "Številka stavbe"
-        .locator("button.link-button")
-        .innerText();
+      // 3) Find the table for this section and extract numbers from the "Številka stavbe" column.
+      const rows = sectionContainer.locator("table").locator("tbody tr");
+      const rowCount = await rows.count();
 
-      const n = Number(numberText.trim().replace(/\s+/g, ""));
-      console.log("Extracted building number:", numberText.trim());
-      building = {
-        type: "building",
-        cadastralMunicipality: query.cadastralMunicipality,
-        number: n.toString() + "/1",
-      };
+      for (let i = 0; i < rowCount; i++) {
+        const numberText = await rows
+          .nth(i)
+          .locator("td")
+          .nth(1) // 2nd column == "Številka stavbe"
+          .locator("button.link-button")
+          .innerText();
+
+        const n = Number(numberText.trim().replace(/\s+/g, ""));
+        logger.log("Extracted building number", { number: n });
+        buildings.push({
+          type: "building",
+          cadastralMunicipality: query.cadastralMunicipality,
+          number: n.toString() + "/1",
+        });
+      }
     }
 
-    return { outputPath, building };
+    return { outputPath, buildings };
   } catch (error) {
     if (browser) {
       await browser.close();
