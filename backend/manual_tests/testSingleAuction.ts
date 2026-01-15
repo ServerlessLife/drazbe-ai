@@ -13,7 +13,7 @@ const HOME_ADDRESS = process.env.HOME_ADDRESS;
 
 // Configure the auction URL to test
 const AUCTION_URL =
-  "https://www.nova-gorica.si/sl/javne-objave/javna-drazba-za-prodajo-nepremicnin-2026010813314139039/";
+  "https://obcina.rogatec.si/javna-drazba-za-prodajo-nepremicnin-v-lasti-obcine-rogatec/";
 
 // Mock source for the auction
 const mockSource: Source = {

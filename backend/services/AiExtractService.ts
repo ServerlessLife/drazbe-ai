@@ -404,7 +404,8 @@ Natančno izvleci vse parcele in dele stavb:
 - Pri hiši VEDNO poišči oznako stavbe/dela stavbe, ne le parcele
 - Ne omenjaj povezane zemljiške parcele, kadar to ni relevantno.
 - Ne podvajaj - vsako nepremičnino navedi enkrat
-- Podatke o nepremičninah pripiši ustrezni objavi, če jih je več
+- Podatke o nepremičninah pripiši ustrezni objavi, če jih je več.
+- Če je za vsak del navedena svoja cena, gre zagotovo za ločene dražbe.
 
 ## DELEŽ LASTNIŠTVA
 - Pozorno preberi delež lastništva za vsako nepremičnino
