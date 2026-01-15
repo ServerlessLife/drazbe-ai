@@ -12,6 +12,7 @@ export type DocumentResult = {
   url: string;
   localUrl: string;
   type: "pdf" | "docx" | "unknown";
-  ocrUsed: boolean;
-  markdown: string | null;
+  markdown: string | null | undefined;
+  /** Path to the document file in tmp folder (for OCR processing) */
+  tmpFilePath?: string;
 };

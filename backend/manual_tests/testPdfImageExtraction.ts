@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { PdfImageService } from "../services/PdfImageService.js";
+import { DocumentService } from "../services/DocumentService.js";
 
 //const PDF_PATH = path.join(process.cwd(), "..", "n-41-2023-izvedensko-poroilo-1.pdf");
 //const PDF_PATH = path.join(process.cwd(), "..", "4136-puc-postojna-odgovori-.pdf");
@@ -33,7 +33,7 @@ async function testPdfImageExtraction() {
   console.log("Extracting photos from PDF...\n");
 
   const startTime = Date.now();
-  const photos = await PdfImageService.extractPhotosFromPdf(pdfBuffer, documentId);
+  const photos = await DocumentService.extractPhotosFromPdf(pdfBuffer, documentId);
   const duration = Date.now() - startTime;
 
   console.log("\n=== Results ===");

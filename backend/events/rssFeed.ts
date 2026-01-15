@@ -48,7 +48,9 @@ export async function handler() {
       // Find image: first auction image (localUrl or sourceUrl), else first property mapImageUrl
       let imageUrl: string | undefined;
       if (auction.images && auction.images.length > 0) {
-        imageUrl = auction.images[0].localUrl || auction.images[0].sourceUrl;
+        imageUrl = auction.images[0].localUrl
+          ? `https://d2wwwmeai0nw0z.cloudfront.net/${auction.images[0].localUrl}`
+          : auction.images[0].sourceUrl;
       } else if (auction.properties && auction.properties.length > 0) {
         const propertyWithImage = auction.properties.find((p) => p.mapImageUrl);
         imageUrl = `https://d2wwwmeai0nw0z.cloudfront.net/${propertyWithImage?.mapImageUrl}`;

@@ -34,6 +34,7 @@ export async function handler(event: SQSEvent) {
       });
     } catch (error) {
       // Re-throw to allow SQS to retry if needed
+      logger.error("Error processing auction from queue", error);
       throw new Error(`Error processing auction from queue: ${error}`, { cause: error });
     }
   }

@@ -1,11 +1,18 @@
-import { createCanvas, type Canvas, loadImage } from "canvas";
+import { createCanvas, type Canvas } from "canvas";
+import crypto from "crypto";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 // @ts-ignore
 import * as pdfjsLib from "pdfjs-dist";
-// @ts-ignore
-import { OPS } from "pdfjs-dist/lib/core/primitives.js";
+import pdf2mdModule from "@opendocsg/pdf2md";
+import mammoth from "mammoth";
+import TurndownService from "turndown";
+import { createWorker } from "tesseract.js";
 import { S3Service } from "./S3Service.js";
 import { logger } from "../utils/logger.js";
-import { ExtractedPhoto } from "../types/DocumentResult.js";
+import { DocumentResult, ExtractedPhoto } from "../types/DocumentResult.js";
+import { FetchDocumentResult, FetchDocumentsResult } from "../types/FetchDocumentResult.js";
 
 // Thresholds for filtering out mostly-white/empty images
 const MIN_COLOR_VARIANCE = 1500;
@@ -373,14 +380,11 @@ function imageDataToCanvas(imgData: any): Canvas | null {
  * Extract color photos from a PDF buffer
  * Extracts embedded images directly from the PDF (preserving native orientation)
  * @param pdfBuffer - PDF file as Buffer
- * @param documentId - Unique identifier for this document (used in S3 keys)
+ * @param docUrl - Unique identifier for this document (used in S3 keys)
  * @returns Array of extracted photos with S3 keys
  */
-async function extractPhotosFromPdf(
-  pdfBuffer: Buffer,
-  documentId: string
-): Promise<ExtractedPhoto[]> {
-  logger.log("Extracting images from PDF with pdfjs", { documentId });
+async function extractPhotosFromPdf(pdfBuffer: Buffer, docUrl: string): Promise<ExtractedPhoto[]> {
+  logger.log("Extracting images from PDF with pdfjs", { docUrl });
 
   try {
     // Load PDF with pdfjs-dist
@@ -388,7 +392,10 @@ async function extractPhotosFromPdf(
       data: new Uint8Array(pdfBuffer),
     }).promise;
 
-    logger.log("PDF loaded for image extraction", { documentId, numPages: pdfDoc.numPages });
+    logger.log("PDF loaded for image extraction", {
+      docUrl,
+      numPages: pdfDoc.numPages,
+    });
 
     const extractedPhotos: ExtractedPhoto[] = [];
     let photoIndex = 0;
@@ -449,7 +456,7 @@ async function extractPhotosFromPdf(
                 const photos = splitIntoPhotos(canvas);
 
                 logger.log("Found color photo in PDF", {
-                  documentId,
+                  docUrl,
                   pageNum,
                   imageName: imgName,
                   variance: Math.round(analysis.variance),
@@ -471,7 +478,7 @@ async function extractPhotosFromPdf(
                   if (pTotalPixels < MIN_IMAGE_PIXELS) continue;
 
                   const buffer = photoCanvas.toBuffer("image/jpeg", { quality: 0.9 });
-                  const s3Key = `images/${documentId}-photo-${photoIndex}.jpg`;
+                  const s3Key = `images/doc-photo-${photoIndex}.jpg`;
 
                   await S3Service.uploadFile(buffer, s3Key, "image/jpeg");
 
@@ -491,23 +498,320 @@ async function extractPhotosFromPdf(
           }
         }
       } catch (pageErr) {
-        logger.warn("Error processing PDF page for images", pageErr, { documentId, pageNum });
+        logger.warn("Error processing PDF page for images", pageErr, {
+          documentId: docUrl,
+          pageNum,
+        });
       }
     }
 
     logger.log("PDF photo extraction complete", {
-      documentId,
+      documentId: docUrl,
       totalPages: pdfDoc.numPages,
       extractedPhotos: extractedPhotos.length,
     });
 
     return extractedPhotos;
   } catch (err) {
-    logger.warn("Failed to extract photos from PDF", err, { documentId });
+    logger.warn("Failed to extract photos from PDF", err, { documentId: docUrl });
     return [];
   }
 }
 
-export const PdfImageService = {
+/**
+ * Convert PDF to markdown
+ * First attempts text extraction, falls back to OCR (Tesseract) if PDF is scanned
+ */
+async function pdfToMarkdown(buffer: Buffer): Promise<string | undefined> {
+  // First try normal text extraction
+  const pdfMarkdown = await pdf2mdModule(buffer);
+
+  // Check if text was extracted (more than just whitespace)
+  const textContent = pdfMarkdown.replace(/\s+/g, "").trim();
+  if (textContent.length > 50) {
+    return pdfMarkdown;
+  }
+}
+
+async function ocrPdfToMarkdown(buffer: Buffer): Promise<{ content: string }> {
+  // No text found, perform OCR
+  logger.log("PDF without text, performing OCR...");
+
+  try {
+    const ocrResults: string[] = [];
+
+    // Custom canvas factory for pdfjs-dist in Node.js
+    const canvasFactory = {
+      create: (width: number, height: number) => {
+        const canvas = createCanvas(width, height);
+        return { canvas, context: canvas.getContext("2d") };
+      },
+      reset: (canvasAndContext: any, width: number, height: number) => {
+        canvasAndContext.canvas.width = width;
+        canvasAndContext.canvas.height = height;
+      },
+      destroy: (canvasAndContext: any) => {
+        canvasAndContext.canvas = null;
+        canvasAndContext.context = null;
+      },
+    };
+
+    // Load PDF with pdfjs-dist - convert Buffer to Uint8Array
+    const pdfDoc = await pdfjsLib.getDocument({
+      data: new Uint8Array(buffer),
+      canvasFactory,
+    }).promise;
+    const worker = await createWorker("slv");
+
+    for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+      logger.log(`OCR processing page ${pageNum}/${pdfDoc.numPages}`, {
+        pageNum,
+        totalPages: pdfDoc.numPages,
+      });
+
+      const page = await pdfDoc.getPage(pageNum);
+      const scale = 2;
+      const viewport = page.getViewport({ scale });
+
+      // Create canvas and render page
+      const canvas = createCanvas(viewport.width, viewport.height);
+      const context = canvas.getContext("2d");
+
+      await page.render({
+        // @ts-ignore - canvas context types differ slightly
+        canvasContext: context,
+        viewport,
+        canvasFactory,
+      }).promise;
+
+      // Convert canvas to PNG buffer for OCR
+      const imageBuffer = canvas.toBuffer("image/png");
+
+      const { data } = await worker.recognize(imageBuffer);
+      if (data.text.trim()) {
+        ocrResults.push(data.text);
+      }
+    }
+
+    await worker.terminate();
+
+    if (ocrResults.length > 0) {
+      logger.log("OCR successful", { pagesRecognized: ocrResults.length });
+      return { content: ocrResults.join("\n\n") };
+    }
+
+    logger.warn("OCR found no text", { totalPages: pdfDoc.numPages });
+  } catch (ocrErr) {
+    logger.warn("OCR error", ocrErr);
+  }
+}
+
+/**
+ * Convert DOCX document to markdown
+ * First converts to HTML using mammoth, then to markdown with Turndown
+ */
+async function docxToMarkdown(buffer: Buffer): Promise<string> {
+  const result = await mammoth.convertToHtml(
+    { buffer },
+    {
+      convertImage: mammoth.images.imgElement(() => Promise.resolve({ src: "" })),
+    }
+  );
+  const turndownService = new TurndownService({
+    headingStyle: "atx",
+    bulletListMarker: "-",
+  });
+  return turndownService.turndown(result.value);
+}
+
+/**
+ * Download a document (PDF/DOCX) and convert to markdown
+ * Uses OCR for scanned PDFs if needed
+ */
+async function fetchDocument(
+  doc: {
+    description: string;
+    url: string;
+  },
+  announcementUrl: string,
+  dataSourceCode: string,
+  cookies?: string
+): Promise<FetchDocumentResult | null> {
+  try {
+    logger.log("Downloading document", {
+      document: doc.description,
+      documentUrl: doc.url,
+      announcementUrl,
+      dataSourceCode,
+    });
+
+    const headers: HeadersInit = {};
+    if (cookies) {
+      headers["Cookie"] = cookies;
+    }
+
+    const docResponse = await fetch(doc.url, { headers });
+
+    if (!docResponse.ok) {
+      logger.warn("Failed to download document", new Error(`HTTP ${docResponse.status}`), {
+        document: doc.description,
+        documentUrl: doc.url,
+        httpStatus: docResponse.status,
+        announcementUrl,
+        dataSourceCode,
+      });
+      return null;
+    }
+
+    const contentType = docResponse.headers.get("content-type") || "";
+    const urlLower = doc.url.toLowerCase();
+    const buffer = Buffer.from(await docResponse.arrayBuffer());
+
+    logger.log("Document downloaded", {
+      document: doc.description,
+      sizeKB: (buffer.length / 1024).toFixed(2),
+      contentType,
+      announcementUrl,
+      dataSourceCode,
+    });
+
+    let docType: "pdf" | "docx" | "unknown" = "unknown";
+    let content: string | null = null;
+    let ocrUsed = false;
+
+    if (
+      contentType.includes("wordprocessingml") ||
+      contentType.includes("msword") ||
+      urlLower.endsWith(".docx") ||
+      urlLower.endsWith(".doc")
+    ) {
+      docType = "docx";
+      content = await docxToMarkdown(buffer);
+    } else {
+      docType = "pdf";
+      content = await pdfToMarkdown(buffer);
+    }
+
+    if (content) {
+      logger.log(`Document converted to markdown${ocrUsed ? " (OCR)" : ""}`, {
+        document: doc.description,
+        announcementUrl,
+        dataSourceCode,
+      });
+    } else {
+      logger.info(`Document has no content`, {
+        document: doc.description,
+        documentUrl: doc.url,
+        docType,
+        bufferSize: buffer.length,
+        announcementUrl,
+        dataSourceCode,
+      });
+    }
+
+    // Generate S3 key using UUID and upload to S3
+    const uuid = crypto.randomUUID();
+    const extension = docType === "docx" ? "docx" : "pdf";
+    const s3Key = `documents/${uuid}.${extension}`;
+    const contentTypeForS3 =
+      docType === "docx"
+        ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        : "application/pdf";
+
+    const localUrl = await S3Service.uploadFile(buffer, s3Key, contentTypeForS3);
+
+    // Save document to tmp folder for potential OCR processing later
+    const tmpFilePath = path.join(os.tmpdir(), `${uuid}.${extension}`);
+    fs.writeFileSync(tmpFilePath, buffer);
+
+    logger.log("Document uploaded to S3 and saved to tmp", {
+      document: doc.description,
+      localUrl,
+      announcementUrl,
+      dataSourceCode,
+    });
+
+    return {
+      document: {
+        description: doc.description,
+        url: doc.url,
+        localUrl,
+        type: docType,
+        markdown: content,
+        tmpFilePath,
+      },
+    };
+  } catch (docErr: any) {
+    logger.warn("Document processing error", docErr, {
+      document: doc.description,
+      documentUrl: doc.url,
+      announcementUrl,
+      dataSourceCode,
+    });
+    return null;
+  }
+}
+
+/**
+ * Process multiple documents in parallel
+ * Continues processing even if individual documents fail
+ * Returns documents and extracted photos separately
+ */
+async function fetchDocuments(
+  linksToDocuments: Array<{ description: string; url: string }>,
+  announcementUrl: string,
+  dataSourceCode: string,
+  cookies: string
+): Promise<FetchDocumentsResult> {
+  logger.log(`Processing ${linksToDocuments.length} documents in parallel`, {
+    count: linksToDocuments.length,
+    documents: linksToDocuments.map((d) => d.description),
+    announcementUrl,
+    dataSourceCode,
+  });
+
+  const promises = linksToDocuments.map(async (doc) => {
+    try {
+      const result = await fetchDocument(doc, announcementUrl, dataSourceCode, cookies);
+      if (result) {
+        logger.log("Document processed", {
+          document: doc.description,
+          contentLength: result.document.markdown?.length || 0,
+          announcementUrl,
+          dataSourceCode,
+        });
+      }
+
+      return result;
+    } catch (error) {
+      logger.warn("Failed to process document", error, {
+        document: doc.description,
+        announcementUrl,
+        dataSourceCode,
+      });
+      return null;
+    }
+  });
+
+  const settledResults = await Promise.all(promises);
+  const validResults = settledResults.filter((r): r is FetchDocumentResult => r !== null);
+
+  const documents = validResults.map((r) => r.document);
+
+  logger.log("All documents processed", {
+    total: linksToDocuments.length,
+    successful: documents.length,
+    failed: linksToDocuments.length - documents.length,
+    announcementUrl,
+    dataSourceCode,
+  });
+
+  return { documents };
+}
+
+export const DocumentService = {
   extractPhotosFromPdf,
+  fetchDocument,
+  fetchDocuments,
+  ocrPdfToMarkdown,
 };
