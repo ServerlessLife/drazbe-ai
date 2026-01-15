@@ -31,9 +31,9 @@ export class CdkStack extends cdk.Stack {
     alarmTopic.addSubscription(new snsSubscriptions.EmailSubscription("marko@strukelj.net"));
 
     // Lambda Error SNS Sender - sends detailed Lambda error logs via SNS
-    new LambdaErrorSnsSender(this, "LambdaErrorSnsSender", {
-      snsTopics: [alarmTopic],
-    });
+    // new LambdaErrorSnsSender(this, "LambdaErrorSnsSender", {
+    //   snsTopics: [alarmTopic],
+    // });
 
     // SSM Parameters for configuration
     // Note: For sensitive values, update these via AWS Console after deployment
@@ -145,10 +145,10 @@ export class CdkStack extends cdk.Stack {
     sourceTriggerTable.grantReadWriteData(schedulerLambda);
 
     // Lambda alarms for scheduler
-    new LambdaAlarms(this, "SchedulerAlarms", {
-      function: schedulerLambda as any,
-      snsTopicAlarm: alarmTopic,
-    });
+    // new LambdaAlarms(this, "SchedulerAlarms", {
+    //   function: schedulerLambda as any,
+    //   snsTopicAlarm: alarmTopic,
+    // });
 
     // EventBridge Scheduler to trigger processing
     new scheduler.Schedule(this, "SchedulerSchedule", {
@@ -207,10 +207,10 @@ export class CdkStack extends cdk.Stack {
     openaiApiKeyParam.grantRead(processorLambda);
 
     // Lambda alarms for processor
-    new LambdaAlarms(this, "ProcessorAlarms", {
-      function: processorLambda as any,
-      snsTopicAlarm: alarmTopic,
-    });
+    // new LambdaAlarms(this, "ProcessorAlarms", {
+    //   function: processorLambda as any,
+    //   snsTopicAlarm: alarmTopic,
+    // });
 
     // Add SQS trigger to processor Lambda
     processorLambda.addEventSource(
@@ -277,10 +277,10 @@ export class CdkStack extends cdk.Stack {
     openaiApiKeyParam.grantRead(auctionProcessorLambda);
 
     // Lambda alarms for auction processor
-    new LambdaAlarms(this, "AuctionProcessorAlarms", {
-      function: auctionProcessorLambda as any,
-      snsTopicAlarm: alarmTopic,
-    });
+    // new LambdaAlarms(this, "AuctionProcessorAlarms", {
+    //   function: auctionProcessorLambda as any,
+    //   snsTopicAlarm: alarmTopic,
+    // });
 
     // Add SQS trigger to auction processor Lambda with concurrency limit of 2
     auctionProcessorLambda.addEventSource(

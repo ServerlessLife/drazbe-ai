@@ -856,6 +856,8 @@
     "name": "Občina Laško",
     "code": "lasko",
     "url": "https://www.lasko.si/objave/58/",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1190,6 +1192,8 @@
     "name": "Občina Podlehnik",
     "code": "podlehnik",
     "url": "https://www.podlehnik.si/objave/58/",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
