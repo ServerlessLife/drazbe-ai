@@ -49,7 +49,7 @@ async function processProperty(query: PropertyKey): Promise<{
     // 4. Click first .btn-link under the appropriate section (wait for search results)
     // For parcels: click under "Parcele" section
     // For building/building_part: click under "Stavbe" section
-    await page.waitForTimeout(2000);
+    // await page.waitForTimeout(2000);
 
     if (query.type === "parcel") {
       // Find the "Parcele" section and click first button within it

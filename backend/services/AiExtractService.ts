@@ -1044,6 +1044,10 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
       }
       seen.add(key);
 
+      // if more then 10 properties, skip processing to avoid timeout
+      if (auction.properties.length > 10) {
+        continue;
+      }
       const ownershipShare = property.ownershipShare ?? auction.ownershipShare;
       const valuation = await fetchPropertyValuation(property, ownershipShare);
       const prostorData = await processPropertyProstor(property, valuation);
@@ -1056,7 +1060,7 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
     }
 
     // če gre za hišo na poralu sodnedrazbe.si pogoste ne vključujejo oznako stavbe, zato poskusimo zajeti še stavbo iz prostor.si
-    if (auction.isHouse) {
+    if (auction.isHouse && auction.properties.length <= 10) {
       // find buiding or building_part properties
       const hasBuilding = properties.some(
         (p) => p.type === "building" || p.type === "building_part"

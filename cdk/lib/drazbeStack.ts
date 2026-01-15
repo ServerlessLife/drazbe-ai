@@ -221,7 +221,7 @@ export class CdkStack extends cdk.Stack {
 
     // SQS queue for individual auction processing
     const auctionQueueWithDlq = new QueueWithDlq(this, "AuctionQueue", {
-      visibilityTimeoutSeconds: 10 * 60, // 10 minutes per auction
+      visibilityTimeoutSeconds: 15 * 60, // 15 minutes per auction
       maxReceiveCount: 1,
       createAlarms: true,
       snsTopicAlarm: alarmTopic,
@@ -236,7 +236,7 @@ export class CdkStack extends cdk.Stack {
     // Auction processor Lambda - processes individual auctions from queue
     const auctionProcessorLambda = new NodejsFunction(this, "AuctionProcessor", {
       entry: "../backend/events/processAuction.ts",
-      timeout: cdk.Duration.minutes(10),
+      timeout: cdk.Duration.minutes(15),
       memorySize: 2048,
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
@@ -402,7 +402,7 @@ export class CdkStack extends cdk.Stack {
     const rssFeedLambda = new NodejsFunction(this, "RssFeedLambda", {
       entry: "../backend/events/rssFeed.ts",
       timeout: cdk.Duration.seconds(30),
-      memorySize: 512,
+      memorySize: 2048,
       environment: {
         AUCTION_TABLE_NAME: auctionTable.tableName,
         USER_SUITABILITY_TABLE_NAME: userSuitabilityTable.tableName,

@@ -77,7 +77,7 @@ export const auctionBaseSchema = z.object({
   aiWarning: z
     .array(z.string())
     .describe(
-      "Seznam opozoril o nenavadnih stvareh (npr. služnosti, hipoteke, spori, omejitve ...). Prazen seznam če ni ničesar nenavadnega."
+      "Seznam opozoril o nenavadnih stvareh (npr. služnosti, hipoteke, spori, omejitve ...). Služnost v korist Elektro, Telekoma in podobno ni pomembno. Prazen seznam če ni ničesar nenavadnega."
     ),
   isHouse: z.boolean().describe("Ali dražba vključuje hišo (true/false). ").nullable(),
 });
