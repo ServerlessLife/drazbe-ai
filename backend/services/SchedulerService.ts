@@ -4,6 +4,7 @@ import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import fs from "fs";
 import path from "path";
 import { Source } from "../types/Source.js";
+import { SourceQueueMessage } from "../types/SourceQueueMessage.js";
 import { logger } from "../utils/logger.js";
 
 const dynamoClient = new DynamoDBClient({});
@@ -174,14 +175,9 @@ async function processScheduledSources(): Promise<{ processed: number; total: nu
   });
 
   for (const { source, lastTrigger } of sourcesToProcess) {
-    // Send to queue
-    const message = {
-      name: source.name,
+    // Send only the code to the queue - processor reads full source from sources.json
+    const message: SourceQueueMessage = {
       code: source.code,
-      url: source.url,
-      skipSearchingForLinks: source.skipSearchingForLinks,
-      linksSelector: source.linksSelector,
-      contentSelector: source.contentSelector,
     };
 
     await sqsClient.send(

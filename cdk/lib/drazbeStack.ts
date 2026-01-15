@@ -191,6 +191,13 @@ export class CdkStack extends cdk.Stack {
           "chromium-bidi",
           "tesseract.js",
         ],
+        commandHooks: {
+          beforeBundling: () => [],
+          beforeInstall: () => [],
+          afterBundling: (inputDir, outputDir) => [
+            `cp ${inputDir}/backend/sources.json ${outputDir}/`,
+          ],
+        },
       },
     });
 

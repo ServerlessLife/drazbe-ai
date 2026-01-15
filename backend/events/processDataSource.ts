@@ -1,12 +1,20 @@
 import { SQSEvent } from "aws-lambda";
+import fs from "fs";
+import path from "path";
 import { AiExtractService } from "../services/AiExtractService.js";
 import { logger } from "../utils/logger.js";
 import { Source } from "../types/Source.js";
+import { SourceQueueMessage } from "../types/SourceQueueMessage.js";
 
 /**
  * Queue Processor Lambda - Processes sources from SQS queue
  * Calls AiExtractService.processSource for each source
  */
+// Load sources.json once at cold start
+const sourcesPath = path.join(process.cwd(), "sources.json");
+const allSources: Source[] = JSON.parse(fs.readFileSync(sourcesPath, "utf-8"));
+const sourcesByCode = new Map(allSources.map((s) => [s.code, s]));
+
 export async function handler(event: SQSEvent) {
   logger.log("Processing sources from queue", { count: event.Records.length });
 
@@ -15,30 +23,20 @@ export async function handler(event: SQSEvent) {
 
   for (const record of event.Records) {
     try {
-      const source: Partial<Source> = JSON.parse(record.body);
-      logger.log(`Processing source from queue`, { source: source.code });
+      const message: SourceQueueMessage = JSON.parse(record.body);
+      logger.log(`Processing source from queue`, { source: message.code });
 
-      // Convert partial source to full Source object
-      const fullSource: Source = {
-        name: source.name!,
-        code: source.code!,
-        url: source.url!,
-        enabled: true,
-        schedule: source.schedule,
-        skipSearchingForLinks: source.skipSearchingForLinks,
-        linksSelector: source.linksSelector,
-        contentSelector: source.contentSelector,
-      };
+      // Look up full source from sources.json
+      const source = sourcesByCode.get(message.code);
+      if (!source) {
+        logger.log(`Source not found in sources.json`, { code: message.code });
+        continue;
+      }
 
-      await AiExtractService.processSource(fullSource);
+      await AiExtractService.processSource(source);
 
-      logger.log("Successfully processed source", { source: source.code });
+      logger.log("Successfully processed source", { source: message.code });
     } catch (error) {
-      // logger.error("Error processing source from queue", error, {
-      //   source: (JSON.parse(record.body) as Partial<Source>).code,
-      // });
-      // Re-throw to allow SQS to retry if needed
-
       throw new Error(`Error processing source from queue: ${error}`, { cause: error });
     }
   }
