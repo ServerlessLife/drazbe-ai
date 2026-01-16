@@ -83,16 +83,10 @@ function getLastScheduledDayStart(schedule: string, now: Date): number {
       } else {
         return todayMs - 2 * DAY_MS; // Sunday -> last was Friday
       }
-    case "tuesday_friday":
-      // Tuesday (2) and Friday (5)
-      if (dayOfWeek === 2 || dayOfWeek === 5) {
-        return todayMs; // Today is Tuesday or Friday
-      }
-      // Find days since last Tuesday or Friday
-      const daysSinceTuesday = (dayOfWeek - 2 + 7) % 7;
-      const daysSinceFriday = (dayOfWeek - 5 + 7) % 7;
-      const daysSinceLastScheduled = Math.min(daysSinceTuesday, daysSinceFriday);
-      return todayMs - daysSinceLastScheduled * DAY_MS;
+    case "4-days":
+      // Triggers every 4 days - return start of today as reference point
+      // The actual 4-day check is done in shouldProcessSource
+      return todayMs;
     default:
       return todayMs;
   }
@@ -110,13 +104,14 @@ function shouldProcessSource(schedule: string, lastTrigger: number | null, now: 
 
   const lastScheduledDayStart = getLastScheduledDayStart(schedule, now);
 
-  // For tuesday_friday schedule, ensure at least 3 days between triggers
-  if (schedule === "tuesday_friday") {
-    const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+  // For 4-days schedule, ensure at least 4 days between triggers
+  if (schedule === "4-days") {
+    const FOUR_DAYS_MS = 4 * 24 * 60 * 60 * 1000;
     const timeSinceLastTrigger = now.getTime() - lastTrigger;
-    if (timeSinceLastTrigger < THREE_DAYS_MS) {
+    if (timeSinceLastTrigger < FOUR_DAYS_MS) {
       return false;
     }
+    return true; // Process if 4+ days have passed
   }
 
   // Process if last trigger was before the last scheduled day started

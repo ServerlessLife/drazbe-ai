@@ -307,7 +307,7 @@
     "code": "ajdovscina",
     "url": "https://www.ajdovscina.si/javna_narocila_in_razpisi/obvestila_obcinske_nepremicnine/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ankaran",
@@ -316,7 +316,7 @@
     "linksSelector": ".main-content",
     "contentSelector": ".announcement-view",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Apače",
@@ -325,7 +325,7 @@
     "linksSelector": "#aktualni",
     "contentSelector": ".tab-content",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Beltinci",
@@ -334,7 +334,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Benedikt",
@@ -343,7 +343,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Bistrica ob Sotli",
@@ -352,35 +352,35 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Bled",
     "code": "bled",
     "url": "https://www.e-bled.si/za-obcane/javni-razpisi/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Bloke",
     "code": "bloke",
     "url": "https://www.bloke.si/javni-razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Bohinj",
     "code": "bohinj",
     "url": "https://obcina.bohinj.si/razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Borovnica",
     "code": "borovnica",
     "url": "https://www.borovnica.si/razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Bovec",
@@ -389,7 +389,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Braslovče",
@@ -398,21 +398,21 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Brda",
     "code": "brda",
     "url": "https://www.obcina-brda.si/sl/objave-in-razpisi/nepremicnine-v-prodaji/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Brezovica",
     "code": "brezovica",
     "url": "https://www.brezovica.si/za-obcane/razpisi/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Brežice",
@@ -421,210 +421,210 @@
     "linksSelector": ".news-list-wrapper #ContainerSection",
     "contentSelector": ".content-wrapper",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Cankova",
     "code": "cankova",
     "url": "https://www.cankova.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Cerklje na Gorenjskem",
     "code": "cerklje-na-gorenjskem",
     "url": "https://www.cerklje.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Cerknica",
     "code": "cerknica",
     "url": "https://www.cerknica.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Cerkno",
     "code": "cerkno",
     "url": "https://www.cerkno.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Cerkvenjak",
     "code": "cerkvenjak",
     "url": "https://www.cerkvenjak.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Cirkulane",
     "code": "cirkulane",
     "url": "https://www.cirkulane.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Črenšovci",
     "code": "crensovci",
     "url": "https://www.obcina-crensovci.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Črna na Koroškem",
     "code": "crna-na-koroskem",
     "url": "https://www.crna.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Črnomelj",
     "code": "crnomelj",
     "url": "https://www.crnomelj.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Destrnik",
     "code": "destrnik",
     "url": "https://www.destrnik.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Divača",
     "code": "divaca",
     "url": "https://www.divaca.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Dobje",
     "code": "dobje",
     "url": "https://www.dobje.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Dobrepolje",
     "code": "dobrepolje",
     "url": "https://www.dobrepolje.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Dobrna",
     "code": "dobrna",
     "url": "https://www.dobrna.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Dobrova - Polhov Gradec",
     "code": "dobrova-polhov-gradec",
     "url": "https://www.dobrova-polhovgradec.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Dobrovnik",
     "code": "dobrovnik",
     "url": "https://www.dobrovnik.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Dol pri Ljubljani",
     "code": "dol-pri-ljubljani",
     "url": "https://www.dol.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Dolenjske Toplice",
     "code": "dolenjske-toplice",
     "url": "https://www.dolenjske-toplice.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Domžale",
     "code": "domzale",
     "url": "https://www.domzale.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Dornava",
     "code": "dornava",
     "url": "https://www.dornava.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Dravograd",
     "code": "dravograd",
     "url": "https://www.dravograd.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Duplek",
     "code": "duplek",
     "url": "https://www.duplek.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Gorenja Vas - Poljane",
     "code": "gorenja-vas-poljane",
     "url": "https://www.obcina-gvp.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Gorišnica",
     "code": "gorisnica",
     "url": "https://www.gorisnica.eu/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Gorje",
     "code": "gorje",
     "url": "https://www.gorje.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Gornja Radgona",
     "code": "gornja-radgona",
     "url": "https://www.gor-radgona.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Gornji Grad",
     "code": "gornji-grad",
     "url": "https://www.gornji-grad.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Gornji Petrovci",
     "code": "gornji-petrovci",
     "url": "https://www.gornji-petrovci.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Grad",
     "code": "grad",
     "url": "https://www.obcina-grad.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Grosuplje",
@@ -633,126 +633,126 @@
     "enabled": false,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Hajdina",
     "code": "hajdina",
     "url": "https://www.hajdina.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Hoče - Slivnica",
     "code": "hoce-slivnica",
     "url": "https://www.hoce-slivnica.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Hodoš",
     "code": "hodos",
     "url": "https://www.hodos.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Horjul",
     "code": "horjul",
     "url": "https://www.horjul.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Hrastnik",
     "code": "hrastnik",
     "url": "https://www.hrastnik.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Hrpelje Kozina",
     "code": "hrpelje-kozina",
     "url": "https://www.hrpelje-kozina.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Idrija",
     "code": "idrija",
     "url": "https://www.idrija.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ig",
     "code": "ig",
     "url": "https://www.obcina-ig.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ilirska Bistrica",
     "code": "ilirska-bistrica",
     "url": "https://www.ilirska-bistrica.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ivančna Gorica",
     "code": "ivancna-gorica",
     "url": "https://www.ivancna-gorica.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Izola",
     "code": "izola",
     "url": "https://izola.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Jesenice",
     "code": "jesenice",
     "url": "https://www.jesenice.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Jezersko",
     "code": "jezersko",
     "url": "https://www.jezersko.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Juršinci",
     "code": "jursinci",
     "url": "https://www.jursinci.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kamnik",
     "code": "kamnik",
     "url": "https://www.kamnik.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kanal",
     "code": "kanal",
     "url": "https://www.obcina-kanal.si/",
     "enabled": false,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kidričevo",
     "code": "kidricevo",
     "url": "https://www.kidricevo.si/za-obcane/javna-narocila-in-razpisi/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kobarid",
@@ -761,7 +761,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kobilje",
@@ -770,7 +770,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kočevje",
@@ -779,14 +779,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Komen",
     "code": "komen",
     "url": "https://www.komen.si/novice/objave/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Komenda",
@@ -795,7 +795,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kostanjevica na Krki",
@@ -804,7 +804,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kostel",
@@ -813,7 +813,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kozje",
@@ -822,7 +822,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kranjska Gora",
@@ -831,21 +831,21 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Križevci",
     "code": "krizevci",
     "url": "https://www.obcina-krizevci.si/za-obcane/obcina-krizevci-prodaja-zemljisc/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kungota",
     "code": "kungota",
     "url": "https://www.kungota.si/razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Kuzma",
@@ -854,7 +854,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Laško",
@@ -863,7 +863,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Lenart",
@@ -872,7 +872,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Lendava",
@@ -881,7 +881,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Litija",
@@ -890,7 +890,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ljubno",
@@ -899,7 +899,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ljutomer",
@@ -908,7 +908,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Log - Dragomer",
@@ -917,21 +917,21 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Logatec",
     "code": "logatec",
     "url": "https://logatec.si/razpisi/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Loška Dolina",
     "code": "loska-dolina",
     "url": "https://www.loska-dolina.si/razpisi-2/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Loški Potok",
@@ -940,7 +940,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Lovrenc na Pohorju",
@@ -949,7 +949,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Luče",
@@ -958,7 +958,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Lukovica",
@@ -967,7 +967,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Majšperk",
@@ -976,7 +976,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Makole",
@@ -985,7 +985,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Markovci",
@@ -994,7 +994,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Medvode",
@@ -1003,14 +1003,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Mengeš",
     "code": "menges",
     "url": "https://www.menges.si/za-obcane/razpisi/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Metlika",
@@ -1019,7 +1019,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Mežica",
@@ -1028,7 +1028,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Miklavž na Dravskem Polju",
@@ -1037,14 +1037,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Miren - Kostanjevica",
     "code": "miren-kostanjevica",
     "url": "https://www.miren-kostanjevica.si/za-obcane-in-obcanke/razpisi-povabila-in-javne-razgrnitve/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Mirna",
@@ -1053,7 +1053,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Mirna Peč",
@@ -1062,7 +1062,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Mislinja",
@@ -1071,14 +1071,14 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Mokronog - Trebelno",
     "code": "mokronog-trebelno",
     "url": "https://www.mokronog-trebelno.si/Razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Moravče",
@@ -1087,21 +1087,21 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Moravske Toplice",
     "code": "moravske-toplice",
     "url": "https://www.moravske-toplice.si/za-obcane/razpisi-in-objave/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Mozirje",
     "code": "mozirje",
     "url": "https://mozirje.si/category/javni-razpisi/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Muta",
@@ -1110,7 +1110,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Naklo",
@@ -1119,7 +1119,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Nazarje",
@@ -1128,7 +1128,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Odranci",
@@ -1137,14 +1137,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Oplotnica",
     "code": "oplotnica",
     "url": "https://oplotnica.si/za-obcane/razpisi/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ormož",
@@ -1153,14 +1153,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Osilnica",
     "code": "osilnica",
     "url": "https://osilnica.si/2021/09/20/javni-razpisi-in-objave/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Pesnica",
@@ -1169,7 +1169,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Piran",
@@ -1178,7 +1178,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Pivka",
@@ -1187,7 +1187,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Podčetrtek",
@@ -1196,7 +1196,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Podlehnik",
@@ -1205,7 +1205,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Podvelka",
@@ -1214,7 +1214,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Poljčane",
@@ -1223,14 +1223,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Polzela",
     "code": "polzela",
     "url": "https://www.polzela.si/za-obcane/razpisi/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Postojna",
@@ -1239,14 +1239,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Prebold",
     "code": "prebold",
     "url": "https://www.mojaobcina.si/prebold/razpisi/javne-objave-in-razpisi//",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Preddvor",
@@ -1255,7 +1255,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Prevalje",
@@ -1264,7 +1264,7 @@
     "linksSelector": ".news-list-wrapper",
     "contentSelector": ".cs-pad",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Puconci",
@@ -1273,7 +1273,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Rače - Fram",
@@ -1282,28 +1282,28 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Radeče",
     "code": "radece",
     "url": "https://radece.si/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Radenci",
     "code": "radenci",
     "url": "https://radenci.si/javne-drazbe/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Radlje ob Dravi",
     "code": "radlje-ob-dravi",
     "url": "https://www.radlje.si/javni-razpisi-in-druge-objave",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Radovljica",
@@ -1312,7 +1312,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ravne na Koroškem",
@@ -1321,7 +1321,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Razkrižje",
@@ -1330,7 +1330,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Rečica ob Savinji",
@@ -1339,14 +1339,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Renče - Vogrsko",
     "code": "rence-vogrsko",
     "url": "https://www.rence-vogrsko.si/razpisi/ravnanje-z-nepremicnim-premozenjem-obcine/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ribnica",
@@ -1355,7 +1355,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ribnica na Pohorju",
@@ -1364,14 +1364,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Rogaška Slatina",
     "code": "rogaska-slatina",
     "url": "https://www.rogaska-slatina.si/si/objave-in-napovedi/uradne-objave/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Rogašovci",
@@ -1380,14 +1380,14 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Rogatec",
     "code": "rogatec",
     "url": "https://obcina.rogatec.si/kategorija/javni-razpisi/javne-drazbe/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Ruše",
@@ -1396,14 +1396,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Selnica ob Dravi",
     "code": "selnica-ob-dravi",
     "url": "https://www.selnica.si/razpisi/odprti-razpisi-2/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Semič",
@@ -1412,14 +1412,14 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Sevnica",
     "code": "sevnica",
     "url": "https://www.obcina-sevnica.si/sl/uradne-objave/ravnanje-s-stvarnim-premozenjem/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Sežana",
@@ -1428,7 +1428,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Slovenska Bistrica",
@@ -1437,7 +1437,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Slovenske Konjice",
@@ -1446,14 +1446,14 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Sodražica",
     "code": "sodrazica",
     "url": "https://sodrazica.si/za-obcane/razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Solčava",
@@ -1462,7 +1462,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Središče ob Dravi",
@@ -1471,7 +1471,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Starše",
@@ -1480,7 +1480,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Straža",
@@ -1489,14 +1489,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Sveta Ana",
     "code": "sveta-ana",
     "url": "https://www.sv-ana.si/za-obcane/razpisi-obcine-sveta-ana/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Sveta Trojica v Slovenskih Goricah",
@@ -1505,7 +1505,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Sveti Andraž v Slovenskih Goricah",
@@ -1514,7 +1514,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Sveti Jurij ob Ščavnici",
@@ -1523,21 +1523,21 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Sveti Jurij v Slovenskih Goricah",
     "code": "sveti-jurij-v-slov-goricah",
     "url": "https://www.obcinajurij.si/nepremicnine-sp-800/namere-o-sklenitvi-neposrednih-pogodb",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Sveti Tomaž",
     "code": "sveti-tomaz",
     "url": "https://sv-tomaz.si/obvestila/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šalovci",
@@ -1546,14 +1546,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šempeter - Vrtojba",
     "code": "sempeter-vrtojba",
     "url": "https://www.mojaobcina.si/sempeter-vrtojba/razpisi/poziv-za-javno-zbiranje-ponudb/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šenčur",
@@ -1562,7 +1562,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šentilj",
@@ -1571,7 +1571,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šentjernej",
@@ -1580,7 +1580,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šentjur",
@@ -1589,7 +1589,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šentrupert",
@@ -1598,7 +1598,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Škocjan",
@@ -1607,7 +1607,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Škofja Loka",
@@ -1616,7 +1616,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Škofljica",
@@ -1625,7 +1625,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šmarje pri Jelšah",
@@ -1634,7 +1634,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šmarješke Toplice",
@@ -1643,7 +1643,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šmartno ob Paki",
@@ -1652,14 +1652,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šmartno pri Litiji",
     "code": "smartno-pri-litiji",
     "url": "https://obcina.smartno.si/za-obcane/javni-razpisi-natecaji-narocila-drazbe-pozivi-in-namere/javne-drazbe/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Šoštanj",
@@ -1668,7 +1668,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Štore",
@@ -1677,14 +1677,14 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Tabor",
     "code": "tabor",
     "url": "https://www.obcina-tabor.si/javni-razpisi-narocila-in-objave",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Tišina",
@@ -1693,7 +1693,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Tolmin",
@@ -1702,7 +1702,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Trbovlje",
@@ -1711,14 +1711,14 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Trebnje",
     "code": "trebnje",
     "url": "https://trebnje.si/Javne-objave-in-razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Trnovska vas",
@@ -1727,21 +1727,21 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Trzin",
     "code": "trzin",
     "url": "https://www.trzin.si/sl/publications/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Tržič",
     "code": "trzic",
     "url": "https://www.trzic.si/obcina/javni-razpisi-in-objave/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Turnišče",
@@ -1750,35 +1750,35 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Velika Polana",
     "code": "velika-polana",
     "url": "https://www.velika-polana.si/razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Velike Lašče",
     "code": "velike-lasce",
     "url": "https://obcina.velike-lasce.si/?s=neposredne+pogodbe",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Veržej",
     "code": "verzej",
     "url": "https://verzej.si/?s=neposredne+pogodbe",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Videm",
     "code": "videm",
     "url": "https://videm.si/category/objave/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Vipava",
@@ -1787,14 +1787,14 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Vitanje",
     "code": "vitanje",
     "url": "https://www.vitanje.si/razpisi#",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Vodice",
@@ -1803,7 +1803,7 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Vojnik - razpisi",
@@ -1812,7 +1812,7 @@
     "linksSelector": ".glavna-vsebina-clean",
     "contentSelector": ".glavna-vsebina-clean",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Vojnik - poziv",
@@ -1821,7 +1821,7 @@
     "linksSelector": ".glavna-vsebina-clean",
     "contentSelector": ".glavna-vsebina-clean",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Vransko - poziv",
@@ -1830,7 +1830,7 @@
     "linksSelector": ".glavna-vsebina-clean",
     "contentSelector": ".glavna-vsebina-clean",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Vransko - razpisi",
@@ -1839,21 +1839,21 @@
     "linksSelector": ".glavna-vsebina-clean",
     "contentSelector": ".glavna-vsebina-clean",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Vrhnika",
     "code": "vrhnika",
     "url": "https://vrhnika.si/za-obcane/razpisi/javne-drazbe/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Vuzenica",
     "code": "vuzenica",
     "url": "https://www.vuzenica.si/Naro%C4%8Dila-in-objave/Javne-dra%C5%BEbe",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Zagorje ob Savi",
@@ -1862,7 +1862,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Zavrč",
@@ -1871,7 +1871,7 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Zreče",
@@ -1880,28 +1880,28 @@
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Žalec",
     "code": "zalec",
     "url": "https://www.mojaobcina.si/zalec/razpisi/javne-drazbe/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Železniki",
     "code": "zelezniki",
     "url": "https://www.zelezniki.si/razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Žetale",
     "code": "zetale",
     "url": "https://www.zetale.si/razpisi",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Žiri",
@@ -1910,20 +1910,20 @@
     "enabled": true,
     "linksSelector": "#posts_list",
     "contentSelector": ".osrednji_vsebina",
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Žirovnica",
     "code": "zirovnica",
     "url": "https://zirovnica.si/category/novice-in-obvestila/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   },
   {
     "name": "Občina Žužemberk",
     "code": "zuzemberk",
     "url": "https://www.zuzemberk.si/javne-objave/",
     "enabled": true,
-    "schedule": "tuesday_friday"
+    "schedule": "4-days"
   }
 ]

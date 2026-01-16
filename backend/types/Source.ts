@@ -3,8 +3,8 @@ export interface Source {
   code: string;
   url: string;
   enabled: boolean;
-  /** Schedule frequency: 'daily' (default), 'workdays', 'tuesday_friday' */
-  schedule?: "daily" | "workdays" | "tuesday_friday";
+  /** Schedule frequency: 'daily' (default), 'workdays', '4-days' */
+  schedule?: "daily" | "workdays" | "4-days";
   /** Skip AI link extraction and use url directly */
   skipSearchingForLinks?: boolean;
   /** CSS selector to extract links from (e.g. ".tab-content") */
