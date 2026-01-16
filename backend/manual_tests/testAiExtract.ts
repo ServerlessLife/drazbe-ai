@@ -1,10 +1,9 @@
-import fs from "fs";
 import { AiExtractService } from "../services/AiExtractService.js";
 import { AuctionRepository } from "../services/AuctionRepository.js";
 import { AuctionMarkdownService } from "../services/AuctionMarkdownService.js";
+import { DataSourceService } from "../services/DataSourceService.js";
 import { GoogleMapsService } from "../services/GoogleMapsService.js";
 import { AiAuctionAnalysisService } from "../services/AiAuctionAnalysisService.js";
-import { Source } from "../types/Source.js";
 import { Auction } from "../types/Auction.js";
 import { logger } from "../utils/logger.js";
 
@@ -15,7 +14,7 @@ const HOME_ADDRESS = process.env.HOME_ADDRESS;
 const ONLY_SOURCE_CODE: string | null = "velenje";
 
 // Load sources from JSON
-const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));
+const sources = DataSourceService.loadSources();
 
 import { DrivingResult } from "../types/DrivingResult.js";
 

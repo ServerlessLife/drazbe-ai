@@ -1,20 +1,13 @@
 import { SQSEvent } from "aws-lambda";
-import fs from "fs";
-import path from "path";
 import { AiExtractService } from "../services/AiExtractService.js";
+import { DataSourceService } from "../services/DataSourceService.js";
 import { logger } from "../utils/logger.js";
-import { Source } from "../types/Source.js";
 import { SourceQueueMessage } from "../types/SourceQueueMessage.js";
 
 /**
  * Queue Processor Lambda - Processes sources from SQS queue
  * Calls AiExtractService.processSource for each source
  */
-// Load sources.json once at cold start
-const sourcesPath = path.join(process.cwd(), "sources.json");
-const allSources: Source[] = JSON.parse(fs.readFileSync(sourcesPath, "utf-8"));
-const sourcesByCode = new Map(allSources.map((s) => [s.code, s]));
-
 export async function handler(event: SQSEvent) {
   logger.log("Processing sources from queue", { count: event.Records.length });
 
@@ -27,7 +20,7 @@ export async function handler(event: SQSEvent) {
       logger.log(`Processing source from queue`, { source: message.code });
 
       // Look up full source from sources.json
-      const source = sourcesByCode.get(message.code);
+      const source = DataSourceService.getSourceByCode(message.code);
       if (!source) {
         logger.log(`Source not found in sources.json`, { code: message.code });
         continue;

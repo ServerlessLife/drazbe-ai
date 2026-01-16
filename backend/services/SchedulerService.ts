@@ -1,10 +1,9 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
-import fs from "fs";
-import path from "path";
 import { Source } from "../types/Source.js";
 import { SourceQueueMessage } from "../types/SourceQueueMessage.js";
+import { DataSourceService } from "./DataSourceService.js";
 import { logger } from "../utils/logger.js";
 
 const dynamoClient = new DynamoDBClient({});
@@ -126,8 +125,7 @@ async function processScheduledSources(): Promise<{ processed: number; total: nu
   logger.log("Starting source scheduler", { batchingEnabled: ENABLE_BATCHING });
 
   // Load sources
-  const sourcesPath = path.join(process.cwd(), "sources.json");
-  const sources: Source[] = JSON.parse(fs.readFileSync(sourcesPath, "utf-8"));
+  const sources: Source[] = DataSourceService.loadSources();
 
   const enabledSources = sources.filter((s) => s.enabled);
   logger.log(`Found enabled sources`, { count: enabledSources.length });

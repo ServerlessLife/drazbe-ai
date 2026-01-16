@@ -673,78 +673,94 @@
   {
     "name": "Občina Hrpelje Kozina",
     "code": "hrpelje-kozina",
-    "url": "https://www.hrpelje-kozina.si/",
-    "enabled": false,
+    "url": "https://www.hrpelje-kozina.si/objave/58",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Idrija",
     "code": "idrija",
-    "url": "https://www.idrija.si/",
-    "enabled": false,
+    "url": "https://www.idrija.si/objave/58",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Ig",
     "code": "ig",
-    "url": "https://www.obcina-ig.si/",
-    "enabled": false,
+    "url": "https://www.obcina-ig.si/za-obcane/javne-objave/",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Ilirska Bistrica",
     "code": "ilirska-bistrica",
-    "url": "https://www.ilirska-bistrica.si/",
-    "enabled": false,
+    "url": "https://www.ilirska-bistrica.si/razpisi",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Ivančna Gorica",
     "code": "ivancna-gorica",
-    "url": "https://www.ivancna-gorica.si/",
-    "enabled": false,
+    "url": "https://ivancna-gorica.si/objave/58",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Izola",
     "code": "izola",
-    "url": "https://izola.si/",
-    "enabled": false,
+    "url": "https://www.izola.si/objave/58",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Jesenice",
     "code": "jesenice",
-    "url": "https://www.jesenice.si/",
-    "enabled": false,
+    "url": "https://www.jesenice.si/za-obcana/javna-narocila-razpisi-objave/itemlist/tag/javna+dra%C5%BEba/",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Jezersko",
     "code": "jezersko",
-    "url": "https://www.jezersko.si/",
-    "enabled": false,
+    "url": "https://www.jezersko.si/objave/58/",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Juršinci",
     "code": "jursinci",
-    "url": "https://www.jursinci.si/",
-    "enabled": false,
+    "url": "https://www.jursinci.si/razpisi",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Kamnik",
     "code": "kamnik",
-    "url": "https://www.kamnik.si/",
-    "enabled": false,
+    "url": "https://www.kamnik.si/razpisi",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
     "name": "Občina Kanal",
     "code": "kanal",
-    "url": "https://www.obcina-kanal.si/",
-    "enabled": false,
+    "url": "https://www.obcina-kanal.si/sl/objave-in-razpisi/oglasna-deska/",
+    "enabled": true,
     "schedule": "4-days"
   },
   {
