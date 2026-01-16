@@ -675,6 +675,32 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
         continue;
       }
 
+      // check if the due date is in the past - if yes, skip
+      if (auction.dueDate) {
+        const dueDate = new Date(auction.dueDate);
+        const now = new Date();
+        if (dueDate < now) {
+          logger.log("Skipping expired auction", {
+            dataSourceCode: dataSource.code,
+            title: auction.title,
+            dueDate: auction.dueDate,
+          });
+          continue;
+        }
+      }
+
+      // if dure date is not set, set it to 6 months from now
+      if (!auction.dueDate) {
+        const sixMonthsFromNow = new Date();
+        sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+        auction.dueDate = sixMonthsFromNow.toISOString().split("T")[0];
+        logger.log("Due date not set, defaulting to 6 months from now", {
+          dataSourceCode: dataSource.code,
+          title: auction.title,
+          dueDate: auction.dueDate,
+        });
+      }
+
       // Fetch valuations for each property
       let properties: AuctionProperty[] | null = await processProperties(auction);
 
