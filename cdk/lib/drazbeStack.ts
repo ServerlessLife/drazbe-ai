@@ -378,6 +378,13 @@ export class CdkStack extends cdk.Stack {
       bundling: {
         sourceMap: true,
         sourcesContent: false,
+        commandHooks: {
+          beforeBundling: () => [],
+          beforeInstall: () => [],
+          afterBundling: (inputDir, outputDir) => [
+            `cp ${inputDir}/backend/sources.json ${outputDir}/`,
+          ],
+        },
       },
     });
 
