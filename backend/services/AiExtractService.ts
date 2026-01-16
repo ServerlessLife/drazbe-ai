@@ -473,19 +473,6 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
 
     const announcementUrl = buildFullUrl(objava.url, dataSource.url);
 
-    // if extension is ".pdf", skip processing
-    if (announcementUrl.toLowerCase().endsWith(".pdf")) {
-      logger.log(
-        `Skipping PDF announcement for data source ${dataSource.code}, title "${objava.title}"`,
-        {
-          title: objava.title,
-          url: announcementUrl,
-          dataSourceCode: dataSource.code,
-        }
-      );
-      return [];
-    }
-
     // Check if this URL was already visited
     if (await VisitedUrlRepository.isVisited(dataSource.code, announcementUrl)) {
       logger.log(
