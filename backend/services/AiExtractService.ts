@@ -505,9 +505,17 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
 
     const safeTitle = objava.title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 50);
     let markdown: string = "";
+    const isPdfUrl = announcementUrl.toLowerCase().endsWith(".pdf");
 
-    // Fetch content based on source type
-    if (SodneDrazbeService.isSodneDrazbeUrl(announcementUrl)) {
+    // If the announcement URL is a PDF, skip fetching page - we'll process the PDF as a document
+    if (isPdfUrl) {
+      logger.log("Announcement URL is a PDF, will process as document", {
+        url: announcementUrl,
+        dataSourceCode: dataSource.code,
+      });
+      // markdown stays empty - content will come from the PDF document
+    } else if (SodneDrazbeService.isSodneDrazbeUrl(announcementUrl)) {
+      // Fetch content based on source type
       try {
         markdown = await SodneDrazbeService.fetchMarkdown(announcementUrl);
       } catch (err) {
@@ -530,7 +538,13 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
     const cookieHeader = cookies.map((c) => `${c.name}=${c.value}`).join("; ");
 
     // Extract and fetch document content
-    const linksToDocuments = extractDocumentLinks(markdown);
+    // For PDF URLs, use the PDF itself as the only document
+    let linksToDocuments: Array<{ description: string; url: string }>;
+    if (isPdfUrl) {
+      linksToDocuments = [{ description: objava.title || "Dokument", url: announcementUrl }];
+    } else {
+      linksToDocuments = extractDocumentLinks(markdown);
+    }
     logger.log(
       `Found ${linksToDocuments.length} document links for data source ${dataSource.code}, title "${objava.title}"`,
       {
