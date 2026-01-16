@@ -555,7 +555,7 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
 
     // Check if there are non-OCR documents with sufficient content
     const weHaveAtLeastOneDocumentsWithContent = documents.documents.some(
-      (doc) => doc.markdown.replace(/\s+/g, "").length > 100
+      (doc) => doc.markdown?.replace(/\s+/g, "").length > 100
     );
 
     // Track which documents were used for extraction
@@ -809,7 +809,6 @@ async function processAuction(objava: Link, dataSource: Source): Promise<Auction
             });
 
             for (const photo of photos) {
-              if ((result.images?.length ?? 0) >= 3) break;
               result.images.push({
                 description: doc.description ? `Foto iz ${doc.description}` : "Foto iz dokumenta",
                 localUrl: photo.s3Key,

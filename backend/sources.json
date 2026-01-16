@@ -313,6 +313,8 @@
     "name": "Občina Ankaran",
     "code": "ankaran",
     "url": "https://obcina-ankaran.si/sl/nasa-obcina/uradne-objave",
+    "linksSelector": ".main-content",
+    "contentSelector": ".announcement-view",
     "enabled": true,
     "schedule": "tuesday_friday"
   },
@@ -1259,7 +1261,7 @@
     "name": "Občina Prevalje",
     "code": "prevalje",
     "url": "https://www.prevalje.si/Za-obcane/Razpisi",
-    "linksSelector": ".news-list-wrapper #ContainerSection",
+    "linksSelector": ".news-list-wrapper",
     "contentSelector": ".cs-pad",
     "enabled": true,
     "schedule": "tuesday_friday"
@@ -1638,6 +1640,8 @@
     "name": "Občina Šmarješke Toplice",
     "code": "smarjeske-toplice",
     "url": "https://www.smarjeske-toplice.si/objave/58",
+    "linksSelector": "#posts_list",
+    "contentSelector": ".osrednji_vsebina",
     "enabled": true,
     "schedule": "tuesday_friday"
   },

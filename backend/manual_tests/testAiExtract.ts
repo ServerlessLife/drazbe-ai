@@ -12,7 +12,7 @@ import { logger } from "../utils/logger.js";
 const HOME_ADDRESS = process.env.HOME_ADDRESS;
 
 // Optional: Process only a specific source by code (set to null to process all enabled sources)
-const ONLY_SOURCE_CODE: string | null = "bovec";
+const ONLY_SOURCE_CODE: string | null = "velenje";
 
 // Load sources from JSON
 const sources: Source[] = JSON.parse(fs.readFileSync("sources.json", "utf-8"));

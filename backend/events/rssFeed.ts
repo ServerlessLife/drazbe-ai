@@ -58,7 +58,7 @@ export async function handler() {
 
       feed.addItem({
         title,
-        id: auction.announcementId || link,
+        id: auction.auctionId,
         link,
         description: html,
         date: pubDate,
