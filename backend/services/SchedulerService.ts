@@ -110,6 +110,15 @@ function shouldProcessSource(schedule: string, lastTrigger: number | null, now: 
 
   const lastScheduledDayStart = getLastScheduledDayStart(schedule, now);
 
+  // For tuesday_friday schedule, ensure at least 3 days between triggers
+  if (schedule === "tuesday_friday") {
+    const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+    const timeSinceLastTrigger = now.getTime() - lastTrigger;
+    if (timeSinceLastTrigger < THREE_DAYS_MS) {
+      return false;
+    }
+  }
+
   // Process if last trigger was before the last scheduled day started
   return lastTrigger < lastScheduledDayStart;
 }
