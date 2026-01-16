@@ -26,7 +26,8 @@ function formatAuctionMarkdown(auction: Auction): string {
   // Main details
   lines.push("## Osnovni podatki");
   lines.push("");
-  if (auction.dataSourceCode) lines.push(`- **Vir podatkov:** ${DataSourceService.getSourceName(auction.dataSourceCode)}`);
+  if (auction.dataSourceCode)
+    lines.push(`- **Vir podatkov:** ${DataSourceService.getSourceName(auction.dataSourceCode)}`);
   if (auction.auctionId) lines.push(`- **Interni ID:** ${auction.auctionId}`);
   if (auction.announcementId) lines.push(`- **ID objave:** ${auction.announcementId}`);
 

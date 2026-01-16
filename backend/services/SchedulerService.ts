@@ -125,7 +125,7 @@ async function processScheduledSources(): Promise<{ processed: number; total: nu
   logger.log("Starting source scheduler", { batchingEnabled: ENABLE_BATCHING });
 
   // Load sources
-  const sources: Source[] = DataSourceService.loadSources();
+  const sources: Source[] = DataSourceService.getSources();
 
   const enabledSources = sources.filter((s) => s.enabled);
   logger.log(`Found enabled sources`, { count: enabledSources.length });

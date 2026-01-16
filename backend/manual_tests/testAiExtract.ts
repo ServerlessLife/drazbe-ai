@@ -14,7 +14,7 @@ const HOME_ADDRESS = process.env.HOME_ADDRESS;
 const ONLY_SOURCE_CODE: string | null = "velenje";
 
 // Load sources from JSON
-const sources = DataSourceService.loadSources();
+const sources = DataSourceService.getSources();
 
 import { DrivingResult } from "../types/DrivingResult.js";
 

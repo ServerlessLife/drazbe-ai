@@ -25,7 +25,16 @@ function getSourceByCode(code: string): Source | undefined {
   return sources.find((s) => s.code === code);
 }
 
+/**
+ * Get source name by code
+ */
+function getSourceName(code: string): string {
+  const source = getSourceByCode(code);
+  return source?.name ?? code;
+}
+
 export const DataSourceService = {
-  loadSources: getSources,
+  getSources,
   getSourceByCode,
+  getSourceName,
 };
